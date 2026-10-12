@@ -10,9 +10,9 @@ import HomepageContent from '@/components/store/HomepageContent';
 
 
 export const metadata: Metadata = {
-  title: 'Talukdar Shop — Best Tech Shop in Bangladesh',
+  title: 'Talukdar Shop — Best Home Appliance Shop in Bangladesh',
   description:
-    'Buy laptops, desktops, monitors, PC components, gadgets, mobiles & accessories at the best price in Bangladesh. 100% genuine products, official warranty, 0% EMI & fastest delivery.',
+    'Buy air fryers, rice cookers, fans, cookware & home essentials at the best price in Bangladesh. Quality products & fastest delivery.',
   alternates: { canonical: '/' },
 };
 
@@ -55,7 +55,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <h1 className="sr-only">Talukdar Shop — Best Tech Shop in Bangladesh</h1>
+      <h1 className="sr-only">Talukdar Shop — Best Home Appliance Shop in Bangladesh</h1>
 
       <Hero />
 
