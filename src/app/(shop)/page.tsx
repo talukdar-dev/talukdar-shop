@@ -30,12 +30,12 @@ export default async function HomePage() {
   const configured = settings.homepage_sections?.length
     ? settings.homepage_sections
     : [
-        { title: 'Best Laptop Shop in Bangladesh', category_slug: 'laptop' },
-        { title: 'Best Desktop PC Shop In Bangladesh', category_slug: 'desktop' },
-        { title: 'Largest Gadget Shop In Bangladesh', category_slug: 'gadget' },
-        { title: 'Top Mobile Shop in Bangladesh', category_slug: 'mobile' },
-        { title: 'Best Monitor Shop In Bangladesh', category_slug: 'monitor' },
-        { title: 'Best Accessories Shop In Bangladesh', category_slug: 'accessories' },
+        { title: 'Best Air Fryer Shop in Bangladesh', category_slug: 'air-fryer' },
+        { title: 'Best Rice Cooker Shop In Bangladesh', category_slug: 'rice-cooker' },
+        { title: 'Top Fan Shop In Bangladesh', category_slug: 'ceiling-fan' },
+        { title: 'Best Light Shop In Bangladesh', category_slug: 'light' },
+        { title: 'Best Iron Shop In Bangladesh', category_slug: 'iron' },
+        { title: 'Best Blender Shop In Bangladesh', category_slug: 'blender' },
       ];
 
   const sectionProducts = await Promise.all(

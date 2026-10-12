@@ -17,16 +17,18 @@ import {
 type IconFn = (p: SVGProps<SVGSVGElement> & { className?: string }) => React.ReactNode;
 
 const ICONS: Record<string, IconFn> = {
-  laptop: IconLaptop,
-  desktop: IconDesktop,
-  monitor: IconMonitor,
-  component: IconChip,
-  accessories: IconHeadphones,
-  gadget: IconWatch,
-  mobile: IconMobile,
-  ups: IconBattery,
-  printer: IconPrinter,
-  software: IconDisc,
+  'light': IconWatch,
+  'iron': IconChip,
+  'air-fryer': IconChip,
+  'rice-cooker': IconPrinter,
+  'dc-fan': IconDesktop,
+  'ceiling-fan': IconDesktop,
+  'water-heater': IconBattery,
+  'ac-dc-light': IconWatch,
+  'high-speed-fan': IconDesktop,
+  'battery': IconBattery,
+  'infrared-cooker': IconPrinter,
+  'blender': IconHeadphones,
 };
 
 export default function CategoryTiles({ categories }: { categories: Category[] }) {
