@@ -7,6 +7,7 @@ import CategoryTiles from '@/components/store/CategoryTiles';
 import FlashDealsSection from '@/components/store/FlashDealsSection';
 import SectionBlock from '@/components/store/SectionBlock';
 import TrustStrip from '@/components/store/TrustStrip';
+import HomepageContent from '@/components/store/HomepageContent';
 import { IconPin, IconSearch, IconStore } from '@/components/store/icons';
 
 
@@ -137,32 +138,7 @@ export default async function HomePage() {
       )}
 
       {/* SEO text block */}
-      <section id="about" className="bg-white rounded-md border border-[#e8e8e8] p-4 sm:p-6 scroll-mt-24">
-        <h2 className="text-[18px] sm:text-[20px] font-bold text-[#222] mb-3">
-          Trusted Online Shopping in Bangladesh at Talukdar Shop
-        </h2>
-        <div className="text-[13.5px] text-ink leading-relaxed space-y-3">
-          <p>
-            Talukdar Shop is one of the most trusted online tech retailers in Bangladesh, offering
-            a wide range of laptops, desktop PCs, monitors, PC components, printers, software,
-            gadgets, mobile phones and accessories at the best prices. Every product we sell is
-            100% genuine, sourced through official channels and backed by official warranty
-            support across the country.
-          </p>
-          <p>
-            Whether you are a student looking for an affordable laptop, a gamer building a custom
-            PC, or a business setting up an entire office, our catalog covers every budget and
-            use case. Use the PC Builder tool to assemble your dream configuration, compare
-            prices across brands, and check out with cash on delivery, mobile banking or 0% EMI
-            for up to 12 months on major bank cards.
-          </p>
-          <p>
-            With fast delivery inside Dhaka and reliable courier service nationwide, plus a
-            dedicated after-sales support team reachable at {settings.hotline}, Talukdar Shop
-            makes tech shopping simple, safe and affordable for everyone in Bangladesh.
-          </p>
-        </div>
-      </section>
+      <HomepageContent />
 
       <TrustStrip />
     </>
