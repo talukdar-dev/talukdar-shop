@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
-import { getBrands, getCategories, getProducts, getSettings } from '@/lib/db';
-import type { Brand } from '@/lib/types';
+import { getBrands, getCategories, getCategoryBrands, getSettings } from '@/lib/db';
 import TopBar from '@/components/store/TopBar';
 import Header from '@/components/store/Header';
 import MegaMenu from '@/components/store/MegaMenu';
@@ -31,28 +30,17 @@ export const metadata: Metadata = {
 async function loadLayoutData() {
   'use cache';
   cacheLife('minutes');
-  const [settings, categories, brands] = await Promise.all([
+  const [settings, categories, brands, catBrands] = await Promise.all([
     getSettings(),
     getCategories(),
     getBrands(),
+    getCategoryBrands(),
   ]);
-  const { items: allProducts } = await getProducts({ perPage: 500 });
-  return { settings, categories, brands, allProducts };
+  return { settings, categories, brands, catBrands };
 }
 
 export default async function ShopLayout({ children }: { children: React.ReactNode }) {
-  const { settings, categories, brands, allProducts } = await loadLayoutData();
-  const catBrands: Record<string, Brand[]> = {};
-  for (const c of categories) {
-    const seen = new Set<string>();
-    catBrands[c.id] = [];
-    for (const p of allProducts) {
-      if (p.category_id === c.id && p.brand && !seen.has(p.brand.id)) {
-        seen.add(p.brand.id);
-        catBrands[c.id].push(p.brand);
-      }
-    }
-  }
+  const { settings, categories, catBrands } = await loadLayoutData();
 
   const orgJsonLd = {
     '@context': 'https://schema.org',

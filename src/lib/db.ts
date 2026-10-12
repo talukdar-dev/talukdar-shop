@@ -145,6 +145,44 @@ export async function getBrands(): Promise<Brand[]> {
 }
 
 // ---------- products ----------
+
+/**
+ * Lightweight category->brands mapping for the nav menu.
+ * Only fetches category_id + brand (id, name, slug) — NOT full product data.
+ * This keeps the layout flight data small.
+ */
+export async function getCategoryBrands(): Promise<Record<string, Brand[]>> {
+  'use cache';
+  cacheLife('hours');
+  cacheTag('catalog');
+  return live(
+    async () => ({}),
+    async (sb) => {
+      const { data, error } = await sb
+        .from('products')
+        .select('category_id, brand:brands(id,name,slug)')
+        .eq('is_active', true)
+        .limit(1000);
+      if (error) throw error;
+      const map: Record<string, Brand[]> = {};
+      const seen = new Set<string>();
+      for (const row of (data ?? []) as Array<{ category_id: string; brand: Brand | Brand[] | null }>) {
+        // Supabase may return brand as array (join) or single object
+        const brand = Array.isArray(row.brand) ? row.brand[0] : row.brand;
+        if (!brand || !row.category_id) continue;
+        const key = `${row.category_id}:${brand.id}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        if (!map[row.category_id]) map[row.category_id] = [];
+        if (map[row.category_id].length < 8) {
+          map[row.category_id].push(brand);
+        }
+      }
+      return map;
+    },
+  );
+}
+
 export interface ProductFilter {
   categorySlug?: string;
   brandSlug?: string;
