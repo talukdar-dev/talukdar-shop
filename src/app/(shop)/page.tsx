@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { cacheLife } from 'next/cache';
-import { getBrands, getCategories, getProducts, getSettings } from '@/lib/db';
+import { getCategories, getProducts, getSettings } from '@/lib/db';
 import Hero from '@/components/store/Hero';
 import CategoryTiles from '@/components/store/CategoryTiles';
 import FlashDealsSection from '@/components/store/FlashDealsSection';
 import SectionBlock from '@/components/store/SectionBlock';
 import TrustStrip from '@/components/store/TrustStrip';
 import HomepageContent from '@/components/store/HomepageContent';
-import { IconPin, IconSearch, IconStore } from '@/components/store/icons';
 
 
 export const metadata: Metadata = {
@@ -21,9 +19,8 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   'use cache';
   cacheLife('minutes');
-  const [categories, brands, settings] = await Promise.all([
+  const [categories, settings] = await Promise.all([
     getCategories(),
-    getBrands(),
     getSettings(),
   ]);
 
