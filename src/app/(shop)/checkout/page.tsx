@@ -42,6 +42,7 @@ export default function CheckoutPage() {
   const [couponMsg, setCouponMsg] = useState('');
   const [error, setError] = useState('');
   const [placing, setPlacing] = useState(false);
+  const [copiedField, setCopiedField] = useState('');
 
   // digital vs physical detection
   const allDigital = useMemo(
@@ -362,6 +363,39 @@ export default function CheckoutPage() {
             {/* manual payment details — sender number + transaction id */}
             {(payment === 'bkash' || payment === 'nagad' || payment === 'rocket') && (
               <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3.5">
+                {/* copyable amount + number */}
+                <div className="mb-3 space-y-2">
+                  <div className="flex items-center justify-between bg-white border border-amber-300 rounded-md px-3 py-2.5">
+                    <div>
+                      <p className="text-[11px] text-gray-500 uppercase tracking-wide">Amount to send</p>
+                      <p className="text-[18px] font-bold text-gray-900">{taka(total)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { navigator.clipboard.writeText(String(total)); setCopiedField('amount'); setTimeout(() => setCopiedField(''), 1500); }}
+                      className="px-3 py-1.5 text-[12px] font-bold rounded-md bg-pink-600 text-white hover:bg-pink-700 transition-colors"
+                    >
+                      {copiedField === 'amount' ? '✓ Copied' : 'Copy'}
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between bg-white border border-amber-300 rounded-md px-3 py-2.5">
+                    <div>
+                      <p className="text-[11px] text-gray-500 uppercase tracking-wide">
+                        {payment === 'bkash' ? 'bKash' : payment === 'nagad' ? 'Nagad' : 'Rocket'} number
+                      </p>
+                      <p className="text-[16px] font-bold text-gray-900">
+                        {payment === 'bkash' ? settings.payment_bkash_number : payment === 'nagad' ? settings.payment_nagad_number : settings.payment_rocket_number}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { const n = payment === 'bkash' ? settings.payment_bkash_number : payment === 'nagad' ? settings.payment_nagad_number : settings.payment_rocket_number; if (n) { navigator.clipboard.writeText(n); setCopiedField('number'); setTimeout(() => setCopiedField(''), 1500); } }}
+                      className="px-3 py-1.5 text-[12px] font-bold rounded-md bg-pink-600 text-white hover:bg-pink-700 transition-colors"
+                    >
+                      {copiedField === 'number' ? '✓ Copied' : 'Copy'}
+                    </button>
+                  </div>
+                </div>
                 {payment === 'bkash' && (
                   <div className="mb-3 rounded-md overflow-hidden border border-pink-200">
                     <img
