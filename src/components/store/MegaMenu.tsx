@@ -21,7 +21,7 @@ export default function MegaMenu({ categories, catBrands }: Props) {
   return (
     <>
       <nav className="bg-brand text-white sticky top-0 z-40 shadow-[0_2px_10px_rgba(0,0,0,0.18)]" aria-label="Categories">
-        <div className="max-w-[1280px] mx-auto px-3">
+        <div className="px-3">
           <button
             className="lg:hidden flex items-center gap-2 py-2.5 font-semibold text-[14px]"
             onClick={() => setMobileOpen(true)}
