@@ -33,7 +33,8 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState('');
   const [district, setDistrict] = useState('');
   const [upazila, setUpazila] = useState('');
-  const [shipZone, setShipZone] = useState<'inside' | 'outside'>('inside');
+  // auto shipping zone based on district: Dhaka = inside, everything else = outside
+  const shipZone: 'inside' | 'outside' = district === 'Dhaka' ? 'inside' : 'outside';
   const [payment, setPayment] = useState<PaymentMethod | ''>('');
   const [senderNumber, setSenderNumber] = useState('');
   const [trxId, setTrxId] = useState('');
@@ -67,12 +68,13 @@ export default function CheckoutPage() {
   const outsideFee = typeof settings.outside_dhaka_shipping === 'number' ? settings.outside_dhaka_shipping : 120;
   const freeOver = settings.free_shipping_over;
 
-  // no shipping for digital-only orders
+  // no shipping for digital-only orders; auto zone from district
   const shipping = useMemo(() => {
     if (allDigital) return 0;
+    if (!district) return 0;
     if (freeOver && subtotal >= freeOver) return 0;
     return shipZone === 'inside' ? insideFee : outsideFee;
-  }, [allDigital, freeOver, subtotal, shipZone, insideFee, outsideFee]);
+  }, [allDigital, freeOver, subtotal, shipZone, insideFee, outsideFee, district]);
 
   const total = useMemo(
     () => Math.max(0, subtotal + shipping - couponDiscount),
@@ -297,36 +299,17 @@ export default function CheckoutPage() {
             </section>
           )}
 
-          {/* shipping method — only for physical */}
+          {/* shipping — auto based on district, only for physical */}
           {hasPhysical && (
             <section className="bg-white rounded-md border border-[#e8e8e8] p-4 sm:p-5">
-              <h2 className="font-bold text-[15px] mb-3">Shipping Method</h2>
-              <div className="space-y-2">
-                {(
-                  [
-                    { v: 'inside', label: 'Inside Dhaka', fee: insideFee },
-                    { v: 'outside', label: 'Outside Dhaka', fee: outsideFee },
-                  ] as const
-                ).map((o) => (
-                  <label
-                    key={o.v}
-                    className={`flex items-center justify-between px-3.5 h-11 border rounded-md cursor-pointer text-[13.5px] ${
-                      shipZone === o.v ? 'border-brand bg-brand/5' : 'border-gray-300'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="shipZone"
-                        checked={shipZone === o.v}
-                        onChange={() => setShipZone(o.v)}
-                        className="w-4 h-4 accent-[#ef4a23]"
-                      />
-                      <span className="font-semibold">{o.label}</span>
-                    </span>
-                    <span className="font-bold">{o.fee === 0 ? 'Free' : taka(o.fee)}</span>
-                  </label>
-                ))}
+              <h2 className="font-bold text-[15px] mb-3">Shipping</h2>
+              <div className="flex items-center justify-between px-3.5 h-11 border border-brand bg-brand/5 rounded-md text-[13.5px]">
+                <span className="font-semibold">
+                  {district ? (shipZone === 'inside' ? 'Inside Dhaka' : 'Outside Dhaka') : 'Select district for shipping rate'}
+                </span>
+                <span className="font-bold">
+                  {!district ? '—' : shipping === 0 ? 'Free' : taka(shipping)}
+                </span>
               </div>
               {freeOver ? (
                 <p className="mt-2 text-[12.5px] text-ink">Free shipping on orders over {taka(freeOver)}.</p>
