@@ -197,6 +197,23 @@ function TestEmailBox() {
     }
   }
 
+  async function checkConfig() {
+    setResult('Checking…');
+    try {
+      const res = await fetch('/api/admin/test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ debug: true }),
+      });
+      const d = await res.json();
+      setResult(
+        `User: ${d.smtp_user_masked} (${d.smtp_user_length} chars) | Pass: ${d.smtp_pass_set ? `${d.smtp_pass_length} chars` : 'NOT SET'}${d.smtp_pass_has_spaces ? ' ⚠️ HAS SPACES' : ''}`,
+      );
+    } catch {
+      setResult('❌ Check failed.');
+    }
+  }
+
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
       <TextInput
@@ -212,6 +229,12 @@ function TestEmailBox() {
         className="rounded-lg bg-navy px-4 py-2 text-sm font-bold text-white hover:bg-navy-dark disabled:bg-gray-300"
       >
         {sending ? 'Sending…' : 'Send Test Email'}
+      </button>
+      <button
+        onClick={checkConfig}
+        className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50"
+      >
+        Check Config
       </button>
       {result && <p className="text-sm sm:ml-2">{result}</p>}
     </div>

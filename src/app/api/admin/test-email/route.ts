@@ -6,7 +6,20 @@ export async function POST(req: NextRequest) {
   const denied = await requireAdmin();
   if (denied) return denied;
   try {
-    const { to } = (await req.json()) as { to?: string };
+    const { to, debug } = (await req.json()) as { to?: string; debug?: boolean };
+    if (debug) {
+      const user = process.env.SMTP_USER || '';
+      const pass = process.env.SMTP_APP_PASSWORD || '';
+      return NextResponse.json({
+        smtp_user_set: !!user,
+        // mask: show first 2 + last 2 chars only
+        smtp_user_masked: user ? `${user.slice(0, 2)}***${user.slice(-6)}` : '(not set)',
+        smtp_user_length: user.length,
+        smtp_pass_set: !!pass,
+        smtp_pass_length: pass.length,
+        smtp_pass_has_spaces: /\s/.test(pass),
+      });
+    }
     if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
       return NextResponse.json({ error: 'Valid email address required.' }, { status: 400 });
     }
