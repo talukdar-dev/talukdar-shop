@@ -10,7 +10,7 @@ import Breadcrumb from '@/components/store/Breadcrumb';
 export const metadata: Metadata = {
   title: 'Latest Offers',
   description:
-    'Explore the latest offers, promo campaigns and flash deals at Talukdar Shop — best prices on laptops, desktops, components & gadgets.',
+    'Explore the latest offers, promo campaigns and flash deals at Talukdar Shop — best prices on home appliances.',
   alternates: { canonical: '/offers' },
 };
 
