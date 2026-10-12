@@ -177,7 +177,9 @@ export async function sendEmail(opts: {
     });
     return true;
   } catch (err) {
-    console.error('[email] send failed:', err instanceof Error ? err.message : err);
-    return false;
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[email] send failed:', msg);
+    // throw with detail so callers can report it
+    throw new Error(msg);
   }
 }

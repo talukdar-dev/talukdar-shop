@@ -24,10 +24,9 @@ export async function POST(req: NextRequest) {
         <p style="color:#555">This is a test email from your Talukdar Shop store. Order notification emails (received / confirmed / cancelled) will be sent from <strong>shipontalukdar699@gmail.com</strong>.</p>
         <p style="color:#888;font-size:12px">Sent at ${new Date().toLocaleString()}</p>
       </body></html>`,
+    }).then(() => true).catch((e: Error) => {
+      throw new Error(`SMTP error: ${e.message}`);
     });
-    if (!ok) {
-      return NextResponse.json({ error: 'SMTP send failed. Check app password (no spaces) and Gmail settings.' }, { status: 500 });
-    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
