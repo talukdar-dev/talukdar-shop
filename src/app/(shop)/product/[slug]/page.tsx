@@ -23,7 +23,7 @@ export const instant = false;
 /** Timed-revalidation data loader: params are read outside the cached scope. */
 async function loadProductData(slug: string) {
   'use cache';
-  cacheLife('minutes');
+  cacheLife('hours');
   return getProduct(slug);
 }
 

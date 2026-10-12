@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   'use cache';
-  cacheLife('minutes');
+  cacheLife('hours');
   const [categories, settings] = await Promise.all([
     getCategories(),
     getSettings(),

@@ -32,7 +32,7 @@ interface CategoryFilter {
 
 async function loadCategoryData(slug: string, f: CategoryFilter) {
   'use cache';
-  cacheLife('minutes');
+  cacheLife('hours');
   const [category, result, brands] = await Promise.all([
     getCategory(slug),
     getProducts({

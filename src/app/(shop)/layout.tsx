@@ -7,6 +7,7 @@ import Header from '@/components/store/Header';
 import MegaMenu from '@/components/store/MegaMenu';
 import Footer from '@/components/store/Footer';
 import CartDrawer from '@/components/store/CartDrawer';
+import NavigationProgress from '@/components/store/NavigationProgress';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
 
@@ -94,6 +95,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
       />
       <TopBar />
+      <NavigationProgress />
       <Header settings={settings} />
       <MegaMenu categories={categories} catBrands={catBrands} />
       <main className="flex-1 w-full min-w-0">
