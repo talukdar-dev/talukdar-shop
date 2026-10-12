@@ -164,6 +164,15 @@ export default function SettingsPage() {
             <p className="mb-4 text-xs text-slate-400">Order emails are sent from shipontalukdar699@gmail.com via Gmail SMTP. Requires SMTP_USER + SMTP_APP_PASSWORD env vars on Vercel.</p>
             <TestEmailBox />
           </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
+            <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-slate-500">Homepage Sections</h2>
+            <p className="mb-4 text-xs text-slate-400">Choose which category sections appear on the homepage, in order. A section shows only when its category has 4+ products.</p>
+            <HomepageSectionsManager
+              sections={form.homepage_sections ?? []}
+              onChange={(v) => set('homepage_sections', v)}
+            />
+          </div>
         </div>
       </div>
 
@@ -237,6 +246,112 @@ function TestEmailBox() {
         Check Config
       </button>
       {result && <p className="text-sm sm:ml-2">{result}</p>}
+    </div>
+  );
+}
+
+function HomepageSectionsManager({
+  sections,
+  onChange,
+}: {
+  sections: { title: string; category_slug: string }[];
+  onChange: (v: { title: string; category_slug: string }[]) => void;
+}) {
+  const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
+
+  useEffect(() => {
+    fetch('/api/admin/categories', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((d) => {
+        const list = d.items ?? d.categories ?? [];
+        setCategories(list.map((c: { slug: string; name: string }) => ({ slug: c.slug, name: c.name })));
+      })
+      .catch(() => {});
+  }, []);
+
+  const add = () => {
+    const first = categories.find((c) => !sections.some((s) => s.category_slug === c.slug));
+    if (!first) return;
+    onChange([...sections, { title: first.name, category_slug: first.slug }]);
+  };
+
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= sections.length) return;
+    const next = [...sections];
+    [next[i], next[j]] = [next[j], next[i]];
+    onChange(next);
+  };
+
+  const update = (i: number, patch: Partial<{ title: string; category_slug: string }>) => {
+    const next = sections.map((s, k) => (k === i ? { ...s, ...patch } : s));
+    onChange(next);
+  };
+
+  const remove = (i: number) => onChange(sections.filter((_, k) => k !== i));
+
+  return (
+    <div className="space-y-2">
+      {sections.length === 0 && (
+        <p className="text-sm text-slate-400">No sections yet. Add one below — e.g. Laptop, Mobile, Gadget.</p>
+      )}
+      {sections.map((s, i) => (
+        <div key={i} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+          <span className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={() => move(i, -1)}
+              disabled={i === 0}
+              className="rounded p-1.5 text-slate-500 hover:bg-slate-200 disabled:opacity-30"
+              aria-label="Move up"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              onClick={() => move(i, 1)}
+              disabled={i === sections.length - 1}
+              className="rounded p-1.5 text-slate-500 hover:bg-slate-200 disabled:opacity-30"
+              aria-label="Move down"
+            >
+              ↓
+            </button>
+          </span>
+          <select
+            value={s.category_slug}
+            onChange={(e) => {
+              const cat = categories.find((c) => c.slug === e.target.value);
+              update(i, { category_slug: e.target.value, title: cat ? cat.name : s.title });
+            }}
+            className="h-10 px-2 border border-gray-300 rounded-md text-[13px] bg-white outline-none focus:border-brand min-w-0 flex-1"
+          >
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>{c.name}</option>
+            ))}
+          </select>
+          <input
+            value={s.title}
+            onChange={(e) => update(i, { title: e.target.value })}
+            placeholder="Section title"
+            className="h-10 px-3 border border-gray-300 rounded-md text-[13px] bg-white outline-none focus:border-brand min-w-0 flex-[2]"
+          />
+          <button
+            type="button"
+            onClick={() => remove(i)}
+            className="rounded-lg border border-red-200 px-3 py-2 text-sm font-bold text-red-600 hover:bg-red-50 shrink-0"
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={add}
+        disabled={categories.length > 0 && sections.length >= categories.length}
+        className="rounded-lg border border-dashed border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+      >
+        + Add Section
+      </button>
     </div>
   );
 }

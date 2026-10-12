@@ -20,31 +20,27 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   'use cache';
   cacheLife('minutes');
-  const [
-    categories,
-    brands,
-    settings,
-    laptops,
-    desktops,
-    gaming,
-    printers,
-    gadgets,
-    mobiles,
-    monitors,
-    accessories,
-  ] = await Promise.all([
+  const [categories, brands, settings] = await Promise.all([
     getCategories(),
     getBrands(),
     getSettings(),
-    getProducts({ categorySlug: 'laptop', perPage: 10 }),
-    getProducts({ categorySlug: 'desktop', perPage: 10 }),
-    getProducts({ q: 'gaming', perPage: 10 }),
-    getProducts({ categorySlug: 'printer', perPage: 10 }),
-    getProducts({ categorySlug: 'gadget', perPage: 10 }),
-    getProducts({ categorySlug: 'mobile', perPage: 10 }),
-    getProducts({ categorySlug: 'monitor', perPage: 10 }),
-    getProducts({ categorySlug: 'accessories', perPage: 10 }),
   ]);
+
+  // Admin-configurable homepage sections (fallback to defaults)
+  const configured = settings.homepage_sections?.length
+    ? settings.homepage_sections
+    : [
+        { title: 'Best Laptop Shop in Bangladesh', category_slug: 'laptop' },
+        { title: 'Best Desktop PC Shop In Bangladesh', category_slug: 'desktop' },
+        { title: 'Largest Gadget Shop In Bangladesh', category_slug: 'gadget' },
+        { title: 'Top Mobile Shop in Bangladesh', category_slug: 'mobile' },
+        { title: 'Best Monitor Shop In Bangladesh', category_slug: 'monitor' },
+        { title: 'Best Accessories Shop In Bangladesh', category_slug: 'accessories' },
+      ];
+
+  const sectionProducts = await Promise.all(
+    configured.map((s) => getProducts({ categorySlug: s.category_slug, perPage: 10 })),
+  );
 
   return (
     <>
@@ -96,38 +92,15 @@ export default async function HomePage() {
 
       <FlashDealsSection />
 
-      <SectionBlock minItems={4}
-        title="Best Laptop Shop in Bangladesh"
-        href="/category/laptop"
-        products={laptops.items}
-      />
-      <SectionBlock minItems={4}
-        title="Best Desktop PC Shop In Bangladesh"
-        href="/category/desktop"
-        products={desktops.items}
-      />
-      <SectionBlock minItems={4} title="Best Gaming PC Shop In Bangladesh" href="/search?q=gaming" products={gaming.items} />
-      <SectionBlock minItems={4}
-        title="Best Office Equipment Shop In Bangladesh"
-        href="/category/printer"
-        products={printers.items}
-      />
-      <SectionBlock minItems={4}
-        title="Largest Gadget Shop In Bangladesh"
-        href="/category/gadget"
-        products={gadgets.items}
-      />
-      <SectionBlock minItems={4} title="Top Mobile Shop in Bangladesh" href="/category/mobile" products={mobiles.items} />
-      <SectionBlock minItems={4}
-        title="Best Monitor Shop In Bangladesh"
-        href="/category/monitor"
-        products={monitors.items}
-      />
-      <SectionBlock minItems={4}
-        title="Best Accessories Shop In Bangladesh"
-        href="/category/accessories"
-        products={accessories.items}
-      />
+      {configured.map((s, i) => (
+        <SectionBlock
+          key={`${s.category_slug}-${i}`}
+          minItems={4}
+          title={s.title}
+          href={`/category/${s.category_slug}`}
+          products={sectionProducts[i].items}
+        />
+      ))}
 
       {/* brand strip */}
       {brands.length > 0 && (

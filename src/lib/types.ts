@@ -152,6 +152,13 @@ export interface SiteSettings {
   // merchant (online) payment - for future use
   payment_merchant_enabled?: boolean;
   payment_merchant_provider?: string;
+  // homepage category sections (admin-configurable)
+  homepage_sections?: HomepageSection[];
+}
+
+export interface HomepageSection {
+  title: string;
+  category_slug: string;
 }
 
 export interface Coupon {
