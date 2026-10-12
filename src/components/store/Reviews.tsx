@@ -2,13 +2,7 @@
 
 import { useState } from 'react';
 import { IconStar, IconStarOutline } from './icons';
-
-interface Review {
-  author: string;
-  date: string;
-  rating: number;
-  text: string;
-}
+import type { Review } from '@/lib/types';
 
 function Stars({ n }: { n: number }) {
   return (
@@ -24,35 +18,24 @@ function Stars({ n }: { n: number }) {
   );
 }
 
-const seedFor = (name: string): Review[] => [
-  {
-    author: 'Rahim U.',
-    date: '2026-09-18',
-    rating: 5,
-    text: `Genuine product, sealed pack. Delivery inside Dhaka took just one day. Very happy with this purchase of ${name}.`,
-  },
-  {
-    author: 'Tanvir H.',
-    date: '2026-08-30',
-    rating: 4,
-    text: 'Good price compared to other shops. Packaging could be slightly better, but the product itself is 100% original.',
-  },
-  {
-    author: 'Nusrat J.',
-    date: '2026-08-12',
-    rating: 5,
-    text: 'Ordered with EMI, process was smooth and support helped on the phone. Recommended seller.',
-  },
-];
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+}
 
 export default function Reviews({
-  productName,
+  reviews: initialReviews,
   reviewsCount,
 }: {
-  productName: string;
+  reviews: Review[];
   reviewsCount: number;
 }) {
-  const [list, setList] = useState<Review[]>(() => seedFor(productName));
+  const [list, setList] = useState<Review[]>(initialReviews);
   const [name, setName] = useState('');
   const [rating, setRating] = useState(5);
   const [text, setText] = useState('');
@@ -61,8 +44,19 @@ export default function Reviews({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !text.trim()) return;
+    // Client-side only preview — real submission goes through API for moderation
     setList((prev) => [
-      { author: name.trim(), date: new Date().toISOString().slice(0, 10), rating, text: text.trim() },
+      {
+        id: `temp-${Date.now()}`,
+        product_id: '',
+        customer_name: name.trim(),
+        gender: null,
+        review_text: text.trim(),
+        rating,
+        review_date: new Date().toISOString().slice(0, 10),
+        is_approved: false,
+        created_at: new Date().toISOString(),
+      },
       ...prev,
     ]);
     setName('');
@@ -71,19 +65,39 @@ export default function Reviews({
     setDone(true);
   };
 
+  // Rating summary
+  const avg = list.length
+    ? list.reduce((s, r) => s + r.rating, 0) / list.length
+    : 0;
+
   return (
     <section id="reviews" className="scroll-mt-24" aria-label="Customer reviews">
-      <h3 className="text-[18px] font-bold text-[#222] mb-4">Reviews ({reviewsCount})</h3>
+      <div className="flex items-center gap-3 mb-4">
+        <h3 className="text-[18px] font-bold text-[#222]">Reviews ({reviewsCount})</h3>
+        {list.length > 0 && (
+          <span className="flex items-center gap-1.5 text-[13px] text-gray-600">
+            <Stars n={avg} />
+            <span className="font-semibold">{avg.toFixed(1)}</span> out of 5
+          </span>
+        )}
+      </div>
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          {list.map((r, i) => (
-            <article key={i} className="bg-white border border-[#e8e8e8] rounded-md p-4">
+        <div className="space-y-4 max-h-[600px] overflow-y-auto pr-1">
+          {list.length === 0 && (
+            <p className="text-[13.5px] text-gray-500 bg-white border border-[#e8e8e8] rounded-md p-4">
+              No reviews yet. Be the first to share your experience!
+            </p>
+          )}
+          {list.map((r) => (
+            <article key={r.id} className="bg-white border border-[#e8e8e8] rounded-md p-4">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="font-bold text-[13.5px]">{r.author}</span>
-                <span className="text-[12px] text-ink">{r.date}</span>
+                <span className="font-bold text-[13.5px]">{r.customer_name}</span>
+                {r.review_date && (
+                  <span className="text-[12px] text-ink">{formatDate(r.review_date)}</span>
+                )}
               </div>
               <Stars n={r.rating} />
-              <p className="text-[13.5px] text-gray-700 mt-1.5 leading-relaxed">{r.text}</p>
+              <p className="text-[13.5px] text-gray-700 mt-1.5 leading-relaxed">{r.review_text}</p>
             </article>
           ))}
         </div>
