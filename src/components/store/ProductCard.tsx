@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
 import { discountPct, effectivePrice, taka } from '@/lib/format';
+import { useCart } from '@/lib/cart';
 import SmartImage from './SmartImage';
 
 interface Props {
@@ -11,13 +14,15 @@ interface Props {
 
 /**
  * StarTech-style product card: discount badge, image, 2-line name,
- * new + old price. No stars, no add-to-cart on the card.
+ * new + old price, add-to-cart button.
  */
 export default function ProductCard({ product, showSpecs = false }: Props) {
   const price = effectivePrice(product);
   const pct = discountPct(price, product.old_price);
   const save =
     product.old_price && product.old_price > price ? product.old_price - price : 0;
+  const { add, setDrawerOpen } = useCart();
+  const inStock = product.stock_qty > 0;
 
   const specEntries = product.specs ? Object.entries(product.specs).slice(0, 4) : [];
 
@@ -68,6 +73,17 @@ export default function ProductCard({ product, showSpecs = false }: Props) {
             </span>
           )}
         </div>
+        <button
+          type="button"
+          disabled={!inStock}
+          onClick={() => {
+            add(product, 1);
+            setDrawerOpen(true);
+          }}
+          className="mt-2 w-full rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-gray-300"
+        >
+          {inStock ? 'Add to Cart' : 'Out of Stock'}
+        </button>
       </div>
     </div>
   );

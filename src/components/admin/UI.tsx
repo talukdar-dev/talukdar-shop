@@ -430,9 +430,61 @@ export function MultiImageUpload({
   label?: string;
 }) {
   const [urlInput, setUrlInput] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
+  const configured = cloudinaryConfigured();
+
+  async function handleFiles(fileList: FileList | null) {
+    if (!fileList || fileList.length === 0) return;
+    setError('');
+    if (!configured) {
+      setError('Cloudinary is not configured — paste image URLs instead.');
+      return;
+    }
+    setUploading(true);
+    try {
+      const urls: string[] = [];
+      for (const file of Array.from(fileList)) {
+        const url = await uploadToCloudinary(file);
+        urls.push(url);
+      }
+      onChange([...values, ...urls]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  }
+
   return (
     <div>
       <span className="mb-2 block text-sm font-medium text-slate-700">{label}</span>
+      <div className="mb-2 flex items-center gap-2">
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            handleFiles(e.target.files);
+            e.target.value = '';
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading || !configured}
+          className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+        >
+          {uploading ? 'Uploading…' : 'Upload images'}
+        </button>
+        {!configured && (
+          <span className="text-xs text-amber-600">Cloudinary not configured — use URLs below</span>
+        )}
+      </div>
+      {error && <p className="mb-2 text-xs text-red-600">{error}</p>}
       <div className="flex flex-wrap gap-3">
         {values.map((src, i) => (
           <div key={`${src}-${i}`} className="relative h-24 w-24 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
@@ -488,8 +540,8 @@ export function MultiImageUpload({
         </div>
       </div>
       <p className="mt-1.5 text-xs text-slate-400">
-        {cloudinaryConfigured()
-          ? 'Tip: upload files from the single ImageUpload above, then paste the URL here — or paste any image URL.'
+        {configured
+          ? 'Upload images from your phone/computer, or paste any image URL below.'
           : 'Cloudinary not configured — paste image URLs.'}
       </p>
     </div>
