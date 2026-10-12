@@ -245,8 +245,8 @@ export default function CheckoutPage() {
           Digital products — no shipping needed. You will receive download / license details after payment.
         </p>
       )}
-      <form onSubmit={placeOrder} className="grid lg:grid-cols-[1fr_340px] gap-4 mt-4 items-start">
-        <div className="space-y-4">
+      <form onSubmit={placeOrder} className="grid lg:grid-cols-[1fr_340px] gap-4 mt-4 items-start min-w-0">
+        <div className="space-y-4 min-w-0">
           {/* contact */}
           <section className="bg-white rounded-md border border-[#e8e8e8] p-4 sm:p-5">
             <h2 className="font-bold text-[15px] mb-3">Contact Information</h2>
@@ -399,7 +399,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* summary */}
-        <aside className="bg-white rounded-md border border-[#e8e8e8] p-4 lg:sticky lg:top-16">
+        <aside className="bg-white rounded-md border border-[#e8e8e8] p-4 lg:sticky lg:top-16 min-w-0">
           <h2 className="font-bold text-[15px] mb-3">Order Summary</h2>
           <ul className="space-y-2.5 max-h-64 overflow-y-auto thin-scroll mb-3">
             {lines.map((l) => (
