@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cacheLife } from 'next/cache';
-import { getProduct } from '@/lib/db';
+import { getProduct, getReviews } from '@/lib/db';
 import { effectivePrice, taka } from '@/lib/format';
 import Breadcrumb from '@/components/store/Breadcrumb';
 import BuyBox from '@/components/store/BuyBox';
@@ -188,7 +188,7 @@ export default async function ProductPage({ params }: Props) {
       </div>
 
       <div className="mt-6">
-        <Reviews productName={product.name} reviewsCount={product.reviews_count} />
+        <Reviews reviews={await getReviews(product.id)} reviewsCount={product.reviews_count} />
       </div>
 
       <div className="mt-6">
