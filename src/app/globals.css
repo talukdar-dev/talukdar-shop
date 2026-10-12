@@ -90,3 +90,10 @@ input.qty-input {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Category page rich content */
+.category-content h2 { font-size: 18px; font-weight: 700; color: #222; margin: 20px 0 10px; }
+.category-content h3 { font-size: 15px; font-weight: 700; color: #333; margin: 16px 0 8px; }
+.category-content p { margin: 0 0 12px; }
+.category-content ul { list-style: disc; padding-left: 20px; margin: 0 0 12px; }
+.category-content li { margin-bottom: 6px; }

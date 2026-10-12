@@ -168,7 +168,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           </h2>
           <div className="text-[13.5px] text-ink leading-relaxed space-y-2.5">
             {category.description ? (
-              <p>{category.description}</p>
+              <div
+                className="category-content"
+                dangerouslySetInnerHTML={{ __html: category.description }}
+              />
             ) : null}
             <p>
               Looking for the best {category.name.toLowerCase()} price in Bangladesh? Talukdar
