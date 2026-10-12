@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { SiteSettings } from '@/lib/types';
 import {
-  DbNotice, Field, ImageUpload, PageHeader, PrimaryButton, Spinner, TextArea, TextInput,
+  DbNotice, Field, ImageUpload, PageHeader, PrimaryButton, Spinner, TextArea, TextInput, Toggle,
 } from '@/components/admin/UI';
 
 export default function SettingsPage() {
@@ -120,6 +120,42 @@ export default function SettingsPage() {
                   onChange={(e) => set('free_shipping_over', e.target.value === '' ? undefined : Number(e.target.value))}
                 />
               </Field>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
+          <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-slate-500">Payment Methods</h2>
+          <p className="mb-4 text-xs text-slate-400">Toggle which payment options customers see at checkout. Manual methods show your number for customers to send money to.</p>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+              <Toggle label="Cash on Delivery" checked={form.payment_cod_enabled !== false} onChange={(v) => set('payment_cod_enabled', v)} />
+              <p className="mt-1 text-xs text-slate-400">Only shown for physical products.</p>
+            </div>
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+              <Toggle label="bKash (Manual)" checked={!!form.payment_bkash_enabled} onChange={(v) => set('payment_bkash_enabled', v)} />
+              <Field label="bKash number">
+                <TextInput value={form.payment_bkash_number ?? ''} onChange={(e) => set('payment_bkash_number', e.target.value)} placeholder="01XXXXXXXXX" />
+              </Field>
+            </div>
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+              <Toggle label="Nagad (Manual)" checked={!!form.payment_nagad_enabled} onChange={(v) => set('payment_nagad_enabled', v)} />
+              <Field label="Nagad number">
+                <TextInput value={form.payment_nagad_number ?? ''} onChange={(e) => set('payment_nagad_number', e.target.value)} placeholder="01XXXXXXXXX" />
+              </Field>
+            </div>
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+              <Toggle label="Rocket (Manual)" checked={!!form.payment_rocket_enabled} onChange={(v) => set('payment_rocket_enabled', v)} />
+              <Field label="Rocket number">
+                <TextInput value={form.payment_rocket_number ?? ''} onChange={(e) => set('payment_rocket_number', e.target.value)} placeholder="01XXXXXXXXX" />
+              </Field>
+            </div>
+            <div className="rounded-lg border border-dashed border-slate-200 bg-white p-4 md:col-span-2">
+              <Toggle label="Online / Merchant payment (coming soon)" checked={!!form.payment_merchant_enabled} onChange={(v) => set('payment_merchant_enabled', v)} />
+              <Field label="Provider name (e.g. SSLCommerz, Stripe)">
+                <TextInput value={form.payment_merchant_provider ?? ''} onChange={(e) => set('payment_merchant_provider', e.target.value)} placeholder="SSLCommerz" />
+              </Field>
+              <p className="mt-1 text-xs text-slate-400">Enable this when your merchant account is ready. Card/online payments will appear at checkout.</p>
             </div>
           </div>
         </div>

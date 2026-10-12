@@ -41,6 +41,11 @@ export default function BuyBox({ product }: { product: Product }) {
     router.push('/checkout');
   };
 
+  const addToCart = () => {
+    add(product, qty);
+    setDrawerOpen(true);
+  };
+
   const share = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -118,9 +123,16 @@ export default function BuyBox({ product }: { product: Product }) {
       <div className="flex flex-wrap items-center gap-3 mt-4">
         <QtyStepper value={qty} onChange={setQty} max={Math.min(99, Math.max(1, product.stock_qty))} />
         <button
+          onClick={addToCart}
+          disabled={!inStock}
+          className="h-11 px-6 bg-brand hover:bg-brand-dark disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[15px] font-bold rounded-md transition-colors uppercase tracking-wide"
+        >
+          Add to Cart
+        </button>
+        <button
           onClick={buyNow}
           disabled={!inStock}
-          className="h-11 px-10 bg-brand hover:bg-brand-dark disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[15px] font-bold rounded-md transition-colors uppercase tracking-wide"
+          className="h-11 px-6 bg-[#3749bb] hover:bg-[#2a3a9e] disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[15px] font-bold rounded-md transition-colors uppercase tracking-wide"
         >
           Buy Now
         </button>

@@ -27,6 +27,7 @@ const emptyProduct = (): Partial<Product> => ({
   specs: {},
   images: [],
   stock_qty: 0,
+  product_type: 'physical',
   is_featured: false,
   is_new: false,
   is_flash_deal: false,
@@ -287,6 +288,16 @@ export default function ProductForm({
               <Toggle label="Featured" checked={!!form.is_featured} onChange={(v) => set('is_featured', v)} />
               <Toggle label="New arrival" checked={!!form.is_new} onChange={(v) => set('is_new', v)} />
               <Toggle label="EMI available" checked={!!form.emi_available} onChange={(v) => set('emi_available', v)} />
+              <Field label="Product type">
+                <select
+                  value={form.product_type ?? 'physical'}
+                  onChange={(e) => set('product_type', e.target.value as 'physical' | 'digital')}
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+                >
+                  <option value="physical">Physical — needs shipping</option>
+                  <option value="digital">Digital — no shipping needed</option>
+                </select>
+              </Field>
             </div>
           </div>
         </div>
