@@ -162,6 +162,14 @@ export default function BuyBox({ product }: { product: Product }) {
             {inStock ? `${product.stock_qty} pcs available` : 'Out of stock'}
           </span>
         </div>
+        {qty > 1 && (
+          <div className="flex items-center justify-between bg-brand/5 border border-brand/20 rounded-lg px-4 py-2.5 mb-3">
+            <span className="text-[13px] font-semibold text-gray-700">
+              Total ({qty} × {taka(price)})
+            </span>
+            <span className="text-[20px] font-black text-brand">{taka(price * qty)}</span>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-2.5">
           <button
             onClick={addToCart}

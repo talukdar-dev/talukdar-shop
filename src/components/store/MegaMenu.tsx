@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import type { Brand, Category } from '@/lib/types';
 import { IconChevronDown, IconChevronRight, IconClose, IconMenu } from './icons';
 
@@ -11,8 +12,22 @@ interface Props {
 }
 
 export default function MegaMenu({ categories, catBrands }: Props) {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openCat, setOpenCat] = useState<string | null>(null);
+  const [navigating, setNavigating] = useState(false);
+
+  // Clear loading overlay once navigation completes
+  useEffect(() => {
+    setNavigating(false);
+  }, [pathname]);
+
+  const handleNavClick = () => {
+    setNavigating(true);
+    setMobileOpen(false);
+    // Safety: clear if navigation is fast
+    setTimeout(() => setNavigating(false), 3000);
+  };
 
   return (
     <>
@@ -101,7 +116,7 @@ export default function MegaMenu({ categories, catBrands }: Props) {
                       <Link
                         key={b.id}
                         href={`/search?brand=${b.slug}`}
-                        onClick={() => setMobileOpen(false)}
+                        onClick={handleNavClick}
                         className="block px-6 py-2 text-[13px] text-gray-600 hover:text-brand"
                       >
                         {b.name}
@@ -109,7 +124,7 @@ export default function MegaMenu({ categories, catBrands }: Props) {
                     ))}
                     <Link
                       href={`/category/${c.slug}`}
-                      onClick={() => setMobileOpen(false)}
+                      onClick={handleNavClick}
                       className="block px-6 py-2 text-[13px] font-bold text-link"
                     >
                       Show All {c.name}
@@ -121,6 +136,15 @@ export default function MegaMenu({ categories, catBrands }: Props) {
           })}
         </ul>
       </aside>
+      {/* instant feedback overlay when navigating from drawer */}
+      {navigating && (
+        <div className="fixed inset-0 z-[90] bg-white/80 backdrop-blur-[2px] flex items-center justify-center lg:hidden">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-4 border-brand/20 border-t-brand rounded-full animate-spin" />
+            <span className="text-[13px] font-semibold text-gray-600">Loading...</span>
+          </div>
+        </div>
+      )}
     </>
   );
 }
