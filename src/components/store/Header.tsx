@@ -144,6 +144,14 @@ export default function Header({ settings }: { settings: SiteSettings }) {
           </span>
         </div>
 
+        <a
+          href={`tel:${settings.hotline}`}
+          className="md:hidden shrink-0 w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center"
+          aria-label="Call us"
+        >
+          <IconPhone className="w-5 h-5" />
+        </a>
+
         <button
           onClick={() => setDrawerOpen(true)}
           className="relative shrink-0 flex items-center gap-2 h-10 px-3 sm:px-4 bg-navy hover:bg-navy-dark text-white rounded-md transition-colors"
