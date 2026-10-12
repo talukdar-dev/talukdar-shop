@@ -87,13 +87,13 @@ export async function upsertProduct(
     .upsert(row, { onConflict: 'id' })
     .select()
     .single();
-  // Fallback: if product_type column doesn't exist yet (migration pending),
-  // retry without it so product save still works.
-  if (error && error.message.includes('product_type')) {
-    const { product_type, ...rowWithoutType } = row as Record<string, unknown>;
+  // Fallback: if product_type / variants columns don't exist yet (migration pending),
+  // retry without them so product save still works.
+  if (error && (error.message.includes('product_type') || error.message.includes('variants'))) {
+    const { product_type, variants, ...rowWithoutNewCols } = row as Record<string, unknown>;
     const retry = await sb
       .from('products')
-      .upsert(rowWithoutType, { onConflict: 'id' })
+      .upsert(rowWithoutNewCols, { onConflict: 'id' })
       .select()
       .single();
     data = retry.data;

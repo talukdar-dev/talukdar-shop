@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { useCart } from '@/lib/cart';
+import { useCart, lineKey, lineUnitPrice, variantLabel } from '@/lib/cart';
 import { effectivePrice, taka } from '@/lib/format';
 import SmartImage from './SmartImage';
 import QtyStepper from './QtyStepper';
@@ -46,8 +46,12 @@ export default function CartDrawer() {
             <p className="px-4 py-8 text-center text-ink text-sm">Your cart is empty.</p>
           ) : (
             <ul className="divide-y divide-gray-100">
-              {lines.map(({ product, qty }) => (
-                <li key={product.id} className="flex gap-3 px-4 py-3">
+              {lines.map((line) => {
+                const { product, qty } = line;
+                const key = lineKey(line);
+                const vLabel = variantLabel(line);
+                return (
+                <li key={key} className="flex gap-3 px-4 py-3">
                   <Link href={`/product/${product.slug}`} className="relative w-16 h-16 shrink-0" onClick={() => setDrawerOpen(false)}>
                     <SmartImage src={product.images[0]} alt={product.name} fill className="object-contain" />
                   </Link>
@@ -59,20 +63,24 @@ export default function CartDrawer() {
                     >
                       {product.name}
                     </Link>
+                    {vLabel && (
+                      <p className="text-[11px] text-ink mt-0.5">{vLabel}</p>
+                    )}
                     <div className="flex items-center justify-between mt-2">
-                      <QtyStepper small value={qty} onChange={(v) => setQty(product.id, v)} />
-                      <span className="text-[13px] font-bold">{taka(effectivePrice(product) * qty)}</span>
+                      <QtyStepper small value={qty} onChange={(v) => setQty(key, v)} />
+                      <span className="text-[13px] font-bold">{taka(lineUnitPrice(line) * qty)}</span>
                     </div>
                   </div>
                   <button
-                    onClick={() => remove(product.id)}
+                    onClick={() => remove(key)}
                     aria-label="Remove item"
                     className="self-start p-1 text-gray-400 hover:text-red-600"
                   >
                     <IconTrash className="w-4 h-4" />
                   </button>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </div>

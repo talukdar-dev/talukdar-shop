@@ -46,6 +46,7 @@ create table if not exists products (
   images text[] not null default '{}',
   stock_qty int not null default 0,
   product_type text not null default 'physical' check (product_type in ('physical', 'digital')),
+  variants jsonb not null default '[]'::jsonb,
   is_featured boolean not null default false,
   is_new boolean not null default false,
   is_flash_deal boolean not null default false,

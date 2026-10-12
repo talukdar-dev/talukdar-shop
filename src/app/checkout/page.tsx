@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { useCart } from '@/lib/cart';
-import { effectivePrice, taka } from '@/lib/format';
+import { useCart, lineKey, lineUnitPrice, variantLabel } from '@/lib/cart';
+import { taka } from '@/lib/format';
 import { BD_DISTRICTS, DISTRICTS } from '@/lib/bd-locations';
 import SmartImage from '@/components/store/SmartImage';
 import type { SiteSettings } from '@/lib/types';
@@ -187,8 +187,8 @@ export default function CheckoutPage() {
           area: upazila || undefined,
           items: lines.map((l) => ({
             product_id: l.product.id,
-            name: l.product.name,
-            price: effectivePrice(l.product),
+            name: l.product.name + (variantLabel(l) ? ` (${variantLabel(l)})` : ''),
+            price: lineUnitPrice(l),
             qty: l.qty,
             image: l.product.images[0],
           })),
@@ -352,18 +352,19 @@ export default function CheckoutPage() {
           <h2 className="font-bold text-[15px] mb-3">Order Summary</h2>
           <ul className="space-y-2.5 max-h-64 overflow-y-auto thin-scroll mb-3">
             {lines.map((l) => (
-              <li key={l.product.id} className="flex gap-2.5 items-center">
+              <li key={lineKey(l)} className="flex gap-2.5 items-center">
                 <span className="relative w-12 h-12 shrink-0">
                   <SmartImage src={l.product.images[0]} alt={l.product.name} fill className="object-contain" />
                 </span>
                 <span className="flex-1 min-w-0 text-[12.5px] leading-snug">
                   <span className="block truncate font-medium">{l.product.name}</span>
+                  {variantLabel(l) && <span className="block truncate text-ink">{variantLabel(l)}</span>}
                   <span className="text-ink">Qty: {l.qty}</span>
                   {l.product.product_type === 'digital' && (
                     <span className="ml-1 text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">DIGITAL</span>
                   )}
                 </span>
-                <span className="text-[12.5px] font-bold shrink-0">{taka(effectivePrice(l.product) * l.qty)}</span>
+                <span className="text-[12.5px] font-bold shrink-0">{taka(lineUnitPrice(l) * l.qty)}</span>
               </li>
             ))}
           </ul>

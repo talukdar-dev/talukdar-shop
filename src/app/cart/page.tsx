@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useCart } from '@/lib/cart';
-import { effectivePrice, taka } from '@/lib/format';
+import { useCart, lineKey, lineUnitPrice, variantLabel } from '@/lib/cart';
+import { taka } from '@/lib/format';
 import QtyStepper from '@/components/store/QtyStepper';
 import SmartImage from '@/components/store/SmartImage';
 import { IconTrash } from '@/components/store/icons';
@@ -38,8 +38,13 @@ export default function CartPage() {
       </h1>
       <div className="grid lg:grid-cols-[1fr_320px] gap-4 mt-4 items-start">
         <div className="bg-white rounded-md border border-[#e8e8e8] divide-y divide-gray-100">
-          {lines.map(({ product, qty }) => (
-            <div key={product.id} className="flex gap-3 sm:gap-4 p-3 sm:p-4">
+          {lines.map((line) => {
+            const { product, qty } = line;
+            const key = lineKey(line);
+            const vLabel = variantLabel(line);
+            const unit = lineUnitPrice(line);
+            return (
+            <div key={key} className="flex gap-3 sm:gap-4 p-3 sm:p-4">
               <Link
                 href={`/product/${product.slug}`}
                 className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0"
@@ -53,11 +58,12 @@ export default function CartPage() {
                 >
                   {product.name}
                 </Link>
-                <p className="text-[13px] font-bold text-brand mt-1">{taka(effectivePrice(product))}</p>
+                {vLabel && <p className="text-[12px] text-ink mt-0.5">{vLabel}</p>}
+                <p className="text-[13px] font-bold text-brand mt-1">{taka(unit)}</p>
                 <div className="flex items-center justify-between mt-2">
-                  <QtyStepper small value={qty} onChange={(v) => setQty(product.id, v)} />
+                  <QtyStepper small value={qty} onChange={(v) => setQty(key, v)} />
                   <button
-                    onClick={() => remove(product.id)}
+                    onClick={() => remove(key)}
                     className="flex items-center gap-1 text-[12.5px] text-gray-500 hover:text-red-600"
                   >
                     <IconTrash className="w-4 h-4" /> Remove
@@ -65,10 +71,11 @@ export default function CartPage() {
                 </div>
               </div>
               <div className="hidden sm:block text-[14px] font-bold shrink-0">
-                {taka(effectivePrice(product) * qty)}
+                {taka(unit * qty)}
               </div>
             </div>
-          ))}
+            );
+          })}
           <div className="p-3 sm:p-4 flex justify-between">
             <Link href="/" className="text-[13.5px] text-link hover:underline font-semibold">
               ← Continue Shopping

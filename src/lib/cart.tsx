@@ -9,21 +9,56 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { Product } from './types';
+import type { Product, ProductVariant } from './types';
 import { effectivePrice } from './format';
 
 export interface CartLine {
   product: Product;
   qty: number;
+  /** variantId -> optionId */
+  variantSelection?: Record<string, string>;
+}
+
+/** Calculate unit price including variant price deltas */
+export function lineUnitPrice(line: CartLine): number {
+  let price = effectivePrice(line.product);
+  if (line.variantSelection && line.product.variants) {
+    for (const v of line.product.variants) {
+      const optId = line.variantSelection[v.id];
+      const opt = v.options.find((o) => o.id === optId);
+      if (opt) price += opt.price_delta;
+    }
+  }
+  return Math.max(0, price);
+}
+
+/** Human-readable variant label e.g. "Color: Red, Size: Large" */
+export function variantLabel(line: CartLine): string {
+  if (!line.variantSelection || !line.product.variants) return '';
+  const parts: string[] = [];
+  for (const v of line.product.variants) {
+    const optId = line.variantSelection[v.id];
+    const opt = v.options.find((o) => o.id === optId);
+    if (opt) parts.push(`${v.name}: ${opt.label}`);
+  }
+  return parts.join(', ');
+}
+
+/** Unique key for a cart line (product + variant combo) */
+export function lineKey(line: CartLine): string {
+  const vs = line.variantSelection
+    ? Object.entries(line.variantSelection).sort().map(([k, v]) => `${k}=${v}`).join('|')
+    : '';
+  return `${line.product.id}::${vs}`;
 }
 
 interface CartContextValue {
   lines: CartLine[];
   count: number;
   subtotal: number;
-  add: (product: Product, qty?: number) => void;
-  remove: (productId: string) => void;
-  setQty: (productId: string, qty: number) => void;
+  add: (product: Product, qty?: number, variantSelection?: Record<string, string>) => void;
+  remove: (lineKeyStr: string) => void;
+  setQty: (lineKeyStr: string, qty: number) => void;
   clear: () => void;
   wishlist: Product[];
   toggleWishlist: (p: Product) => void;
@@ -78,30 +113,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
     write('ts_compare', compareList);
   }, [compareList]);
 
-  const add = useCallback((product: Product, qty = 1) => {
+  const add = useCallback((product: Product, qty = 1, variantSelection?: Record<string, string>) => {
     setLines((prev) => {
-      const found = prev.find((l) => l.product.id === product.id);
+      const key = lineKey({ product, qty: 0, variantSelection });
+      const found = prev.find((l) => lineKey(l) === key);
       if (found) {
         return prev.map((l) =>
-          l.product.id === product.id
+          lineKey(l) === key
             ? { ...l, qty: Math.min(l.qty + qty, 99) }
             : l,
         );
       }
-      return [...prev, { product, qty: Math.max(1, Math.min(qty, 99)) }];
+      return [...prev, { product, qty: Math.max(1, Math.min(qty, 99)), variantSelection }];
     });
   }, []);
 
-  const remove = useCallback((productId: string) => {
-    setLines((prev) => prev.filter((l) => l.product.id !== productId));
+  const remove = useCallback((key: string) => {
+    setLines((prev) => prev.filter((l) => lineKey(l) !== key));
   }, []);
 
-  const setQty = useCallback((productId: string, qty: number) => {
+  const setQty = useCallback((key: string, qty: number) => {
     setLines((prev) =>
       qty <= 0
-        ? prev.filter((l) => l.product.id !== productId)
+        ? prev.filter((l) => lineKey(l) !== key)
         : prev.map((l) =>
-            l.product.id === productId
+            lineKey(l) === key
               ? { ...l, qty: Math.min(qty, 99) }
               : l,
           ),
@@ -129,7 +165,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((s, l) => s + l.qty, 0);
     const subtotal = lines.reduce(
-      (s, l) => s + effectivePrice(l.product) * l.qty,
+      (s, l) => s + lineUnitPrice(l) * l.qty,
       0,
     );
     return {

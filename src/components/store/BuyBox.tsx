@@ -28,8 +28,20 @@ export default function BuyBox({ product }: { product: Product }) {
   const { add, setDrawerOpen, wishlist, toggleWishlist, toggleCompare, isCompared } = useCart();
   const [qty, setQty] = useState(1);
   const [copied, setCopied] = useState(false);
+  const [variantSel, setVariantSel] = useState<Record<string, string>>(() => {
+    const init: Record<string, string> = {};
+    for (const v of product.variants ?? []) {
+      if (v.options[0]) init[v.id] = v.options[0].id;
+    }
+    return init;
+  });
 
-  const price = effectivePrice(product);
+  const basePrice = effectivePrice(product);
+  const variantDelta = (product.variants ?? []).reduce((sum, v) => {
+    const opt = v.options.find((o) => o.id === variantSel[v.id]);
+    return sum + (opt?.price_delta ?? 0);
+  }, 0);
+  const price = Math.max(0, basePrice + variantDelta);
   const regular = product.old_price && product.old_price > price ? product.old_price : price;
   const emiMonthly = Math.round(price / 12);
   const inStock = product.stock_qty > 0;
@@ -37,12 +49,12 @@ export default function BuyBox({ product }: { product: Product }) {
   const compared = isCompared(product.id);
 
   const buyNow = () => {
-    add(product, qty);
+    add(product, qty, variantSel);
     router.push('/checkout');
   };
 
   const addToCart = () => {
-    add(product, qty);
+    add(product, qty, variantSel);
     setDrawerOpen(true);
   };
 
@@ -121,6 +133,28 @@ export default function BuyBox({ product }: { product: Product }) {
       </div>
 
       <div className="mt-5">
+        {(product.variants ?? []).length > 0 && (
+          <div className="grid sm:grid-cols-2 gap-3 mb-4">
+            {(product.variants ?? []).map((v) => (
+              <div key={v.id}>
+                <label className="block text-[13px] font-semibold text-gray-600 mb-1.5">
+                  {v.name}:
+                </label>
+                <select
+                  value={variantSel[v.id] ?? ''}
+                  onChange={(e) => setVariantSel((s) => ({ ...s, [v.id]: e.target.value }))}
+                  className="w-full h-11 px-3 border border-gray-300 rounded-lg text-[13.5px] outline-none focus:border-brand bg-white"
+                >
+                  {v.options.map((o) => (
+                    <option key={o.id} value={o.id}>
+                      {o.label}{o.price_delta !== 0 ? ` (${o.price_delta > 0 ? '+' : ''}${taka(o.price_delta)})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-3 mb-3">
           <span className="text-[13px] font-semibold text-gray-600">Quantity:</span>
           <QtyStepper value={qty} onChange={setQty} max={Math.min(99, Math.max(1, product.stock_qty))} />

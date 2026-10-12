@@ -14,6 +14,21 @@ interface SpecRow {
   v: string;
 }
 
+interface VariantOptRow {
+  id: string;
+  label: string;
+  price_delta: string;
+}
+
+interface VariantRow {
+  id: string;
+  name: string;
+  options: VariantOptRow[];
+}
+
+const newOptId = () => `o-${Math.random().toString(36).slice(2, 8)}`;
+const newVarId = () => `v-${Math.random().toString(36).slice(2, 8)}`;
+
 const emptyProduct = (): Partial<Product> => ({
   name: '',
   slug: '',
@@ -61,6 +76,17 @@ export default function ProductForm({
   const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [variants, setVariants] = useState<VariantRow[]>(() =>
+    (initial.variants ?? []).map((v) => ({
+      id: v.id,
+      name: v.name,
+      options: v.options.map((o) => ({
+        id: o.id,
+        label: o.label,
+        price_delta: String(o.price_delta ?? 0),
+      })),
+    })),
+  );
 
   const set = <K extends keyof Product>(key: K, value: Product[K] | null) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -90,7 +116,21 @@ export default function ProductForm({
       if (r.k.trim()) specObj[r.k.trim()] = r.v;
     }
 
-    const payload = { ...form, specs: specObj };
+    const variantPayload = variants
+      .filter((v) => v.name.trim() && v.options.some((o) => o.label.trim()))
+      .map((v) => ({
+        id: v.id,
+        name: v.name.trim(),
+        options: v.options
+          .filter((o) => o.label.trim())
+          .map((o) => ({
+            id: o.id,
+            label: o.label.trim(),
+            price_delta: Number(o.price_delta) || 0,
+          })),
+      }));
+
+    const payload = { ...form, specs: specObj, variants: variantPayload };
     setSaving(true);
     try {
       const res = await fetch(
@@ -201,6 +241,80 @@ export default function ProductForm({
                 className="rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
               >
                 + Add specification
+              </button>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-slate-500">Variants</h2>
+            <p className="mb-4 text-xs text-slate-400">e.g. Color, Size, Subscription length — each option can add to the price.</p>
+            <div className="space-y-4">
+              {variants.map((v, vi) => (
+                <div key={v.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex gap-2 mb-3">
+                    <div className="flex-1">
+                      <TextInput
+                        value={v.name}
+                        onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === vi ? { ...x, name: e.target.value } : x)))}
+                        placeholder="Variant name (e.g. Color, Size)"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setVariants((vs) => vs.filter((_, j) => j !== vi))}
+                      className="shrink-0 rounded-lg px-2 text-red-600 hover:bg-red-50"
+                      aria-label="Remove variant"
+                    >
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {v.options.map((o, oi) => (
+                      <div key={o.id} className="flex gap-2">
+                        <div className="flex-1">
+                          <TextInput
+                            value={o.label}
+                            onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === vi ? { ...x, options: x.options.map((y, k) => (k === oi ? { ...y, label: e.target.value } : y)) } : x)))}
+                            placeholder="Option (e.g. Red, Large, 1 Year)"
+                          />
+                        </div>
+                        <div className="w-32 shrink-0">
+                          <TextInput
+                            type="number"
+                            value={o.price_delta}
+                            onChange={(e) => setVariants((vs) => vs.map((x, j) => (j === vi ? { ...x, options: x.options.map((y, k) => (k === oi ? { ...y, price_delta: e.target.value } : y)) } : x)))}
+                            placeholder="+ ৳"
+                            title="Price difference (+/-)"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setVariants((vs) => vs.map((x, j) => (j === vi ? { ...x, options: x.options.filter((_, k) => k !== oi) } : x)))}
+                          className="shrink-0 rounded-lg px-2 text-red-600 hover:bg-red-50"
+                          aria-label="Remove option"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setVariants((vs) => vs.map((x, j) => (j === vi ? { ...x, options: [...x.options, { id: newOptId(), label: '', price_delta: '0' }] } : x)))}
+                      className="text-[13px] font-medium text-blue-600 hover:underline"
+                    >
+                      + Add option
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setVariants((vs) => [...vs, { id: newVarId(), name: '', options: [{ id: newOptId(), label: '', price_delta: '0' }] }])}
+                className="rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+              >
+                + Add variant
               </button>
             </div>
           </div>

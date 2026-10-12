@@ -23,6 +23,20 @@ export interface Brand {
   is_active: boolean;
 }
 
+export interface ProductVariantOption {
+  id: string;
+  label: string;
+  price_delta: number;
+  sku_suffix?: string;
+  stock_qty?: number;
+}
+
+export interface ProductVariant {
+  id: string;
+  name: string;
+  options: ProductVariantOption[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -38,6 +52,7 @@ export interface Product {
   images: string[];
   stock_qty: number;
   product_type?: 'physical' | 'digital';
+  variants?: ProductVariant[];
   is_featured: boolean;
   is_new: boolean;
   is_flash_deal: boolean;
