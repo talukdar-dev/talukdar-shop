@@ -4,7 +4,7 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type {
-  Banner, Brand, Category, Coupon, Order, OrderStatus, Product, SiteSettings,
+  Banner, Brand, Category, Coupon, Order, OrderStatus, Product, Review, SiteSettings,
 } from './types';
 import {
   banners as seedBanners,
@@ -318,3 +318,42 @@ export async function getStats(): Promise<AdminStats> {
 }
 
 export { seedSettings };
+
+/* ---------------- Reviews ---------------- */
+
+export async function getReviewsAdmin(productId?: string): Promise<(Review & { product_name?: string })[]> {
+  const sb = supabaseAdmin();
+  let q = sb
+    .from('reviews')
+    .select('*, product:products(name)')
+    .order('review_date', { ascending: false, nullsFirst: false })
+    .order('created_at', { ascending: false })
+    .limit(500);
+  if (productId) q = q.eq('product_id', productId);
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []).map((r: any) => ({
+    ...r,
+    product_name: r.product?.name,
+  }));
+}
+
+export async function updateReview(
+  id: string,
+  patch: Partial<Pick<Review, 'customer_name' | 'review_text' | 'rating' | 'review_date' | 'is_approved'>>
+): Promise<void> {
+  const sb = supabaseAdmin();
+  const { error } = await sb
+    .from('reviews')
+    .update({ ...patch, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+  revalidateTag('reviews', 'max');
+}
+
+export async function deleteReview(id: string): Promise<void> {
+  const sb = supabaseAdmin();
+  const { error } = await sb.from('reviews').delete().eq('id', id);
+  if (error) throw error;
+  revalidateTag('reviews', 'max');
+}
