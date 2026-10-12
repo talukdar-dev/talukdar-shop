@@ -10,6 +10,22 @@ interface Props {
   catBrands: Record<string, Brand[]>;
 }
 
+// Parent category grouping: slug -> parent info
+const PARENT_GROUPS: { name: string; slugs: string[] }[] = [
+  {
+    name: 'Kitchen Appliances',
+    slugs: ['air-fryer', 'rice-cooker', 'infrared-cooker', 'pressure-cooker', 'multi-cooker', 'cookware', 'blender'],
+  },
+  {
+    name: 'Fans & Cooling',
+    slugs: ['dc-fan', 'ceiling-fan', 'high-speed-fan'],
+  },
+  {
+    name: 'Home Essentials',
+    slugs: ['iron', 'water-heater', 'light', 'ac-dc-light', 'battery'],
+  },
+];
+
 export default function MegaMenu({ categories, catBrands }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openCat, setOpenCat] = useState<string | null>(null);
@@ -17,6 +33,15 @@ export default function MegaMenu({ categories, catBrands }: Props) {
   const handleNavClick = () => {
     setMobileOpen(false);
   };
+
+  // Group categories under parents; ungrouped go to "More"
+  const catBySlug = new Map(categories.map((c) => [c.slug, c]));
+  const grouped = PARENT_GROUPS.map((g) => ({
+    ...g,
+    items: g.slugs.map((s) => catBySlug.get(s)).filter((c): c is Category => !!c),
+  })).filter((g) => g.items.length > 0);
+  const groupedSlugs = new Set(PARENT_GROUPS.flatMap((g) => g.slugs));
+  const ungrouped = categories.filter((c) => !groupedSlugs.has(c.slug));
 
   return (
     <>
@@ -30,7 +55,29 @@ export default function MegaMenu({ categories, catBrands }: Props) {
             <IconMenu className="w-5 h-5" /> All Categories
           </button>
           <ul className="hidden lg:flex items-stretch justify-center w-full">
-            {categories.map((c) => {
+            {grouped.map((g) => (
+              <li key={g.name} className="relative group">
+                <button className="flex items-center gap-1 px-4 xl:px-5 py-1.5 text-[12.5px] font-semibold whitespace-nowrap hover:bg-brand-dark transition-colors cursor-pointer">
+                  {g.name}
+                  <IconChevronDown className="w-3.5 h-3.5 opacity-70" />
+                </button>
+                <div className="absolute left-0 top-full hidden group-hover:block z-50 pt-0">
+                  <div className="bg-white text-gray-800 shadow-xl border border-gray-100 rounded-b-md w-60 py-2">
+                    {g.items.map((c) => (
+                      <Link
+                        key={c.id}
+                        href={`/category/${c.slug}`}
+                        className="flex items-center justify-between px-4 py-1.5 text-[13px] hover:bg-gray-50 hover:text-brand"
+                      >
+                        {c.name}
+                        <IconChevronRight className="w-3.5 h-3.5 text-gray-300" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            ))}
+            {ungrouped.map((c) => {
               const brands = (catBrands[c.id] ?? []).slice(0, 8);
               return (
                 <li key={c.id} className="relative group">
@@ -87,7 +134,35 @@ export default function MegaMenu({ categories, catBrands }: Props) {
           </button>
         </div>
         <ul className="flex-1 overflow-y-auto thin-scroll divide-y divide-gray-100">
-          {categories.map((c) => {
+          {grouped.map((g) => {
+            const open = openCat === g.name;
+            return (
+              <li key={g.name}>
+                <button
+                  className="w-full flex items-center justify-between px-4 py-3 text-[14px] font-semibold text-gray-800"
+                  onClick={() => setOpenCat(open ? null : g.name)}
+                >
+                  {g.name}
+                  <IconChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+                </button>
+                {open && (
+                  <div className="bg-gray-50 pb-2">
+                    {g.items.map((c) => (
+                      <Link
+                        key={c.id}
+                        href={`/category/${c.slug}`}
+                        onClick={handleNavClick}
+                        className="block px-6 py-2 text-[13px] text-gray-600 hover:text-brand"
+                      >
+                        {c.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+          {ungrouped.map((c) => {
             const brands = catBrands[c.id] ?? [];
             const open = openCat === c.id;
             return (
