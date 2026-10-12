@@ -48,7 +48,8 @@ export async function PATCH(req: Request, { params }: Ctx) {
     await updateOrderStatusAdmin(id, status);
     // notify customer on confirm / cancel (fire-and-forget)
     if (status === 'confirmed' || status === 'cancelled') {
-      notifyStatusChange(id, status).catch(() => {});
+      // Await email before responding — fire-and-forget is unreliable on serverless.
+      await notifyStatusChange(id, status);
     }
     return NextResponse.json({ ok: true });
   } catch (e) {

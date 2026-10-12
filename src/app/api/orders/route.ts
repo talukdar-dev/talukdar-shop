@@ -73,7 +73,9 @@ export async function POST(req: NextRequest) {
       notes: typeof body.notes === 'string' ? body.notes : undefined,
     });
     // fire-and-forget: don't delay the checkout response
-    notifyCustomer(order).catch(() => {});
+    // Await email before responding — fire-and-forget is unreliable on serverless
+    // (function freezes after response). Email failure never blocks the order.
+    await notifyCustomer(order);
     return NextResponse.json({ order_no: order.order_no }, { status: 201 });
   } catch (err) {
     return NextResponse.json(
