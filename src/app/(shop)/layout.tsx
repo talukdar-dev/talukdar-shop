@@ -13,17 +13,17 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Talukdar Shop — Best Tech Shop in Bangladesh',
+    default: 'Talukdar Shop — Best Home Appliance Shop in Bangladesh',
     template: '%s | Talukdar Shop',
   },
   description:
-    'Talukdar Shop is the best online tech shop in Bangladesh. Buy laptops, desktops, monitors, components, gadgets & accessories at the best price with official warranty, EMI & fast delivery.',
+    'Talukdar Shop is the best online home appliance shop in Bangladesh. Buy air fryers, rice cookers, fans, cookware & home essentials at the best price with fast delivery.',
   openGraph: {
     type: 'website',
     siteName: 'Talukdar Shop',
-    title: 'Talukdar Shop — Best Tech Shop in Bangladesh',
+    title: 'Talukdar Shop — Best Home Appliance Shop in Bangladesh',
     description:
-      'Buy laptops, desktops, monitors, components, gadgets & accessories at the best price in Bangladesh.',
+      'Buy air fryers, rice cookers, fans, cookware & home essentials at the best price in Bangladesh.',
   },
 };
 
