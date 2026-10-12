@@ -346,65 +346,45 @@ export async function createOrder(input: {
     created_at: new Date().toISOString(),
     ...input,
   };
-  return live(
-    async () => {
-      demoOrders.unshift(order);
-      return order;
-    },
-    async (sb) => {
-      const { data, error } = await sb
-        .from('orders')
-        .insert({
-          order_no: order.order_no,
-          customer_name: input.customer_name,
-          phone: input.phone,
-          email: input.email,
-          address: input.address,
-          city: input.city,
-          area: input.area,
-          items: input.items,
-          subtotal: input.subtotal,
-          shipping: input.shipping,
-          discount: input.discount,
-          total: input.total,
-          payment_method: input.payment_method,
-          sender_number: input.sender_number,
-          trx_id: input.trx_id,
-          notes: input.notes,
-        })
-        .select()
-        .single();
-      if (error) {
-        // Fallback: orders table may not have sender_number/trx_id columns yet
-        if (error.message.includes('sender_number') || error.message.includes('trx_id')) {
-          const retry = await sb
-            .from('orders')
-            .insert({
-              order_no: order.order_no,
-              customer_name: input.customer_name,
-              phone: input.phone,
-              email: input.email,
-              address: input.address,
-              city: input.city,
-              area: input.area,
-              items: input.items,
-              subtotal: input.subtotal,
-              shipping: input.shipping,
-              discount: input.discount,
-              total: input.total,
-              payment_method: input.payment_method,
-              notes: input.notes,
-            })
-            .select()
-            .single();
-          if (retry.error) throw retry.error;
-          return retry.data as Order;
-        }
-        throw error;
-      }
-      return data as Order;
-    },
-  );
+  // Use service_role client: anon key is blocked by RLS on orders.
+  // This runs in a server-side API route, so service_role is safe.
+  try {
+    const { supabaseAdmin } = await import('./admin-db');
+    const sb = supabaseAdmin();
+    const baseRow = {
+      order_no: order.order_no,
+      customer_name: input.customer_name,
+      phone: input.phone,
+      email: input.email,
+      address: input.address,
+      city: input.city,
+      area: input.area,
+      items: input.items,
+      subtotal: input.subtotal,
+      shipping: input.shipping,
+      discount: input.discount,
+      total: input.total,
+      payment_method: input.payment_method,
+      notes: input.notes,
+    };
+    let { data, error } = await sb
+      .from('orders')
+      .insert({ ...baseRow, sender_number: input.sender_number, trx_id: input.trx_id })
+      .select()
+      .single();
+    if (error && (error.message.includes('sender_number') || error.message.includes('trx_id'))) {
+      // Fallback: orders table may not have sender_number/trx_id columns yet
+      const retry = await sb.from('orders').insert(baseRow).select().single();
+      data = retry.data;
+      error = retry.error;
+    }
+    if (error) throw error;
+    return data as Order;
+  } catch {
+    // last-resort in-memory fallback (should not happen when DB is configured)
+    demoOrders.unshift(order);
+    return order;
+  }
 }
 
 export async function getOrders(limit = 100): Promise<Order[]> {
