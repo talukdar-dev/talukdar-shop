@@ -36,7 +36,7 @@ export default function MegaMenu({ categories, catBrands }: Props) {
                 <li key={c.id} className="relative group">
                   <Link
                     href={`/category/${c.slug}`}
-                    className="flex items-center gap-1 px-3 xl:px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap hover:bg-brand-dark transition-colors"
+                    className="flex items-center gap-1 px-2.5 xl:px-3 py-1.5 text-[12.5px] font-semibold whitespace-nowrap hover:bg-brand-dark transition-colors"
                   >
                     {c.name}
                     {brands.length > 0 && <IconChevronDown className="w-3.5 h-3.5 opacity-70" />}
