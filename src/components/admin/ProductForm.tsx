@@ -169,22 +169,24 @@ export default function ProductForm({
             <div className="space-y-2">
               {specs.map((row, i) => (
                 <div key={i} className="flex gap-2">
-                  <TextInput
-                    value={row.k}
-                    onChange={(e) => setSpecs((s) => s.map((r, j) => (j === i ? { ...r, k: e.target.value } : r)))}
-                    placeholder="Key (e.g. Processor)"
-                    className="w-1/3"
-                  />
-                  <TextInput
-                    value={row.v}
-                    onChange={(e) => setSpecs((s) => s.map((r, j) => (j === i ? { ...r, v: e.target.value } : r)))}
-                    placeholder="Value (e.g. Intel Core i7)"
-                    className="flex-1"
-                  />
+                  <div className="w-2/5 shrink-0">
+                    <TextInput
+                      value={row.k}
+                      onChange={(e) => setSpecs((s) => s.map((r, j) => (j === i ? { ...r, k: e.target.value } : r)))}
+                      placeholder="Key (e.g. Processor)"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <TextInput
+                      value={row.v}
+                      onChange={(e) => setSpecs((s) => s.map((r, j) => (j === i ? { ...r, v: e.target.value } : r)))}
+                      placeholder="Value (e.g. Intel Core i7, 16GB RAM)"
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={() => setSpecs((s) => s.filter((_, j) => j !== i))}
-                    className="rounded-lg px-2 text-red-600 hover:bg-red-50"
+                    className="shrink-0 rounded-lg px-2 text-red-600 hover:bg-red-50"
                     aria-label="Remove spec"
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

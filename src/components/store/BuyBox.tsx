@@ -120,59 +120,75 @@ export default function BuyBox({ product }: { product: Product }) {
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mt-4">
-        <QtyStepper value={qty} onChange={setQty} max={Math.min(99, Math.max(1, product.stock_qty))} />
-        <button
-          onClick={addToCart}
-          disabled={!inStock}
-          className="h-11 px-6 bg-brand hover:bg-brand-dark disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[15px] font-bold rounded-md transition-colors uppercase tracking-wide"
-        >
-          Add to Cart
-        </button>
-        <button
-          onClick={buyNow}
-          disabled={!inStock}
-          className="h-11 px-6 bg-[#3749bb] hover:bg-[#2a3a9e] disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[15px] font-bold rounded-md transition-colors uppercase tracking-wide"
-        >
-          Buy Now
-        </button>
-        <button
-          onClick={() => toggleWishlist(product)}
-          aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}
-          title="Add to wishlist"
-          className={`w-11 h-11 rounded-md border flex items-center justify-center transition-colors ${
-            wished ? 'border-brand text-brand bg-brand/5' : 'border-gray-300 text-gray-500 hover:border-brand hover:text-brand'
-          }`}
-        >
-          {wished ? <IconHeartSolid className="w-5 h-5" /> : <IconHeart className="w-5 h-5" />}
-        </button>
-        <button
-          onClick={() => toggleCompare(product)}
-          aria-label={compared ? 'Remove from compare' : 'Add to compare'}
-          title="Add to compare"
-          className={`w-11 h-11 rounded-md border flex items-center justify-center transition-colors ${
-            compared ? 'border-brand text-brand bg-brand/5' : 'border-gray-300 text-gray-500 hover:border-brand hover:text-brand'
-          }`}
-        >
-          <IconCompare className="w-5 h-5" />
-        </button>
+      <div className="mt-5">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-[13px] font-semibold text-gray-600">Quantity:</span>
+          <QtyStepper value={qty} onChange={setQty} max={Math.min(99, Math.max(1, product.stock_qty))} />
+          <span className={`text-[12px] font-semibold ${inStock ? 'text-green-600' : 'text-red-600'}`}>
+            {inStock ? `${product.stock_qty} pcs available` : 'Out of stock'}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5">
+          <button
+            onClick={addToCart}
+            disabled={!inStock}
+            className="h-12 bg-brand hover:bg-brand-dark active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[14px] sm:text-[15px] font-bold rounded-lg transition-all uppercase tracking-wide shadow-sm hover:shadow-md"
+          >
+            Add to Cart
+          </button>
+          <button
+            onClick={buyNow}
+            disabled={!inStock}
+            className="h-12 bg-[#3749bb] hover:bg-[#2a3a9e] active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[14px] sm:text-[15px] font-bold rounded-lg transition-all uppercase tracking-wide shadow-sm hover:shadow-md"
+          >
+            Buy Now
+          </button>
+        </div>
+        <div className="flex items-center gap-2.5 mt-3">
+          <button
+            onClick={() => toggleWishlist(product)}
+            aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}
+            title="Add to wishlist"
+            className={`h-10 px-4 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors ${
+              wished ? 'border-brand text-brand bg-brand/5' : 'border-gray-300 text-gray-500 hover:border-brand hover:text-brand'
+            }`}
+          >
+            {wished ? <IconHeartSolid className="w-4 h-4" /> : <IconHeart className="w-4 h-4" />}
+            Wishlist
+          </button>
+          <button
+            onClick={() => toggleCompare(product)}
+            aria-label={compared ? 'Remove from compare' : 'Add to compare'}
+            title="Add to compare"
+            className={`h-10 px-4 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors ${
+              compared ? 'border-brand text-brand bg-brand/5' : 'border-gray-300 text-gray-500 hover:border-brand hover:text-brand'
+            }`}
+          >
+            <IconCompare className="w-4 h-4" />
+            Compare
+          </button>
+          <button
+            onClick={share}
+            className="h-10 px-4 rounded-lg border border-gray-300 flex items-center gap-2 text-[13px] font-medium text-gray-500 hover:border-brand hover:text-brand transition-colors"
+          >
+            <IconShare className="w-4 h-4" />
+            {copied ? <span className="text-green-600 font-semibold">Copied!</span> : 'Share'}
+          </button>
+        </div>
       </div>
-
-      <div className="mt-4 flex items-center gap-2">
-        <span className="text-[13px] text-ink">Share:</span>
-        <button
-          onClick={share}
-          className="flex items-center gap-1.5 text-[13px] text-link hover:underline"
-        >
-          <IconShare className="w-4 h-4" />
-          {copied ? (
-            <span className="flex items-center gap-1 text-green-600 font-semibold">
-              <IconCheck className="w-4 h-4" /> Link copied
-            </span>
-          ) : (
-            'Copy link'
-          )}
-        </button>
+      <div className="mt-5 grid grid-cols-3 gap-2">
+        <div className="rounded-lg bg-slate-50 border border-slate-100 p-2.5 text-center">
+          <p className="text-[11px] font-bold text-gray-700">Fast Delivery</p>
+          <p className="text-[10.5px] text-ink mt-0.5">Inside Dhaka 24h</p>
+        </div>
+        <div className="rounded-lg bg-slate-50 border border-slate-100 p-2.5 text-center">
+          <p className="text-[11px] font-bold text-gray-700">Official Warranty</p>
+          <p className="text-[10.5px] text-ink mt-0.5">100% Genuine</p>
+        </div>
+        <div className="rounded-lg bg-slate-50 border border-slate-100 p-2.5 text-center">
+          <p className="text-[11px] font-bold text-gray-700">EMI Available</p>
+          <p className="text-[10.5px] text-ink mt-0.5">0% up to 12 mo</p>
+        </div>
       </div>
     </div>
   );
