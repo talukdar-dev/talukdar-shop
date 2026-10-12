@@ -30,12 +30,14 @@ export default async function HomePage() {
   const configured = settings.homepage_sections?.length
     ? settings.homepage_sections
     : [
-        { title: 'Best Air Fryer Shop in Bangladesh', category_slug: 'air-fryer' },
-        { title: 'Best Rice Cooker Shop In Bangladesh', category_slug: 'rice-cooker' },
-        { title: 'Top Fan Shop In Bangladesh', category_slug: 'ceiling-fan' },
-        { title: 'Best Light Shop In Bangladesh', category_slug: 'light' },
-        { title: 'Best Iron Shop In Bangladesh', category_slug: 'iron' },
-        { title: 'Best Blender Shop In Bangladesh', category_slug: 'blender' },
+        { title: 'Best Air Fryer in Bangladesh', category_slug: 'air-fryer' },
+        { title: 'Best Rice Cooker in Bangladesh', category_slug: 'rice-cooker' },
+        { title: 'Rechargeable Fan Collection', category_slug: 'dc-fan' },
+        { title: 'Best Infrared Cooker in Bangladesh', category_slug: 'infrared-cooker' },
+        { title: 'Pressure Cooker Collection', category_slug: 'pressure-cooker' },
+        { title: 'Cookware Collection', category_slug: 'cookware' },
+        { title: 'Multi Cooker Collection', category_slug: 'multi-cooker' },
+        { title: 'Best Iron in Bangladesh', category_slug: 'iron' },
       ];
 
   const sectionProducts = await Promise.all(
@@ -107,7 +109,7 @@ export default async function HomePage() {
       {configured.map((s, i) => (
         <SectionBlock
           key={`${s.category_slug}-${i}`}
-          minItems={4}
+          minItems={1}
           title={s.title}
           href={`/category/${s.category_slug}`}
           products={sectionProducts[i].items}
