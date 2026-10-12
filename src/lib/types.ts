@@ -169,3 +169,15 @@ export interface Coupon {
   min_order: number;
   is_active: boolean;
 }
+
+export interface Review {
+  id: string;
+  product_id: string;
+  customer_name: string;
+  gender: 'Male' | 'Female' | null;
+  review_text: string;
+  rating: number;
+  review_date: string | null;
+  is_approved: boolean;
+  created_at: string;
+}
