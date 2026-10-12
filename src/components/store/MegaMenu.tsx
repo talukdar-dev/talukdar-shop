@@ -29,7 +29,7 @@ export default function MegaMenu({ categories, catBrands }: Props) {
           >
             <IconMenu className="w-5 h-5" /> All Categories
           </button>
-          <ul className="hidden lg:flex items-stretch">
+          <ul className="hidden lg:flex items-stretch justify-center w-full">
             {categories.map((c) => {
               const brands = (catBrands[c.id] ?? []).slice(0, 8);
               return (

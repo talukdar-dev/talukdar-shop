@@ -13,9 +13,9 @@ export default async function FlashDealsSection() {
   if (items.length === 0) return null;
   const endsAt = items
     .map((p) => p.flash_ends_at)
-    .filter((x): x is string => !!x)
+    .filter((x): x is string => !!x && !isNaN(new Date(x).getTime()))
     .sort()
-    .pop()!;
+    .pop();
 
   return (
     <section className="bg-white rounded-md border border-[#e8e8e8] p-3 sm:p-4" aria-label="Flash deals">
@@ -28,7 +28,7 @@ export default async function FlashDealsSection() {
             Enjoy exciting discounts on your desired products!
           </p>
         </div>
-        <FlashCountdown endsAt={endsAt} />
+        {endsAt && <FlashCountdown endsAt={endsAt} />}
       </div>
       <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-1 -mx-1 px-1">
         {items.map((p) => (
