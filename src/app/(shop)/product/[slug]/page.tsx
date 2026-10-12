@@ -10,6 +10,7 @@ import ProductGallery from '@/components/store/ProductGallery';
 import QA from '@/components/store/QA';
 import RelatedProducts from '@/components/store/RelatedProducts';
 import Reviews from '@/components/store/Reviews';
+import SeoLinks from '@/components/store/SeoLinks';
 import SpecTable from '@/components/store/SpecTable';
 
 
@@ -194,6 +195,8 @@ export default async function ProductPage({ params }: Props) {
       <div className="mt-6">
         <RelatedProducts product={product} />
       </div>
+
+      {product.category && <SeoLinks categorySlug={product.category.slug} variant="product" />}
 
       <p className="mt-4 text-[12.5px] text-ink">
         See more:{' '}
