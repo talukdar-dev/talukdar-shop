@@ -127,9 +127,6 @@ export default function CategoriesPage() {
             <Field label="Slug">
               <TextInput value={modal.slug ?? ''} onChange={(e) => set('slug', e.target.value)} />
             </Field>
-            <Field label="Icon (text/emoji code)">
-              <TextInput value={modal.icon ?? ''} onChange={(e) => set('icon', e.target.value)} placeholder="laptop" />
-            </Field>
             <Field label="Sort order">
               <TextInput type="number" value={modal.sort_order ?? 0} onChange={(e) => set('sort_order', Number(e.target.value))} />
             </Field>
@@ -149,6 +146,9 @@ export default function CategoriesPage() {
             </div>
             <div className="sm:col-span-2">
               <ImageUpload label="Category image" value={modal.image ?? ''} onChange={(u) => set('image', u)} />
+            </div>
+            <div className="sm:col-span-2">
+              <ImageUpload label="Category icon (shown in Featured Category)" value={modal.icon ?? ''} onChange={(u) => set('icon', u)} />
             </div>
             <div className="sm:col-span-2">
               <Field label="Description">

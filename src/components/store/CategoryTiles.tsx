@@ -44,8 +44,13 @@ export default function CategoryTiles({ categories }: { categories: Category[] }
               href={`/category/${c.slug}`}
               className="group flex flex-col items-center gap-1.5 rounded-md border border-gray-100 hover:border-brand/60 hover:shadow-sm py-3 px-1 transition-all bg-[#fafbfc] hover:bg-white"
             >
-              <span className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center group-hover:bg-brand group-hover:text-white transition-colors">
-                <Icon className="w-5 h-5" />
+              <span className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center group-hover:bg-brand group-hover:text-white transition-colors overflow-hidden">
+                {c.icon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={c.icon} alt="" className="w-6 h-6 object-contain" />
+                ) : (
+                  <Icon className="w-5 h-5" />
+                )}
               </span>
               <span className="text-[12px] font-semibold text-gray-700 text-center leading-tight">
                 {c.name}
