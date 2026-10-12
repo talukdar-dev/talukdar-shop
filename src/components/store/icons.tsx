@@ -1,1 +1,407 @@
-Ly8gSW5saW5lIFNWRyBpY29uIHNldCAobm8gZW1vamksIG5vIGljb24gZm9udHMpLgppbXBvcnQgdHlwZSB7IFNWR1Byb3BzIH0gZnJvbSAncmVhY3QnOwoKdHlwZSBQID0gU1ZHUHJvcHM8U1ZHU1ZHRWxlbWVudD4gJiB7IGNsYXNzTmFtZT86IHN0cmluZyB9OwoKY29uc3QgYmFzZSA9IChwcm9wczogUCkgPT4gKHsKICB3aWR0aDogMjQsCiAgaGVpZ2h0OiAyNCwKICB2aWV3Qm94OiAnMCAwIDI0IDI0JywKICBmaWxsOiAnbm9uZScsCiAgc3Ryb2tlOiAnY3VycmVudENvbG9yJywKICBzdHJva2VXaWR0aDogMiwKICBzdHJva2VMaW5lY2FwOiAncm91bmQnIGFzIGNvbnN0LAogIHN0cm9rZUxpbmVqb2luOiAncm91bmQnIGFzIGNvbnN0LAogIC4uLnByb3BzLAp9KTsKCmV4cG9ydCBjb25zdCBJY29uU2VhcmNoID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxjaXJjbGUgY3g9IjExIiBjeT0iMTEiIHI9IjciIC8+CiAgICA8bGluZSB4MT0iMjEiIHkxPSIyMSIgeDI9IjE2LjUiIHkyPSIxNi41IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25DYXJ0ID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxwYXRoIGQ9Ik01IDhoMTRsLTEuMiAxMi4yYTEgMSAwIDAgMS0xIC44SDcuMmExIDEgMCAwIDEtMS0uOEw1IDh6IiAvPgogICAgPHBhdGggZD0iTTguNSAxMFY2YTMuNSAzLjUgMCAwIDEgNyAwdjQiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkdpZnQgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHJlY3QgeD0iMyIgeT0iOCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjQiIC8+CiAgICA8cGF0aCBkPSJNNSAxMnY5aDE0di05TTEyIDh2MTNNMTIgOHMtMS41LTQtNC41LTRTNSA4IDEyIDh6bTAgMHMxLjUtNCA0LjUtNFMxOSA4IDEyIDh6IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25GbGFzaCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cG9seWdvbiBwb2ludHM9IjEzIDIgMyAxNCAxMiAxNCAxMSAyMiAyMSAxMCAxMiAxMCAxMyAyIiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25DaGlwID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxyZWN0IHg9IjYiIHk9IjYiIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgcng9IjIiIC8+CiAgICA8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIC8+CiAgICA8cGF0aCBkPSJNOSAydjNNMTUgMnYzTTkgMTl2M00xNSAxOXYzTTIgOWgzTTIgMTVoM00xOSA5aDNNMTkgMTVoMyIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uQ29tcGFyZSA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cGF0aCBkPSJNOCAzSDRhMSAxIDAgMCAwLTEgMXYxNGExIDEgMCAwIDAgMSAxaDRNMTYgM2g0YTEgMSAwIDAgMSAxIDF2MTRhMSAxIDAgMCAxLTEgMWgtNCIgLz4KICAgIDxwYXRoIGQ9Ik0xMiAydjIwIiBzdHJva2VEYXNoYXJyYXk9IjIgMiIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uVXNlciA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9IjQiIC8+CiAgICA8cGF0aCBkPSJNNCAyMWMwLTQgMy42LTYuNSA4LTYuNXM4IDIuNSA4IDYuNSIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uUGhvbmUgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTIyIDE2Ljl2M2EyIDIgMCAwIDEtMi4yIDIgMTkuOCAxOS44IDAgMCAxLTguNi0zLjEgMTkuNSAxOS41IDAgMCAxLTYtNkExOS44IDE5LjggMCAwIDEgMi4xIDQuMiAyIDIgMCAwIDEgNC4xIDJoM2EyIDIgMCAwIDEgMiAxLjdjLjEgMSAuNCAyIC43IDIuOWEyIDIgMCAwIDEtLjUgMi4xTDggMTBhMTYgMTYgMCAwIDAgNiA2bDEuMy0xLjNhMiAyIDAgMCAxIDIuMS0uNWMuOS4zIDEuOS42IDIuOS43YTIgMiAwIDAgMSAxLjcgMnoiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblBpbiA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cGF0aCBkPSJNMjAgMTBjMCA2LTggMTItOCAxMnMtOC02LTgtMTJhOCA4IDAgMCAxIDE2IDB6IiAvPgogICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMCIgcj0iMyIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uTWVudSA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8bGluZSB4MT0iMyIgeTE9IjYiIHgyPSIyMSIgeTI9IjYiIC8+CiAgICA8bGluZSB4MT0iMyIgeTE9IjEyIiB4Mj0iMjEiIHkyPSIxMiIgLz4KICAgIDxsaW5lIHgxPSIzIiB5MT0iMTgiIHgyPSIyMSIgeTI9IjE4IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25DbG9zZSA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8bGluZSB4MT0iMTgiIHkxPSI2IiB4Mj0iNiIgeTI9IjE4IiAvPgogICAgPGxpbmUgeDE9IjYiIHkxPSI2IiB4Mj0iMTgiIHkyPSIxOCIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uQ2hldnJvbkRvd24gPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBvbHlsaW5lIHBvaW50cz0iNiA5IDEyIDE1IDE4IDkiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkNoZXZyb25SaWdodCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cG9seWxpbmUgcG9pbnRzPSI5IDE4IDE1IDEyIDkgNiIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uQ2hldnJvbkxlZnQgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBvbHlsaW5lIHBvaW50cz0iMTUgMTggOSAxMiAxNSA2IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25IZWFydCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cGF0aCBkPSJNMTkuNSAxMi42IDEyIDIwbC03LjUtNy40QTUgNSAwIDEgMSAxMiA2LjFhNSA1IDAgMSAxIDcuNSA2LjV6IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25IZWFydFNvbGlkID0gKHA6IFApID0+ICgKICA8c3ZnIHdpZHRoPXsyNH0gaGVpZ2h0PXsyNH0gdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiIHsuLi5wfT4KICAgIDxwYXRoIGQ9Ik0xOS41IDEyLjYgMTIgMjBsLTcuNS03LjRBNSA1IDAgMSAxIDEyIDYuMWE1IDUgMCAxIDEgNy41IDYuNXoiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblNoYXJlID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxjaXJjbGUgY3g9IjE4IiBjeT0iNSIgcj0iMyIgLz4KICAgIDxjaXJjbGUgY3g9IjYiIGN5PSIxMiIgcj0iMyIgLz4KICAgIDxjaXJjbGUgY3g9IjE4IiBjeT0iMTkiIHI9IjMiIC8+CiAgICA8bGluZSB4MT0iOC42IiB5MT0iMTAuNSIgeDI9IjE1LjQiIHkyPSI2LjUiIC8+CiAgICA8bGluZSB4MT0iOC42IiB5MT0iMTMuNSIgeDI9IjE1LjQiIHkyPSIxNy41IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25TdGFyID0gKHA6IFApID0+ICgKICA8c3ZnIHdpZHRoPXsyNH0gaGVpZ2h0PXsyNH0gdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiIHsuLi5wfT4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTIgMiAxNS4xIDguMyAyMiA5LjMgMTcgMTQuMSAxOC4yIDIxIDEyIDE3LjggNS44IDIxIDcgMTQuMSAyIDkuMyA4LjkgOC4zIDEyIDIiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblN0YXJPdXRsaW5lID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTIgMiAxNS4xIDguMyAyMiA5LjMgMTcgMTQuMSAxOC4yIDIxIDEyIDE3LjggNS44IDIxIDcgMTQuMSAyIDkuMyA4LjkgOC4zIDEyIDIiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblRydWNrID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxyZWN0IHg9IjEiIHk9IjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxMSIgcng9IjEiIC8+CiAgICA8cGF0aCBkPSJNMTUgOWg0bDQgNHYzaC04IiAvPgogICAgPGNpcmNsZSBjeD0iNiIgY3k9IjE4LjUiIHI9IjEuOCIgLz4KICAgIDxjaXJjbGUgY3g9IjE4IiBjeT0iMTguNSIgcj0iMS44IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25TaGllbGQgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTEyIDIyczgtMy41IDgtMTBWNWwtOC0zLTggM3Y3YzAgNi41IDggMTAgOCAxMHoiIC8+CiAgICA8cG9seWxpbmUgcG9pbnRzPSI5IDExLjUgMTEgMTMuNSAxNSA5LjUiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkhlYWRzZXQgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTQgMTNhOCA4IDAgMCAxIDE2IDAiIC8+CiAgICA8cmVjdCB4PSIyIiB5PSIxMyIgd2lkdGg9IjQiIGhlaWdodD0iNyIgcng9IjEuNSIgLz4KICAgIDxyZWN0IHg9IjE4IiB5PSIxMyIgd2lkdGg9IjQiIGhlaWdodD0iNyIgcng9IjEuNSIgLz4KICAgIDxwYXRoIGQ9Ik0yMCAyMGE0IDQgMCAwIDEtNCAzaC0yIiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25DYXNoID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxyZWN0IHg9IjIiIHk9IjYiIHdpZHRoPSIyMCIgaGVpZ2h0PSIxMiIgcng9IjIiIC8+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIyLjUiIC8+CiAgICA8cGF0aCBkPSJNNiAxMmguMDFNMTggMTJoLjAxIiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25GaWx0ZXIgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBvbHlnb24gcG9pbnRzPSIyMiAzIDIgMyAxMCAxMi41IDEwIDE5IDE0IDIxIDE0IDEyLjUgMjIgMyIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uSG9tZSA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cGF0aCBkPSJNMyAxMC41IDEyIDNsOSA3LjUiIC8+CiAgICA8cGF0aCBkPSJNNSA5LjVWMjFoMTRWOS41IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25NaW51cyA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8bGluZSB4MT0iNSIgeTE9IjEyIiB4Mj0iMTkiIHkyPSIxMiIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uUGx1cyA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8bGluZSB4MT0iMTIiIHkxPSI1IiB4Mj0iMTIiIHkyPSIxOSIgLz4KICAgIDxsaW5lIHgxPSI1IiB5MT0iMTIiIHgyPSIxOSIgeTI9IjEyIiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25UcmFzaCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cG9seWxpbmUgcG9pbnRzPSIzIDYgNSA2IDIxIDYiIC8+CiAgICA8cGF0aCBkPSJNMTkgNmwtMSAxNGEyIDIgMCAwIDEtMiAySDhhMiAyIDAgMCAxLTItMkw1IDZNMTAgMTF2Nk0xNCAxMXY2TTkgNlY0YTEgMSAwIDAgMSAxLTFoNGExIDEgMCAwIDEgMSAxdjIiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkNoZWNrID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxwb2x5bGluZSBwb2ludHM9IjIwIDYgOSAxNyA0IDEyIiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25Cb3ggPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTIxIDhhMiAyIDAgMCAwLTEtMS43bC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjdsNyA0YTIgMiAwIDAgMCAyIDBsNy00YTIgMiAwIDAgMCAxLTEuN1Y4eiIgLz4KICAgIDxwb2x5bGluZSBwb2ludHM9IjMuMyA3IDEyIDEyIDIwLjcgNyIgLz4KICAgIDxsaW5lIHgxPSIxMiIgeTE9IjIyIiB4Mj0iMTIiIHkyPSIxMiIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uVGFnID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxwYXRoIGQ9Ik0yMC42IDEzLjQgMTMuNCAyMC42YTIgMiAwIDAgMS0yLjggMEwyIDEyVjJoMTBsOC42IDguNmEyIDIgMCAwIDEgMCAyLjh6IiAvPgogICAgPGNpcmNsZSBjeD0iNy41IiBjeT0iNy41IiByPSIxLjIiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblN0b3JlID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxwYXRoIGQ9Ik0zIDlsMS41LTVoMTVMMjEgOU0zIDl2MTFhMSAxIDAgMCAwIDEgMWgxNmExIDEgMCAwIDAgMS0xVjlNMyA5aDE4TTkgMjF2LTZoNnY2IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25MYXB0b3AgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjExIiByeD0iMSIgLz4KICAgIDxwYXRoIGQ9Ik0yIDE5aDIwIiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25Nb25pdG9yID0gKHA6IFApID0+ICgKICA8c3ZnIHsuLi5iYXNlKHApfT4KICAgIDxyZWN0IHg9IjIiIHk9IjQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIxMyIgcng9IjEiIC8+CiAgICA8cGF0aCBkPSJNOCAyMWg4TTEyIDE3djQiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkRlc2t0b3AgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHJlY3QgeD0iMiIgeT0iMyIgd2lkdGg9IjgiIGhlaWdodD0iMTgiIHJ4PSIxIiAvPgogICAgPHJlY3QgeD0iMTMiIHk9IjYiIHdpZHRoPSI5IiBoZWlnaHQ9IjEyIiByeD0iMSIgLz4KICAgIDxwYXRoIGQ9Ik02IDYuNWguMDFNNiAxMGguMDEiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkhlYWRwaG9uZXMgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTQgMTV2LTJhOCA4IDAgMCAxIDE2IDB2MiIgLz4KICAgIDxyZWN0IHg9IjIiIHk9IjE1IiB3aWR0aD0iNCIgaGVpZ2h0PSI2IiByeD0iMS41IiAvPgogICAgPHJlY3QgeD0iMTgiIHk9IjE1IiB3aWR0aD0iNCIgaGVpZ2h0PSI2IiByeD0iMS41IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25XYXRjaCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI2IiAvPgogICAgPHBhdGggZD0iTTEyIDEwdjJsMS41IDEuNU05IDJoNk05IDIyaDYiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbk1vYmlsZSA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cmVjdCB4PSI3IiB5PSIyIiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIHJ4PSIyIiAvPgogICAgPGxpbmUgeDE9IjExIiB5MT0iMTguNSIgeDI9IjEzIiB5Mj0iMTguNSIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uQmF0dGVyeSA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8cmVjdCB4PSIyIiB5PSI4IiB3aWR0aD0iMTciIGhlaWdodD0iOSIgcng9IjIiIC8+CiAgICA8bGluZSB4MT0iMjIiIHkxPSIxMSIgeDI9IjIyIiB5Mj0iMTQiIC8+CiAgICA8bGluZSB4MT0iNi41IiB5MT0iMTEiIHgyPSI2LjUiIHkyPSIxNCIgLz4KICAgIDxsaW5lIHgxPSIxMC41IiB5MT0iMTEiIHgyPSIxMC41IiB5Mj0iMTQiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblByaW50ZXIgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTYgOVYzaDEydjZNNiAxOEg0YTIgMiAwIDAgMS0yLTJ2LTVhMiAyIDAgMCAxIDItMmgxNmEyIDIgMCAwIDEgMiAydjVhMiAyIDAgMCAxLTIgMmgtMiIgLz4KICAgIDxyZWN0IHg9IjYiIHk9IjE0IiB3aWR0aD0iMTIiIGhlaWdodD0iNyIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uRGlzYyA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI5IiAvPgogICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMi41IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25XcmVuY2ggPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTE0LjcgNi4zYTQuNSA0LjUgMCAwIDAtNiA2TDMgMThsMyAzIDUuNy01LjdhNC41IDQuNSAwIDAgMCA2LTZMMTQgMTNsLTMtMyAzLjctMy43eiIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uQXJyb3dSaWdodCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB7Li4uYmFzZShwKX0+CiAgICA8bGluZSB4MT0iNSIgeTE9IjEyIiB4Mj0iMTkiIHkyPSIxMiIgLz4KICAgIDxwb2x5bGluZSBwb2ludHM9IjEyIDUgMTkgMTIgMTIgMTkiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbk1haWwgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHJlY3QgeD0iMiIgeT0iNCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE2IiByeD0iMiIgLz4KICAgIDxwYXRoIGQ9Im0yMiA3LTEwIDZMMiA3IiAvPgogIDwvc3ZnPgopOwoKLyogLS0tLSBzb2NpYWwgKHNpbXBsaWZpZWQgYnJhbmQgZ2x5cGhzKSAtLS0tICovCgpleHBvcnQgY29uc3QgSWNvbkZhY2Vib29rID0gKHA6IFApID0+ICgKICA8c3ZnIHdpZHRoPXsyNH0gaGVpZ2h0PXsyNH0gdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiIHsuLi5wfT4KICAgIDxwYXRoIGQ9Ik0xMy41IDIxdi03aDIuNGwuNC0zaC0yLjhWOS4xYzAtLjkuMy0xLjUgMS42LTEuNWgxLjNWNC45Yy0uMyAwLTEuMS0uMS0yLS4xLTIgMC0zLjQgMS4yLTMuNCAzLjVWMTFIOC41djNIMTF2N2gyLjV6IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25Zb3V0dWJlID0gKHA6IFApID0+ICgKICA8c3ZnIHdpZHRoPXsyNH0gaGVpZ2h0PXsyNH0gdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiIHsuLi5wfT4KICAgIDxwYXRoIGQ9Ik0yMiAxMnMwLTMuMy0uNC00LjhhMi41IDIuNSAwIDAgMC0xLjgtMS44QzE4LjMgNSAxMiA1IDEyIDVzLTYuMyAwLTcuOC40QTIuNSAyLjUgMCAwIDAgMi40IDcuMkMyIDguNyAyIDEyIDIgMTJzMCAzLjMuNCA0LjhjLjIuOS45IDEuNiAxLjggMS44IDEuNS40IDcuOC40IDcuOC40czYuMyAwIDcuOC0uNGEyLjUgMi41IDAgMCAwIDEuOC0xLjhjLjQtMS41LjQtNC44LjQtNC44ek0xMCAxNS4yVjguOEwxNS41IDEyIDEwIDE1LjJ6IiAvPgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25JbnN0YWdyYW0gPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiByeD0iNSIgLz4KICAgIDxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjQiIC8+CiAgICA8Y2lyY2xlIGN4PSIxNy4yIiBjeT0iNi44IiByPSIxIiBmaWxsPSJjdXJyZW50Q29sb3IiIHN0cm9rZT0ibm9uZSIgLz4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uV2hhdHNhcHAgPSAocDogUCkgPT4gKAogIDxzdmcgey4uLmJhc2UocCl9PgogICAgPHBhdGggZD0iTTIxIDEyYTkgOSAwIDAgMS0xMy4yIDhMMyAyMWwxLjEtNC40QTkgOSAwIDEgMSAyMSAxMnoiIC8+CiAgICA8cGF0aCBkPSJNOSA5LjVjLjUgMi41IDMgNSA1LjUgNS41bDEtMS41IDIgMWMtLjUgMS41LTEuNSAyLTMgMS41LTMtMS02LTQtNy03LS41LTEuNSAwLTIuNSAxLjUtM2wxIDJMOSA5LjV6IiAvPgogIDwvc3ZnPgopOwoKLyogLS0tLS0tLS0tLSBwYXltZW50IGJyYW5kIGljb25zIC0tLS0tLS0tLS0gKi8KCmV4cG9ydCBjb25zdCBJY29uQmthc2ggPSAocDogUCkgPT4gKAogIDxzdmcgdmlld0JveD0iMCAwIDQ4IDMyIiBmaWxsPSJub25lIiB7Li4ucH0+CiAgICA8cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iMzIiIHJ4PSI0IiBmaWxsPSIjRTIxMzZFIiAvPgogICAgPHRleHQgeD0iMjQiIHk9IjIxIiB0ZXh0QW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250U2l6ZT0iMTEiIGZvbnRXZWlnaHQ9ImJvbGQiIGZvbnRGYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiPmJLYXNoPC90ZXh0PgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25OYWdhZCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB2aWV3Qm94PSIwIDAgNDggMzIiIGZpbGw9Im5vbmUiIHsuLi5wfT4KICAgIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSIzMiIgcng9IjQiIGZpbGw9IiNGNjkyMUUiIC8+CiAgICA8dGV4dCB4PSIyNCIgeT0iMjEiIHRleHRBbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnRTaXplPSIxMSIgZm9udFdlaWdodD0iYm9sZCIgZm9udEZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiI+TmFnYWQ8L3RleHQ+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvblJvY2tldCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB2aWV3Qm94PSIwIDAgNDggMzIiIGZpbGw9Im5vbmUiIHsuLi5wfT4KICAgIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSIzMiIgcng9IjQiIGZpbGw9IiM4QzM0OTQiIC8+CiAgICA8dGV4dCB4PSIyNCIgeT0iMjEiIHRleHRBbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnRTaXplPSIxMCIgZm9udFdlaWdodD0iYm9sZCIgZm9udEZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiI+Um9ja2V0PC90ZXh0PgogIDwvc3ZnPgopOwoKZXhwb3J0IGNvbnN0IEljb25WaXNhID0gKHA6IFApID0+ICgKICA8c3ZnIHZpZXdCb3g9IjAgMCA0OCAzMiIgZmlsbD0ibm9uZSIgey4uLnB9PgogICAgPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlV2lkdGg9IjEiIC8+CiAgICA8dGV4dCB4PSIyNCIgeT0iMjIiIHRleHRBbmNob3I9Im1pZGRsZSIgZmlsbD0iIzFBMUY3MSIgZm9udFNpemU9IjEzIiBmb250V2VpZ2h0PSJib2xkIiBmb250U3R5bGU9Iml0YWxpYyIgZm9udEZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiI+VklTQTwvdGV4dD4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uTWFzdGVyY2FyZCA9IChwOiBQKSA9PiAoCiAgPHN2ZyB2aWV3Qm94PSIwIDAgNDggMzIiIGZpbGw9Im5vbmUiIHsuLi5wfT4KICAgIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSIzMiIgcng9IjQiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNkZGQiIHN0cm9rZVdpZHRoPSIxIiAvPgogICAgPGNpcmNsZSBjeD0iMjAiIGN5PSIxNiIgcj0iOCIgZmlsbD0iI0VCMDAxQiIgLz4KICAgIDxjaXJjbGUgY3g9IjI4IiBjeT0iMTYiIHI9IjgiIGZpbGw9IiNGNzlFMUIiIGZpbGxPcGFjaXR5PSIwLjgiIC8+CiAgPC9zdmc+Cik7CgpleHBvcnQgY29uc3QgSWNvbkFtZXggPSAocDogUCkgPT4gKAogIDxzdmcgdmlld0JveD0iMCAwIDQ4IDMyIiBmaWxsPSJub25lIiB7Li4ucH0+CiAgICA8cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iMzIiIHJ4PSI0IiBmaWxsPSIjMkU3N0JDIiAvPgogICAgPHRleHQgeD0iMjQiIHk9IjIxIiB0ZXh0QW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250U2l6ZT0iOSIgZm9udFdlaWdodD0iYm9sZCIgZm9udEZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiI+QU1FWDwvdGV4dD4KICA8L3N2Zz4KKTsKCmV4cG9ydCBjb25zdCBJY29uRGJibE5leHVzID0gKHA6IFApID0+ICgKICA8c3ZnIHZpZXdCb3g9IjAgMCA0OCAzMiIgZmlsbD0ibm9uZSIgey4uLnB9PgogICAgPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzAwNkE0RSIgLz4KICAgIDx0ZXh0IHg9IjI0IiB5PSIxOCIgdGV4dEFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udFNpemU9IjgiIGZvbnRXZWlnaHQ9ImJvbGQiIGZvbnRGYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiPkRCQkw8L3RleHQ+CiAgICA8dGV4dCB4PSIyNCIgeT0iMjciIHRleHRBbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnRTaXplPSI3IiBmb250RmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIj5OZXh1czwvdGV4dD4KICA8L3N2Zz4KKTsK
+// Inline SVG icon set (no emoji, no icon fonts).
+import type { SVGProps } from 'react';
+
+type P = SVGProps<SVGSVGElement> & { className?: string };
+
+const base = (props: P) => ({
+  width: 24,
+  height: 24,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 2,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+  ...props,
+});
+
+export const IconSearch = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="11" cy="11" r="7" />
+    <line x1="21" y1="21" x2="16.5" y2="16.5" />
+  </svg>
+);
+
+export const IconCart = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8z" />
+    <path d="M8.5 10V6a3.5 3.5 0 0 1 7 0v4" />
+  </svg>
+);
+
+export const IconGift = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3" y="8" width="18" height="4" />
+    <path d="M5 12v9h14v-9M12 8v13M12 8s-1.5-4-4.5-4S5 8 12 8zm0 0s1.5-4 4.5-4S19 8 12 8z" />
+  </svg>
+);
+
+export const IconFlash = (p: P) => (
+  <svg {...base(p)}>
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+export const IconChip = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="6" y="6" width="12" height="12" rx="2" />
+    <rect x="10" y="10" width="4" height="4" />
+    <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+  </svg>
+);
+
+export const IconCompare = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M8 3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 3h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4" />
+    <path d="M12 2v20" strokeDasharray="2 2" />
+  </svg>
+);
+
+export const IconUser = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" />
+  </svg>
+);
+
+export const IconPhone = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z" />
+  </svg>
+);
+
+export const IconPin = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
+export const IconMenu = (p: P) => (
+  <svg {...base(p)}>
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+export const IconClose = (p: P) => (
+  <svg {...base(p)}>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+export const IconChevronDown = (p: P) => (
+  <svg {...base(p)}>
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+export const IconChevronRight = (p: P) => (
+  <svg {...base(p)}>
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
+export const IconChevronLeft = (p: P) => (
+  <svg {...base(p)}>
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
+
+export const IconHeart = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M19.5 12.6 12 20l-7.5-7.4A5 5 0 1 1 12 6.1a5 5 0 1 1 7.5 6.5z" />
+  </svg>
+);
+
+export const IconHeartSolid = (p: P) => (
+  <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <path d="M19.5 12.6 12 20l-7.5-7.4A5 5 0 1 1 12 6.1a5 5 0 1 1 7.5 6.5z" />
+  </svg>
+);
+
+export const IconShare = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="18" cy="5" r="3" />
+    <circle cx="6" cy="12" r="3" />
+    <circle cx="18" cy="19" r="3" />
+    <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
+    <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+  </svg>
+);
+
+export const IconStar = (p: P) => (
+  <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" />
+  </svg>
+);
+
+export const IconStarOutline = (p: P) => (
+  <svg {...base(p)}>
+    <polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" />
+  </svg>
+);
+
+export const IconTruck = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="1" y="5" width="14" height="11" rx="1" />
+    <path d="M15 9h4l4 4v3h-8" />
+    <circle cx="6" cy="18.5" r="1.8" />
+    <circle cx="18" cy="18.5" r="1.8" />
+  </svg>
+);
+
+export const IconShield = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z" />
+    <polyline points="9 11.5 11 13.5 15 9.5" />
+  </svg>
+);
+
+export const IconHeadset = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M4 13a8 8 0 0 1 16 0" />
+    <rect x="2" y="13" width="4" height="7" rx="1.5" />
+    <rect x="18" y="13" width="4" height="7" rx="1.5" />
+    <path d="M20 20a4 4 0 0 1-4 3h-2" />
+  </svg>
+);
+
+export const IconCash = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2" y="6" width="20" height="12" rx="2" />
+    <circle cx="12" cy="12" r="2.5" />
+    <path d="M6 12h.01M18 12h.01" />
+  </svg>
+);
+
+export const IconFilter = (p: P) => (
+  <svg {...base(p)}>
+    <polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3" />
+  </svg>
+);
+
+export const IconHome = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5 9.5V21h14V9.5" />
+  </svg>
+);
+
+export const IconMinus = (p: P) => (
+  <svg {...base(p)}>
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
+
+export const IconPlus = (p: P) => (
+  <svg {...base(p)}>
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
+
+export const IconTrash = (p: P) => (
+  <svg {...base(p)}>
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+  </svg>
+);
+
+export const IconCheck = (p: P) => (
+  <svg {...base(p)}>
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+export const IconBox = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7V8z" />
+    <polyline points="3.3 7 12 12 20.7 7" />
+    <line x1="12" y1="22" x2="12" y2="12" />
+  </svg>
+);
+
+export const IconTag = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z" />
+    <circle cx="7.5" cy="7.5" r="1.2" />
+  </svg>
+);
+
+export const IconStore = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M3 9l1.5-5h15L21 9M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M9 21v-6h6v6" />
+  </svg>
+);
+
+export const IconLaptop = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="4" y="4" width="16" height="11" rx="1" />
+    <path d="M2 19h20" />
+  </svg>
+);
+
+export const IconMonitor = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2" y="4" width="20" height="13" rx="1" />
+    <path d="M8 21h8M12 17v4" />
+  </svg>
+);
+
+export const IconDesktop = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2" y="3" width="8" height="18" rx="1" />
+    <rect x="13" y="6" width="9" height="12" rx="1" />
+    <path d="M6 6.5h.01M6 10h.01" />
+  </svg>
+);
+
+export const IconHeadphones = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M4 15v-2a8 8 0 0 1 16 0v2" />
+    <rect x="2" y="15" width="4" height="6" rx="1.5" />
+    <rect x="18" y="15" width="4" height="6" rx="1.5" />
+  </svg>
+);
+
+export const IconWatch = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="6" />
+    <path d="M12 10v2l1.5 1.5M9 2h6M9 22h6" />
+  </svg>
+);
+
+export const IconMobile = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="7" y="2" width="10" height="20" rx="2" />
+    <line x1="11" y1="18.5" x2="13" y2="18.5" />
+  </svg>
+);
+
+export const IconBattery = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2" y="8" width="17" height="9" rx="2" />
+    <line x1="22" y1="11" x2="22" y2="14" />
+    <line x1="6.5" y1="11" x2="6.5" y2="14" />
+    <line x1="10.5" y1="11" x2="10.5" y2="14" />
+  </svg>
+);
+
+export const IconPrinter = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+    <rect x="6" y="14" width="12" height="7" />
+  </svg>
+);
+
+export const IconDisc = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="9" />
+    <circle cx="12" cy="12" r="2.5" />
+  </svg>
+);
+
+export const IconWrench = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z" />
+  </svg>
+);
+
+export const IconArrowRight = (p: P) => (
+  <svg {...base(p)}>
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+export const IconMail = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-10 6L2 7" />
+  </svg>
+);
+
+/* ---- social (simplified brand glyphs) ---- */
+
+export const IconFacebook = (p: P) => (
+  <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.1c0-.9.3-1.5 1.6-1.5h1.3V4.9c-.3 0-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.5V11H8.5v3H11v7h2.5z" />
+  </svg>
+);
+
+export const IconYoutube = (p: P) => (
+  <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" {...p}>
+    <path d="M22 12s0-3.3-.4-4.8a2.5 2.5 0 0 0-1.8-1.8C18.3 5 12 5 12 5s-6.3 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.7 2 12 2 12s0 3.3.4 4.8c.2.9.9 1.6 1.8 1.8 1.5.4 7.8.4 7.8.4s6.3 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.5.4-4.8.4-4.8zM10 15.2V8.8L15.5 12 10 15.2z" />
+  </svg>
+);
+
+export const IconInstagram = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3" y="3" width="18" height="18" rx="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+export const IconWhatsapp = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M21 12a9 9 0 0 1-13.2 8L3 21l1.1-4.4A9 9 0 1 1 21 12z" />
+    <path d="M9 9.5c.5 2.5 3 5 5.5 5.5l1-1.5 2 1c-.5 1.5-1.5 2-3 1.5-3-1-6-4-7-7-.5-1.5 0-2.5 1.5-3l1 2L9 9.5z" />
+  </svg>
+);
+
+/* ---------- payment brand icons ---------- */
+
+export const IconBkash = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="#E2136E" />
+    <text x="24" y="21" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="Arial,sans-serif">bKash</text>
+  </svg>
+);
+
+export const IconNagad = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="#F6921E" />
+    <text x="24" y="21" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="Arial,sans-serif">Nagad</text>
+  </svg>
+);
+
+export const IconRocket = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="#8C3494" />
+    <text x="24" y="21" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold" fontFamily="Arial,sans-serif">Rocket</text>
+  </svg>
+);
+
+export const IconVisa = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="white" stroke="#ddd" strokeWidth="1" />
+    <text x="24" y="22" textAnchor="middle" fill="#1A1F71" fontSize="13" fontWeight="bold" fontStyle="italic" fontFamily="Arial,sans-serif">VISA</text>
+  </svg>
+);
+
+export const IconMastercard = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="white" stroke="#ddd" strokeWidth="1" />
+    <circle cx="20" cy="16" r="8" fill="#EB001B" />
+    <circle cx="28" cy="16" r="8" fill="#F79E1B" fillOpacity="0.8" />
+  </svg>
+);
+
+export const IconAmex = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="#2E77BC" />
+    <text x="24" y="21" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold" fontFamily="Arial,sans-serif">AMEX</text>
+  </svg>
+);
+
+export const IconDbblNexus = (p: P) => (
+  <svg viewBox="0 0 48 32" fill="none" {...p}>
+    <rect width="48" height="32" rx="4" fill="#006A4E" />
+    <text x="24" y="18" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold" fontFamily="Arial,sans-serif">DBBL</text>
+    <text x="24" y="27" textAnchor="middle" fill="white" fontSize="7" fontFamily="Arial,sans-serif">Nexus</text>
+  </svg>
+);
