@@ -82,7 +82,7 @@ export default function OrderDetail({ id }: { id: string }) {
   if (!order) return <p className="text-slate-500">Order not found.</p>;
 
   return (
-    <div>
+    <div className="min-w-0">
       {demo && <DbNotice />}
       <PageHeader
         title={`Order ${order.order_no}`}
@@ -90,8 +90,8 @@ export default function OrderDetail({ id }: { id: string }) {
         actions={<GhostButton onClick={() => router.push('/admin/orders')}>Back to orders</GhostButton>}
       />
 
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="space-y-6 xl:col-span-2">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-3">
+        <div className="space-y-4 sm:space-y-6 xl:col-span-2 min-w-0">
           <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-5 py-4">
               <h2 className="font-semibold text-slate-900">Items ({order.items.reduce((s, i) => s + i.qty, 0)})</h2>
@@ -135,12 +135,12 @@ export default function OrderDetail({ id }: { id: string }) {
           )}
         </div>
 
-        <div className="space-y-6">
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="space-y-4 sm:space-y-6 min-w-0">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm">
             <h2 className="mb-3 font-semibold text-slate-900">Status</h2>
             <div className="mb-3"><Badge text={order.status} /></div>
-            <div className="flex gap-2">
-              <Select value={status} onChange={(e) => setStatus(e.target.value as OrderStatus)} className="flex-1">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Select value={status} onChange={(e) => setStatus(e.target.value as OrderStatus)} className="flex-1 min-w-0">
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}

@@ -33,11 +33,11 @@ export function PageHeader({
 }) {
   return (
     <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
-        {sub && <p className="mt-1 text-sm text-slate-500">{sub}</p>}
+      <div className="min-w-0">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words">{title}</h1>
+        {sub && <p className="mt-1 text-sm text-slate-500 break-words">{sub}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex items-center gap-2 flex-wrap">{actions}</div>}
     </div>
   );
 }
