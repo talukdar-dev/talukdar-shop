@@ -58,12 +58,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategory(slug);
   if (!category) return { title: 'Category not found | Talukdar Shop' };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
   return {
     title: category.meta_title ?? `${category.name} Price in Bangladesh | Talukdar Shop`,
     description:
       category.meta_description ??
       category.description ??
       `Buy ${category.name} at the best price in Bangladesh from Talukdar Shop. 100% genuine products, official warranty & fast delivery.`,
+    alternates: {
+      canonical: `${siteUrl}/category/${slug}`,
+    },
   };
 }
 

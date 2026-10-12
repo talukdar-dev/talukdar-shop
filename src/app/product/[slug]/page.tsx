@@ -31,12 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return { title: 'Product not found | Talukdar Shop' };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
   return {
     title:
       product.meta_title ?? `${product.name} Price in Bangladesh | Talukdar Shop`,
     description:
       product.meta_description ??
       `Buy ${product.name} at the best price in Bangladesh (${taka(effectivePrice(product))}). 100% genuine, official warranty, EMI & fast delivery from Talukdar Shop.`,
+    alternates: {
+      canonical: `${siteUrl}/product/${slug}`,
+    },
     openGraph: {
       title: product.name,
       images: product.images[0] && !product.images[0].startsWith('data:') ? [product.images[0]] : [],
@@ -50,7 +54,7 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   const price = effectivePrice(product);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdar-shop.vercel.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
   const crumbs = [
     ...(product.category
       ? [{ label: product.category.name, href: `/category/${product.category.slug}` }]

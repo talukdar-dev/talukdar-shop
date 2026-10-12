@@ -11,7 +11,7 @@ import MegaMenu from '@/components/store/MegaMenu';
 import Footer from '@/components/store/Footer';
 import CartDrawer from '@/components/store/CartDrawer';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdar-shop.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -21,6 +21,12 @@ export const metadata: Metadata = {
   },
   description:
     'Talukdar Shop is the best online tech shop in Bangladesh. Buy laptops, desktops, monitors, components, gadgets & accessories at the best price with official warranty, EMI & fast delivery.',
+  alternates: {
+    canonical: SITE_URL,
+  },
+  icons: {
+    icon: '/icon.svg',
+  },
   openGraph: {
     type: 'website',
     siteName: 'Talukdar Shop',
