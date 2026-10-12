@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #ef4a23;
+  --color-brand-dark: #e5330b;
+  --color-brand-orange: #ff782f;
+  --color-promo: #ef9919;
+  --color-navy: #00237e;
+  --color-navy-dark: #001a5c;
+  --color-link: #3749bb;
+  --color-page: #f1f3f5;
+  --color-ink: #666666;
+  --font-sans: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-page);
+  color: #222222;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* hide scrollbars on horizontal carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* thin styled scrollbar for dropdowns / drawers */
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #c9c9c9;
+  border-radius: 3px;
+}
+
+/* range inputs */
+input[type="range"] {
+  accent-color: #ef4a23;
+}
+
+/* number input spinners off for qty fields */
+input.qty-input::-webkit-outer-spin-button,
+input.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input.qty-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* hero carousel fade */
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.hero-slide-active {
+  animation: hero-fade 0.5s ease-in-out;
+}
+
+/* drawer transitions */
+.drawer-panel {
+  transition: transform 0.3s ease-in-out;
+}
+.drawer-overlay {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* 3-line clamp helper */
+.clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
