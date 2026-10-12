@@ -155,7 +155,7 @@ export interface ProductFilter {
   featured?: boolean;
   flash?: boolean;
   isNew?: boolean;
-  sort?: 'popular' | 'new' | 'price-asc' | 'price-desc' | 'rating';
+  sort?: 'popular' | 'new' | 'newest' | 'price-asc' | 'price-desc' | 'rating';
   page?: number;
   perPage?: number;
 }
@@ -231,6 +231,7 @@ export async function getProducts(
         case 'price-asc': q = q.order('price', { ascending: true }); break;
         case 'price-desc': q = q.order('price', { ascending: false }); break;
         case 'rating': q = q.order('rating', { ascending: false }); break;
+        case 'newest': q = q.order('created_at', { ascending: false }); break;
         default: q = q.order('reviews_count', { ascending: false });
       }
       q = q.range((page - 1) * perPage, page * perPage - 1);

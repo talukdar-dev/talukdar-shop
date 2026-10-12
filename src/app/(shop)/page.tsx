@@ -42,6 +42,9 @@ export default async function HomePage() {
     configured.map((s) => getProducts({ categorySlug: s.category_slug, perPage: 10 })),
   );
 
+  // New arrivals — shows latest products regardless of category
+  const newArrivals = await getProducts({ perPage: 10, sort: 'newest' });
+
   return (
     <>
       <h1 className="sr-only">Talukdar Shop — Best Tech Shop in Bangladesh</h1>
@@ -91,6 +94,15 @@ export default async function HomePage() {
       </section>
 
       <FlashDealsSection />
+
+      {newArrivals.items.length > 0 && (
+        <SectionBlock
+          minItems={1}
+          title="New Arrivals"
+          href="/search?sort=newest"
+          products={newArrivals.items}
+        />
+      )}
 
       {configured.map((s, i) => (
         <SectionBlock
