@@ -362,6 +362,16 @@ export default function CheckoutPage() {
             {/* manual payment details — sender number + transaction id */}
             {(payment === 'bkash' || payment === 'nagad' || payment === 'rocket') && (
               <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3.5">
+                {payment === 'bkash' && (
+                  <div className="mb-3 rounded-md overflow-hidden border border-pink-200">
+                    <img
+                      src="/images/bkash-payment-guide.webp"
+                      alt="How to pay with bKash - step by step guide"
+                      className="w-full h-auto"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
                 <p className="text-[13px] font-bold text-amber-800 mb-1">
                   {payment === 'bkash' ? 'bKash' : payment === 'nagad' ? 'Nagad' : 'Rocket'} payment details
                 </p>
