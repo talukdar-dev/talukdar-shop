@@ -259,6 +259,16 @@ export async function updateOrderStatusAdmin(
   await updateOrderStatus(id, status);
 }
 
+export async function updatePaymentStatusAdmin(
+  id: string,
+  payment_status: 'paid' | 'unpaid',
+): Promise<void> {
+  const sb = supabaseAdmin();
+  const { error } = await sb.from('orders').update({ payment_status }).eq('id', id);
+  if (error) throw new Error(error.message);
+  revalidateTag('products', 'max');
+}
+
 // ---------- settings ----------
 export async function saveSettings(settings: SiteSettings): Promise<void> {
   const sb = supabaseAdmin();

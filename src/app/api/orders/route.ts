@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createOrder } from '@/lib/db';
 import type { Order } from '@/lib/types';
+import { orderReceivedEmail, sendEmail } from '@/lib/email';
 
 const METHODS: Order['payment_method'][] = ['cod', 'bkash', 'nagad', 'rocket', 'card', 'emi'];
 
@@ -71,11 +72,23 @@ export async function POST(req: NextRequest) {
       ...(isManual ? { sender_number, trx_id } : {}),
       notes: typeof body.notes === 'string' ? body.notes : undefined,
     });
+    // fire-and-forget: don't delay the checkout response
+    notifyCustomer(order).catch(() => {});
     return NextResponse.json({ order_no: order.order_no }, { status: 201 });
   } catch (err) {
     return NextResponse.json(
       { message: err instanceof Error ? err.message : 'Could not create order.' },
       { status: 500 },
     );
+  }
+}
+
+async function notifyCustomer(order: Order) {
+  if (!order.email) return;
+  try {
+    const { subject, html } = orderReceivedEmail(order);
+    await sendEmail({ to: order.email, subject, html });
+  } catch (err) {
+    console.error('[order] received-email failed:', err instanceof Error ? err.message : err);
   }
 }

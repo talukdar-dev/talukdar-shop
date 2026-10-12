@@ -57,6 +57,27 @@ export default function OrderDetail({ id }: { id: string }) {
     }
   }
 
+  async function markPaid() {
+    setSaving(true);
+    setMsg('');
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_status: 'paid' }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg(data.error || 'Failed to update');
+      } else {
+        setOrder((o) => (o ? { ...o, payment_status: 'paid' } : o));
+        setMsg('Marked as paid.');
+      }
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (loading) return <Spinner />;
   if (!order) return <p className="text-slate-500">Order not found.</p>;
 
@@ -131,7 +152,21 @@ export default function OrderDetail({ id }: { id: string }) {
             {msg && <p className="mt-2 text-sm text-slate-600">{msg}</p>}
             <div className="mt-4 border-t border-slate-100 pt-3 text-sm">
               <div className="flex justify-between py-0.5"><span className="text-slate-500">Payment</span><span className="font-medium uppercase">{order.payment_method}</span></div>
-              <div className="flex justify-between py-0.5"><span className="text-slate-500">Payment status</span><Badge text={order.payment_status} /></div>
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-slate-500">Payment status</span>
+                <span className="flex items-center gap-2">
+                  <Badge text={order.payment_status} />
+                  {order.payment_status === 'unpaid' && (
+                    <button
+                      onClick={markPaid}
+                      disabled={saving}
+                      className="text-xs font-bold text-green-700 bg-green-50 border border-green-200 rounded-md px-2.5 py-1 hover:bg-green-100"
+                    >
+                      Mark as Paid
+                    </button>
+                  )}
+                </span>
+              </div>
               {order.sender_number && (
                 <div className="flex justify-between py-0.5"><span className="text-slate-500">Sender number</span><span className="font-medium">{order.sender_number}</span></div>
               )}
