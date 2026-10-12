@@ -16,12 +16,10 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 };
 
-// Static generation with ISR: revalidate every 24h.
-export const revalidate = 86400;
-
+// Static generation: cache profile 'days' gives ~24h revalidation.
 export default async function HomePage() {
   'use cache';
-  cacheLife('hours');
+  cacheLife('days');
   const [categories, settings] = await Promise.all([
     getCategories(),
     getSettings(),

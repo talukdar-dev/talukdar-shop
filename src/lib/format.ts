@@ -13,12 +13,16 @@ export function effectivePrice(p: {
   is_flash_deal?: boolean;
   flash_ends_at?: string | null;
 }): number {
-  if (
-    p.is_flash_deal &&
-    p.flash_price &&
-    (!p.flash_ends_at || new Date(p.flash_ends_at) > new Date())
-  ) {
-    return p.flash_price;
+  try {
+    if (
+      p.is_flash_deal &&
+      p.flash_price &&
+      (!p.flash_ends_at || new Date(p.flash_ends_at).getTime() > Date.now())
+    ) {
+      return p.flash_price;
+    }
+  } catch {
+    // Invalid date format — fall through to regular price
   }
   return p.price;
 }

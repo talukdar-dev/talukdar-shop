@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { cacheLife } from 'next/cache';
 import { connection } from 'next/server';
-import { getBrands, getCategories, getCategory, getProducts } from '@/lib/db';
+import { getBrands, getCategory, getProducts } from '@/lib/db';
 import Breadcrumb from '@/components/store/Breadcrumb';
 import Filters from '@/components/store/Filters';
 import Pagination from '@/components/store/Pagination';
@@ -17,16 +17,6 @@ interface Props {
 
 const PER_PAGE_OPTIONS = [20, 24, 48, 75, 90];
 
-// Static generation with ISR: pre-build all categories at deploy time,
-// revalidate every 24h. Filtered views (searchParams) render dynamically.
-export const revalidate = 86400;
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const categories = await getCategories();
-  return categories.map((c) => ({ slug: c.slug }));
-}
-
 interface CategoryFilter {
   brandSlug?: string;
   minPrice?: number;
@@ -39,7 +29,7 @@ interface CategoryFilter {
 
 async function loadCategoryData(slug: string, f: CategoryFilter) {
   'use cache';
-  cacheLife('hours');
+  cacheLife('days');
   const [category, result, brands] = await Promise.all([
     getCategory(slug),
     getProducts({
