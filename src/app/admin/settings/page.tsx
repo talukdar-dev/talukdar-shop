@@ -158,12 +158,62 @@ export default function SettingsPage() {
               <p className="mt-1 text-xs text-slate-400">Enable this when your merchant account is ready. Card/online payments will appear at checkout.</p>
             </div>
           </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-slate-500">Email Notifications</h2>
+            <p className="mb-4 text-xs text-slate-400">Order emails are sent from shipontalukdar699@gmail.com via Gmail SMTP. Requires SMTP_USER + SMTP_APP_PASSWORD env vars on Vercel.</p>
+            <TestEmailBox />
+          </div>
         </div>
       </div>
 
       <div className="sticky bottom-0 mt-6 flex justify-end border-t border-slate-200 bg-gray-50 py-4">
         <PrimaryButton onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Settings'}</PrimaryButton>
       </div>
+    </div>
+  );
+}
+
+function TestEmailBox() {
+  const [email, setEmail] = useState('');
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState('');
+
+  async function send() {
+    setSending(true);
+    setResult('');
+    try {
+      const res = await fetch('/api/admin/test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: email.trim() }),
+      });
+      const data = await res.json();
+      setResult(res.ok ? '✅ Test email sent! Check the inbox.' : `❌ ${data.error || 'Failed'}`);
+    } catch {
+      setResult('❌ Failed to send.');
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+      <TextInput
+        value={email}
+        onChange={(e) => { setEmail(e.target.value); setResult(''); }}
+        placeholder="Enter email to test"
+        type="email"
+        className="flex-1"
+      />
+      <button
+        onClick={send}
+        disabled={sending || !email.trim()}
+        className="rounded-lg bg-navy px-4 py-2 text-sm font-bold text-white hover:bg-navy-dark disabled:bg-gray-300"
+      >
+        {sending ? 'Sending…' : 'Send Test Email'}
+      </button>
+      {result && <p className="text-sm sm:ml-2">{result}</p>}
     </div>
   );
 }
