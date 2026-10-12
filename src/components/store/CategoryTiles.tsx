@@ -48,8 +48,12 @@ export default function CategoryTiles({ categories }: { categories: Category[] }
             >
               <span className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center group-hover:bg-brand group-hover:text-white transition-colors overflow-hidden">
                 {c.icon ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={c.icon} alt="" className="w-6 h-6 object-contain" />
+                  c.icon.startsWith('http') ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.icon} alt="" className="w-6 h-6 object-contain" />
+                  ) : (
+                    <span className="text-xl leading-none">{c.icon}</span>
+                  )
                 ) : (
                   <Icon className="w-5 h-5" />
                 )}
