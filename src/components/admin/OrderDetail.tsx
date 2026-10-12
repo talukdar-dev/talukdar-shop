@@ -132,6 +132,12 @@ export default function OrderDetail({ id }: { id: string }) {
             <div className="mt-4 border-t border-slate-100 pt-3 text-sm">
               <div className="flex justify-between py-0.5"><span className="text-slate-500">Payment</span><span className="font-medium uppercase">{order.payment_method}</span></div>
               <div className="flex justify-between py-0.5"><span className="text-slate-500">Payment status</span><Badge text={order.payment_status} /></div>
+              {order.sender_number && (
+                <div className="flex justify-between py-0.5"><span className="text-slate-500">Sender number</span><span className="font-medium">{order.sender_number}</span></div>
+              )}
+              {order.trx_id && (
+                <div className="flex justify-between py-0.5"><span className="text-slate-500">Transaction ID</span><span className="font-medium uppercase">{order.trx_id}</span></div>
+              )}
             </div>
           </div>
 

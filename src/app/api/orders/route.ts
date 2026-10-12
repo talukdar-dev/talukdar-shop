@@ -36,6 +36,17 @@ export async function POST(req: NextRequest) {
   }
 
   const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+  const isManual = ['bkash', 'nagad', 'rocket'].includes(payment_method);
+  const sender_number = typeof body.sender_number === 'string' ? body.sender_number.trim() : '';
+  const trx_id = typeof body.trx_id === 'string' ? body.trx_id.trim().toUpperCase() : '';
+  if (isManual) {
+    if (!/^01[0-9]{9}$/.test(sender_number)) {
+      return NextResponse.json({ message: 'Sender mobile number is required for manual payment.' }, { status: 400 });
+    }
+    if (!trx_id) {
+      return NextResponse.json({ message: 'Transaction ID is required for manual payment.' }, { status: 400 });
+    }
+  }
 
   try {
     const order = await createOrder({
@@ -57,6 +68,7 @@ export async function POST(req: NextRequest) {
       discount: num(body.discount),
       total: num(body.total),
       payment_method: payment_method as Order['payment_method'],
+      ...(isManual ? { sender_number, trx_id } : {}),
       notes: typeof body.notes === 'string' ? body.notes : undefined,
     });
     return NextResponse.json({ order_no: order.order_no }, { status: 201 });

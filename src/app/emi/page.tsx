@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'EMI Terms — 0% EMI up to 12 Months',
   description:
     'Buy now, pay later with 0% EMI up to 12 months at Talukdar Shop. Check eligible banks, cards and EMI terms.',
+  alternates: { canonical: '/emi' },
 };
 
 const BANKS = [

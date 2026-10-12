@@ -118,6 +118,8 @@ export interface Order {
   total: number;
   payment_method: 'cod' | 'bkash' | 'nagad' | 'rocket' | 'card' | 'emi';
   payment_status: 'unpaid' | 'paid';
+  sender_number?: string;
+  trx_id?: string;
   status: OrderStatus;
   notes?: string;
   created_at: string;

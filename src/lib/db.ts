@@ -334,6 +334,8 @@ export async function createOrder(input: {
   discount: number;
   total: number;
   payment_method: Order['payment_method'];
+  sender_number?: string;
+  trx_id?: string;
   notes?: string;
 }): Promise<Order> {
   const order: Order = {
@@ -366,11 +368,40 @@ export async function createOrder(input: {
           discount: input.discount,
           total: input.total,
           payment_method: input.payment_method,
+          sender_number: input.sender_number,
+          trx_id: input.trx_id,
           notes: input.notes,
         })
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        // Fallback: orders table may not have sender_number/trx_id columns yet
+        if (error.message.includes('sender_number') || error.message.includes('trx_id')) {
+          const retry = await sb
+            .from('orders')
+            .insert({
+              order_no: order.order_no,
+              customer_name: input.customer_name,
+              phone: input.phone,
+              email: input.email,
+              address: input.address,
+              city: input.city,
+              area: input.area,
+              items: input.items,
+              subtotal: input.subtotal,
+              shipping: input.shipping,
+              discount: input.discount,
+              total: input.total,
+              payment_method: input.payment_method,
+              notes: input.notes,
+            })
+            .select()
+            .single();
+          if (retry.error) throw retry.error;
+          return retry.data as Order;
+        }
+        throw error;
+      }
       return data as Order;
     },
   );

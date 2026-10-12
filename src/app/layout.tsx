@@ -21,9 +21,6 @@ export const metadata: Metadata = {
   },
   description:
     'Talukdar Shop is the best online tech shop in Bangladesh. Buy laptops, desktops, monitors, components, gadgets & accessories at the best price with official warranty, EMI & fast delivery.',
-  alternates: {
-    canonical: SITE_URL,
-  },
   icons: {
     icon: '/icon.svg',
   },

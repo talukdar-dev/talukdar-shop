@@ -97,6 +97,8 @@ create table if not exists orders (
     check (payment_method in ('cod','bkash','nagad','rocket','card','emi')),
   payment_status text not null default 'unpaid'
     check (payment_status in ('unpaid','paid')),
+  sender_number text,
+  trx_id text,
   status text not null default 'pending'
     check (status in ('pending','confirmed','processing','shipped','delivered','cancelled')),
   notes text,

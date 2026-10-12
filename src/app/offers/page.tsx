@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'Latest Offers',
   description:
     'Explore the latest offers, promo campaigns and flash deals at Talukdar Shop — best prices on laptops, desktops, components & gadgets.',
+  alternates: { canonical: '/offers' },
 };
 
 export default async function OffersPage() {

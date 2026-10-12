@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'PC Builder — Build Your Custom PC',
   description:
     'Build your dream PC with Talukdar Shop PC Builder. Choose CPU, motherboard, RAM, storage, graphics card & more at the best price in Bangladesh.',
+  alternates: { canonical: '/pc-builder' },
 };
 
 const ROW_DEFS = [

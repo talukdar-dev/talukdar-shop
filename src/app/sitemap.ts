@@ -14,11 +14,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/offers',
     '/pc-builder',
     '/emi',
-    '/cart',
-    '/checkout',
-    '/search',
-    '/account/login',
-    '/account/register',
   ];
 
   return [

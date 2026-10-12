@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   title: 'Talukdar Shop — Best Tech Shop in Bangladesh',
   description:
     'Buy laptops, desktops, monitors, PC components, gadgets, mobiles & accessories at the best price in Bangladesh. 100% genuine products, official warranty, 0% EMI & fastest delivery.',
+  alternates: { canonical: '/' },
 };
 
 export default async function HomePage() {

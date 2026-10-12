@@ -35,6 +35,8 @@ export default function CheckoutPage() {
   const [upazila, setUpazila] = useState('');
   const [shipZone, setShipZone] = useState<'inside' | 'outside'>('inside');
   const [payment, setPayment] = useState<PaymentMethod>('cod');
+  const [senderNumber, setSenderNumber] = useState('');
+  const [trxId, setTrxId] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMsg, setCouponMsg] = useState('');
@@ -173,6 +175,17 @@ export default function CheckoutPage() {
         return;
       }
     }
+    const isManual = payment === 'bkash' || payment === 'nagad' || payment === 'rocket';
+    if (isManual) {
+      if (!/^01[0-9]{9}$/.test(senderNumber.trim())) {
+        setError('Please enter the sender mobile number you paid from (11 digits).');
+        return;
+      }
+      if (!trxId.trim()) {
+        setError('Please enter the transaction ID (TrxID) of your payment.');
+        return;
+      }
+    }
     setPlacing(true);
     try {
       const res = await fetch('/api/orders', {
@@ -197,6 +210,7 @@ export default function CheckoutPage() {
           discount: couponDiscount,
           total,
           payment_method: payment,
+          ...(isManual ? { sender_number: senderNumber.trim(), trx_id: trxId.trim().toUpperCase() } : {}),
         }),
       });
       const data = await res.json();
@@ -344,6 +358,43 @@ export default function CheckoutPage() {
                 </label>
               ))}
             </div>
+
+            {/* manual payment details — sender number + transaction id */}
+            {(payment === 'bkash' || payment === 'nagad' || payment === 'rocket') && (
+              <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3.5">
+                <p className="text-[13px] font-bold text-amber-800 mb-1">
+                  {payment === 'bkash' ? 'bKash' : payment === 'nagad' ? 'Nagad' : 'Rocket'} payment details
+                </p>
+                <p className="text-[12px] text-amber-700 mb-3">
+                  Send the total amount first, then enter the details below so we can verify your payment.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[12.5px] font-semibold text-gray-700 mb-1">
+                      Sender mobile number <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      value={senderNumber}
+                      onChange={(e) => setSenderNumber(e.target.value)}
+                      placeholder="01XXXXXXXXX"
+                      inputMode="numeric"
+                      className="w-full h-11 px-3 border border-gray-300 rounded-md text-[13.5px] outline-none focus:border-brand bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[12.5px] font-semibold text-gray-700 mb-1">
+                      Transaction ID (TrxID) <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      value={trxId}
+                      onChange={(e) => setTrxId(e.target.value)}
+                      placeholder="e.g. 9HXK2LMN4P"
+                      className="w-full h-11 px-3 border border-gray-300 rounded-md text-[13.5px] outline-none focus:border-brand bg-white uppercase"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
         </div>
 
