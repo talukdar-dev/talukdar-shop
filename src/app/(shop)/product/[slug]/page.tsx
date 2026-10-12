@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cacheLife } from 'next/cache';
-import { getProduct } from '@/lib/db';
+import { getProduct, getProducts } from '@/lib/db';
 import { effectivePrice, taka } from '@/lib/format';
 import Breadcrumb from '@/components/store/Breadcrumb';
 import BuyBox from '@/components/store/BuyBox';
@@ -17,8 +17,15 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// Dynamic per-slug route: always rendered on demand.
-export const instant = false;
+// Static generation with ISR: pre-build all products at deploy time,
+// revalidate every 24h, on-demand for new products.
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const { items } = await getProducts({ perPage: 1000 });
+  return items.map((p) => ({ slug: p.slug }));
+}
 
 /** Timed-revalidation data loader: params are read outside the cached scope. */
 async function loadProductData(slug: string) {

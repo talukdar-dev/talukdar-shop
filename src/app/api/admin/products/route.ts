@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireAdmin, dbError } from '../_guard';
 import { getProductsAdmin, upsertProduct } from '@/lib/admin-db';
 
@@ -36,6 +37,9 @@ export async function POST(req: Request) {
       );
     }
     const product = await upsertProduct(body);
+    // On-demand revalidation: refresh static pages
+    revalidatePath(`/product/${product.slug}`);
+    revalidatePath('/');
     return NextResponse.json({ item: product });
   } catch (e) {
     return dbError(e);

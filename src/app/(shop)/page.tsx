@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 };
 
+// Static generation with ISR: revalidate every 24h.
+export const revalidate = 86400;
+
 export default async function HomePage() {
   'use cache';
   cacheLife('hours');
