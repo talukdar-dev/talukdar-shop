@@ -5,7 +5,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { cacheLife, cacheTag } from 'next/cache';
 import type {
   Banner, Brand, Category, Coupon, Order, OrderItem, OrderStatus,
-  Product, SiteSettings,
+  Product, Review, SiteSettings,
 } from './types';
 import {
   banners as seedBanners,
@@ -298,6 +298,26 @@ export async function getProduct(slug: string): Promise<Product | null> {
         .maybeSingle();
       if (error) throw error;
       return (data as Product) ?? null;
+    },
+  );
+}
+
+export async function getReviews(productId: string): Promise<Review[]> {
+  'use cache';
+  cacheLife('hours');
+  cacheTag('reviews');
+  return live(
+    async () => [],
+    async (sb) => {
+      const { data, error } = await sb
+        .from('reviews')
+        .select('*')
+        .eq('product_id', productId)
+        .eq('is_approved', true)
+        .order('review_date', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data as Review[]) ?? [];
     },
   );
 }
