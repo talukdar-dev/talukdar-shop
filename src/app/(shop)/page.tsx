@@ -48,6 +48,13 @@ export default async function HomePage() {
   // New arrivals — shows latest products regardless of category
   const newArrivals = await getProducts({ perPage: 10, sort: 'newest' });
 
+  // Best sellers, top rated, trending
+  const [bestSellers, topRated, trending] = await Promise.all([
+    getProducts({ perPage: 10, sort: 'popular' }),
+    getProducts({ perPage: 10, sort: 'rating' }),
+    getProducts({ perPage: 10, featured: true }),
+  ]);
+
   return (
     <>
       <h1 className="sr-only">Talukdar Shop — Best Tech Shop in Bangladesh</h1>
@@ -104,6 +111,33 @@ export default async function HomePage() {
           title="New Arrivals"
           href="/search?sort=newest"
           products={newArrivals.items}
+        />
+      )}
+
+      {bestSellers.items.length > 0 && (
+        <SectionBlock
+          minItems={1}
+          title="Best Sellers"
+          href="/search?sort=popular"
+          products={bestSellers.items}
+        />
+      )}
+
+      {trending.items.length > 0 && (
+        <SectionBlock
+          minItems={1}
+          title="Trending Products"
+          href="/search?featured=true"
+          products={trending.items}
+        />
+      )}
+
+      {topRated.items.length > 0 && (
+        <SectionBlock
+          minItems={1}
+          title="Top Rated"
+          href="/search?sort=rating"
+          products={topRated.items}
         />
       )}
 
