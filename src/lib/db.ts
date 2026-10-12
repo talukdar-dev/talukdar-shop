@@ -209,7 +209,7 @@ export async function getProducts(
     async (sb) => {
       let q = sb
         .from('products')
-        .select('*, category:categories(*), brand:brands(*)', { count: 'exact' })
+        .select('id,name,slug,sku,price,old_price,images,stock_qty,specs,rating,reviews_count,is_new,is_featured,is_flash_deal,flash_price,emi_available,is_active,category_id,brand_id,created_at, category:categories(id,name,slug), brand:brands(id,name,slug)', { count: 'exact' })
         .eq('is_active', true);
       if (f.categorySlug) {
         const cat = await getCategory(f.categorySlug);
@@ -237,7 +237,7 @@ export async function getProducts(
       q = q.range((page - 1) * perPage, page * perPage - 1);
       const { data, count, error } = await q;
       if (error) throw error;
-      return { items: (data ?? []) as Product[], total: count ?? 0 };
+      return { items: ((data ?? []) as unknown) as Product[], total: count ?? 0 };
     },
   );
 }
