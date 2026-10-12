@@ -23,9 +23,12 @@ function optimize(src: string, width?: number): string {
     src.includes('/image/upload/')
   ) {
     const w = width && width < 800 ? `w_${width},` : 'w_800,';
-    // Replace any existing transform with optimized one
+    // Add f_auto,q_auto + width, preserving version if present
+    if (src.includes('/f_auto')) {
+      return src; // already optimized
+    }
     return src.replace(
-      /\/image\/upload\/(f_auto[^/]*\/)?(v\d+\/)?/,
+      '/image/upload/',
       `/image/upload/f_auto,q_auto,${w}`
     );
   }
