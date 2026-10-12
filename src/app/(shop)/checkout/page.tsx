@@ -399,7 +399,7 @@ export default function CheckoutPage() {
                 {payment === 'bkash' && (
                   <div className="mb-3 rounded-md overflow-hidden border border-pink-200">
                     <img
-                      src="https://res.cloudinary.com/w1qo6mno/image/upload/v1791845107/talukdar-shop/talukdar-shop/bkash-payment-guide.gif"
+                      src="https://res.cloudinary.com/w1qo6mno/image/upload/v1791845603/talukdar-shop/talukdar-shop/bkash-payment-guide-v2.gif"
                       alt="How to pay with bKash - step by step guide"
                       className="w-full h-auto"
                       loading="lazy"
