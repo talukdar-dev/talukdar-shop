@@ -34,7 +34,7 @@ export default function CheckoutPage() {
   const [district, setDistrict] = useState('');
   const [upazila, setUpazila] = useState('');
   const [shipZone, setShipZone] = useState<'inside' | 'outside'>('inside');
-  const [payment, setPayment] = useState<PaymentMethod>('cod');
+  const [payment, setPayment] = useState<PaymentMethod | ''>('');
   const [senderNumber, setSenderNumber] = useState('');
   const [trxId, setTrxId] = useState('');
   const [couponCode, setCouponCode] = useState('');
@@ -59,10 +59,6 @@ export default function CheckoutPage() {
       .then((r) => r.json())
       .then((s) => {
         setSettings(s);
-        // default payment: first enabled method
-        if (s.payment_bkash_enabled) setPayment('bkash');
-        else if (s.payment_nagad_enabled) setPayment('nagad');
-        else if (s.payment_cod_enabled === false) setPayment('bkash');
       })
       .catch(() => {});
   }, []);
@@ -126,10 +122,10 @@ export default function CheckoutPage() {
     return opts;
   }, [settings, hasPhysical]);
 
-  // keep selected payment valid when options change
+  // keep selected payment valid when options change (don't auto-select)
   useEffect(() => {
-    if (paymentOptions.length > 0 && !paymentOptions.some((o) => o.v === payment)) {
-      setPayment(paymentOptions[0].v);
+    if (payment && paymentOptions.length > 0 && !paymentOptions.some((o) => o.v === payment)) {
+      setPayment('');
     }
   }, [paymentOptions, payment]);
 
@@ -175,6 +171,10 @@ export default function CheckoutPage() {
         setError('Please fill in your address and select district.');
         return;
       }
+    }
+    if (!payment) {
+      setError('Please select a payment method.');
+      return;
     }
     const isManual = payment === 'bkash' || payment === 'nagad' || payment === 'rocket';
     if (isManual) {
