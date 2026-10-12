@@ -164,8 +164,8 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
         <div className="max-w-[1280px] mx-auto px-3 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[12.5px] text-white/60">
           <p>© 2026 Talukdar Shop | All rights reserved</p>
           <p>
-            Best tech shop in Bangladesh — laptops, desktops, components &amp; gadgets at the
-            best price.
+            Best home appliance shop in Bangladesh — air fryers, rice cookers, fans, cookware &amp;
+            home essentials at the best price.
           </p>
         </div>
       </div>
