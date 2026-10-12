@@ -22,14 +22,15 @@ function optimize(src: string, width?: number): string {
     src.includes('res.cloudinary.com') &&
     src.includes('/image/upload/')
   ) {
-    const w = width && width < 800 ? `w_${width},` : 'w_800,';
-    // Add f_auto,q_auto + width, preserving version if present
+    // Already optimized? skip
     if (src.includes('/f_auto')) {
-      return src; // already optimized
+      return src;
     }
+    const w = width && width < 800 ? `w_${width}` : 'w_800';
+    // Insert transform after /image/upload/, before version (v123/) if present
     return src.replace(
       '/image/upload/',
-      `/image/upload/f_auto,q_auto,${w}`
+      `/image/upload/f_auto,q_auto,${w}/`
     );
   }
   return src;
