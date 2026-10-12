@@ -243,7 +243,19 @@ export async function deleteCoupon(id: string): Promise<void> {
 
 // ---------- orders ----------
 export async function getOrdersAdmin(limit = 200): Promise<Order[]> {
-  return getOrders(limit);
+  // Use service_role: anon key is blocked by RLS on orders (returns 0 rows)
+  try {
+    const sb = supabaseAdmin();
+    const { data, error } = await sb
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return (data ?? []) as Order[];
+  } catch {
+    return getOrders(limit);
+  }
 }
 
 export async function getOrderAdmin(id: string): Promise<Order | null> {
