@@ -1,1 +1,190 @@
-aW1wb3J0IExpbmsgZnJvbSAnbmV4dC9saW5rJzsKaW1wb3J0IHR5cGUgeyBTaXRlU2V0dGluZ3MgfSBmcm9tICdAL2xpYi90eXBlcyc7CmltcG9ydCB7CiAgSWNvbkFtZXgsCiAgSWNvbkJrYXNoLAogIEljb25EYmJsTmV4dXMsCiAgSWNvbkZhY2Vib29rLAogIEljb25JbnN0YWdyYW0sCiAgSWNvbk1haWwsCiAgSWNvbk1hc3RlcmNhcmQsCiAgSWNvbk5hZ2FkLAogIEljb25QaG9uZSwKICBJY29uUGluLAogIEljb25Sb2NrZXQsCiAgSWNvblZpc2EsCiAgSWNvbldoYXRzYXBwLAogIEljb25Zb3V0dWJlLAp9IGZyb20gJy4vaWNvbnMnOwoKY29uc3QgUEFZTUVOVFMgPSBbCiAgeyBuYW1lOiAnYkthc2gnLCBJY29uOiBJY29uQmthc2ggfSwKICB7IG5hbWU6ICdOYWdhZCcsIEljb246IEljb25OYWdhZCB9LAogIHsgbmFtZTogJ1JvY2tldCcsIEljb246IEljb25Sb2NrZXQgfSwKICB7IG5hbWU6ICdWaXNhJywgSWNvbjogSWNvblZpc2EgfSwKICB7IG5hbWU6ICdNYXN0ZXJjYXJkJywgSWNvbjogSWNvbk1hc3RlcmNhcmQgfSwKICB7IG5hbWU6ICdBTUVYJywgSWNvbjogSWNvbkFtZXggfSwKICB7IG5hbWU6ICdEQkJMIE5leHVzJywgSWNvbjogSWNvbkRiYmxOZXh1cyB9LApdOwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gRm9vdGVyKHsgc2V0dGluZ3MgfTogeyBzZXR0aW5nczogU2l0ZVNldHRpbmdzIH0pIHsKICByZXR1cm4gKAogICAgPGZvb3RlciBjbGFzc05hbWU9ImJnLW5hdnkgdGV4dC13aGl0ZSBtdC04Ij4KICAgICAgey8qIHBheW1lbnQgYmFkZ2VzICovfQogICAgICA8ZGl2IGNsYXNzTmFtZT0iYm9yZGVyLWIgYm9yZGVyLXdoaXRlLzEwIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctWzEyODBweF0gbXgtYXV0byBweC0zIHB5LTQgZmxleCBmbGV4LXdyYXAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGdhcC0yIj4KICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTJweF0gdGV4dC13aGl0ZS82MCBtci0yIj5XZSBhY2NlcHQ6PC9zcGFuPgogICAgICAgICAge1BBWU1FTlRTLm1hcCgoeyBuYW1lLCBJY29uIH0pID0+ICgKICAgICAgICAgICAgPHNwYW4KICAgICAgICAgICAgICBrZXk9e25hbWV9CiAgICAgICAgICAgICAgdGl0bGU9e25hbWV9CiAgICAgICAgICAgICAgY2xhc3NOYW1lPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgYmctd2hpdGUvMTAgYm9yZGVyIGJvcmRlci13aGl0ZS8yMCByb3VuZGVkIHB4LTEuNSBweS0xIgogICAgICAgICAgICA+CiAgICAgICAgICAgICAgPEljb24gY2xhc3NOYW1lPSJ3LTEyIGgtOCIgLz4KICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgoKICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LVsxMjgwcHhdIG14LWF1dG8gcHgtMyBweS0xMCBncmlkIGdhcC04IG1kOmdyaWQtY29scy0zIj4KICAgICAgICB7LyogU3VwcG9ydCAqL30KICAgICAgICA8ZGl2PgogICAgICAgICAgPGgzIGNsYXNzTmFtZT0idGV4dC1bMTVweF0gZm9udC1ib2xkIHVwcGVyY2FzZSB0cmFja2luZy13aWRlIG1iLTQgdGV4dC1icmFuZC1vcmFuZ2UiPgogICAgICAgICAgICBTdXBwb3J0CiAgICAgICAgICA8L2gzPgogICAgICAgICAgPHVsIGNsYXNzTmFtZT0ic3BhY2UteS0yLjUgdGV4dC1bMTMuNXB4XSI+CiAgICAgICAgICAgIDxsaT4KICAgICAgICAgICAgICA8YSBocmVmPXtgdGVsOiR7c2V0dGluZ3MuaG90bGluZX1gfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yLjUgaG92ZXI6dGV4dC1icmFuZC1vcmFuZ2UiPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ3LTggaC04IHJvdW5kZWQtZnVsbCBiZy13aGl0ZS8xMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBzaHJpbmstMCI+CiAgICAgICAgICAgICAgICAgIDxJY29uUGhvbmUgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPgogICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgPHNwYW4+CiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC1bMTdweF0gZm9udC1ibGFjayI+e3NldHRpbmdzLmhvdGxpbmV9PC9zcGFuPgogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImJsb2NrIHRleHQtWzExcHhdIHRleHQtd2hpdGUvNjAiPntzZXR0aW5ncy5ob3RsaW5lX2hvdXJzfTwvc3Bhbj4KICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICA8L2E+CiAgICAgICAgICAgIDwvbGk+CiAgICAgICAgICAgIDxsaT4KICAgICAgICAgICAgICA8YSBocmVmPSIvI3N0b3JlcyIgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMi41IGhvdmVyOnRleHQtYnJhbmQtb3JhbmdlIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idy04IGgtOCByb3VuZGVkLWZ1bGwgYmctd2hpdGUvMTAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgc2hyaW5rLTAiPgogICAgICAgICAgICAgICAgICA8SWNvblBpbiBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICBTdG9yZSBMb2NhdG9yIOKAlCBGaW5kIE91ciBTdG9yZXMKICAgICAgICAgICAgICA8L2E+CiAgICAgICAgICAgIDwvbGk+CiAgICAgICAgICAgIDxsaT4KICAgICAgICAgICAgICA8YSBocmVmPXtgbWFpbHRvOiR7c2V0dGluZ3MuZW1haWx9YH0gY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMi41IGhvdmVyOnRleHQtYnJhbmQtb3JhbmdlIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idy04IGgtOCByb3VuZGVkLWZ1bGwgYmctd2hpdGUvMTAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgc2hyaW5rLTAiPgogICAgICAgICAgICAgICAgICA8SWNvbk1haWwgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPgogICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAge3NldHRpbmdzLmVtYWlsfQogICAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPC9saT4KICAgICAgICAgICAgPGxpPgogICAgICAgICAgICAgIDxMaW5rIGhyZWY9Ii9lbWkiIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1icmFuZC1vcmFuZ2UgaG92ZXI6dW5kZXJsaW5lIj4KICAgICAgICAgICAgICAgIEVNSSBUZXJtcwogICAgICAgICAgICAgIDwvTGluaz4KICAgICAgICAgICAgPC9saT4KICAgICAgICAgICAgPGxpPgogICAgICAgICAgICAgIDxMaW5rIGhyZWY9Ii9vZmZlcnMiIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1icmFuZC1vcmFuZ2UgaG92ZXI6dW5kZXJsaW5lIj4KICAgICAgICAgICAgICAgIExhdGVzdCBPZmZlcnMKICAgICAgICAgICAgICA8L0xpbms+CiAgICAgICAgICAgIDwvbGk+CiAgICAgICAgICA8L3VsPgogICAgICAgIDwvZGl2PgoKICAgICAgICB7LyogQWJvdXQgKi99CiAgICAgICAgPGRpdj4KICAgICAgICAgIDxoMyBjbGFzc05hbWU9InRleHQtWzE1cHhdIGZvbnQtYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZSBtYi00IHRleHQtYnJhbmQtb3JhbmdlIj4KICAgICAgICAgICAgQWJvdXQgVXMKICAgICAgICAgIDwvaDM+CiAgICAgICAgICA8dWwgY2xhc3NOYW1lPSJzcGFjZS15LTIuNSB0ZXh0LVsxMy41cHhdIj4KICAgICAgICAgICAgPGxpPgogICAgICAgICAgICAgIDxhIGhyZWY9Ii8jYWJvdXQiIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1icmFuZC1vcmFuZ2UgaG92ZXI6dW5kZXJsaW5lIj4KICAgICAgICAgICAgICAgIEFib3V0IFRhbHVrZGFyIFNob3AKICAgICAgICAgICAgICA8L2E+CiAgICAgICAgICAgIDwvbGk+CiAgICAgICAgICAgIDxsaT4KICAgICAgICAgICAgICA8YSBocmVmPSIvI2JyYW5kcyIgY2xhc3NOYW1lPSJob3Zlcjp0ZXh0LWJyYW5kLW9yYW5nZSBob3Zlcjp1bmRlcmxpbmUiPgogICAgICAgICAgICAgICAgT3VyIEJyYW5kcwogICAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPC9saT4KICAgICAgICAgICAgPGxpPgogICAgICAgICAgICAgIDxMaW5rIGhyZWY9Ii9wYy1idWlsZGVyIiBjbGFzc05hbWU9ImhvdmVyOnRleHQtYnJhbmQtb3JhbmdlIGhvdmVyOnVuZGVybGluZSI+CiAgICAgICAgICAgICAgICBQQyBCdWlsZGVyCiAgICAgICAgICAgICAgPC9MaW5rPgogICAgICAgICAgICA8L2xpPgogICAgICAgICAgICA8bGk+CiAgICAgICAgICAgICAgPExpbmsgaHJlZj0iL2VtaSIgY2xhc3NOYW1lPSJob3Zlcjp0ZXh0LWJyYW5kLW9yYW5nZSBob3Zlcjp1bmRlcmxpbmUiPgogICAgICAgICAgICAgICAgRU1JIEZhY2lsaXR5CiAgICAgICAgICAgICAgPC9MaW5rPgogICAgICAgICAgICA8L2xpPgogICAgICAgICAgICA8bGk+CiAgICAgICAgICAgICAgPExpbmsgaHJlZj0iL2FjY291bnQvbG9naW4iIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1icmFuZC1vcmFuZ2UgaG92ZXI6dW5kZXJsaW5lIj4KICAgICAgICAgICAgICAgIE15IEFjY291bnQKICAgICAgICAgICAgICA8L0xpbms+CiAgICAgICAgICAgIDwvbGk+CiAgICAgICAgICAgIDxsaSBjbGFzc05hbWU9InRleHQtd2hpdGUvNjAgdGV4dC1bMTIuNXB4XSBwdC0xIj57c2V0dGluZ3MuYWRkcmVzc308L2xpPgogICAgICAgICAgPC91bD4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIFN0YXkgY29ubmVjdGVkICovfQogICAgICAgIDxkaXY+CiAgICAgICAgICA8aDMgY2xhc3NOYW1lPSJ0ZXh0LVsxNXB4XSBmb250LWJvbGQgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGUgbWItNCB0ZXh0LWJyYW5kLW9yYW5nZSI+CiAgICAgICAgICAgIFN0YXkgQ29ubmVjdGVkCiAgICAgICAgICA8L2gzPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yLjUgbWItNSI+CiAgICAgICAgICAgIHtbCiAgICAgICAgICAgICAgeyBocmVmOiBzZXR0aW5ncy5mYWNlYm9vaywgbGFiZWw6ICdGYWNlYm9vaycsIEljb246IEljb25GYWNlYm9vayB9LAogICAgICAgICAgICAgIHsgaHJlZjogc2V0dGluZ3MueW91dHViZSwgbGFiZWw6ICdZb3VUdWJlJywgSWNvbjogSWNvbllvdXR1YmUgfSwKICAgICAgICAgICAgICB7IGhyZWY6ICcjJywgbGFiZWw6ICdJbnN0YWdyYW0nLCBJY29uOiBJY29uSW5zdGFncmFtIH0sCiAgICAgICAgICAgICAgeyBocmVmOiAnIycsIGxhYmVsOiAnV2hhdHNBcHAnLCBJY29uOiBJY29uV2hhdHNhcHAgfSwKICAgICAgICAgICAgXS5tYXAoKHsgaHJlZiwgbGFiZWwsIEljb24gfSkgPT4gKAogICAgICAgICAgICAgIDxhCiAgICAgICAgICAgICAgICBrZXk9e2xhYmVsfQogICAgICAgICAgICAgICAgaHJlZj17aHJlZiA/PyAnIyd9CiAgICAgICAgICAgICAgICB0YXJnZXQ9Il9ibGFuayIKICAgICAgICAgICAgICAgIHJlbD0ibm9vcGVuZXIgbm9yZWZlcnJlciIKICAgICAgICAgICAgICAgIGFyaWEtbGFiZWw9e2xhYmVsfQogICAgICAgICAgICAgICAgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgcm91bmRlZC1mdWxsIGJnLXdoaXRlLzEwIGhvdmVyOmJnLWJyYW5kIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHRyYW5zaXRpb24tY29sb3JzIgogICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgIDxJY29uIGNsYXNzTmFtZT0idy01IGgtNSIgLz4KICAgICAgICAgICAgICA8L2E+CiAgICAgICAgICAgICkpfQogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBnYXAtMi41Ij4KICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBib3JkZXIgYm9yZGVyLXdoaXRlLzI1IHJvdW5kZWQtbWQgcHgtMyBweS0yIHRleHQtWzEycHhdIj4KICAgICAgICAgICAgICA8c3ZnIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiIGFyaWEtaGlkZGVuPSJ0cnVlIj4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik00IDMuNXYxN2w5LjUtOC41TDQgMy41eiIgb3BhY2l0eT0iLjkiIC8+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNCAzLjVsOS41IDguNSAzLTIuN0w0IDMuNXpNNCAyMC41bDEyLjUtNi4zLTMtMi43TDQgMjAuNXoiIG9wYWNpdHk9Ii41NSIgLz4KICAgICAgICAgICAgICA8L3N2Zz4KICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImxlYWRpbmctdGlnaHQgdGV4dC1sZWZ0Ij4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC1bOXB4XSB1cHBlcmNhc2UgdGV4dC13aGl0ZS82MCI+R2V0IGl0IG9uPC9zcGFuPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJibG9jayBmb250LWJvbGQiPkdvb2dsZSBQbGF5PC9zcGFuPgogICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIGJvcmRlciBib3JkZXItd2hpdGUvMjUgcm91bmRlZC1tZCBweC0zIHB5LTIgdGV4dC1bMTJweF0iPgogICAgICAgICAgICAgIDxzdmcgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9ImN1cnJlbnRDb2xvciIgYXJpYS1oaWRkZW49InRydWUiPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTE2LjcgMTIuOWMwLTIuNCAyLTMuNiAyLjEtMy43LTEuMS0xLjctMi45LTEuOS0zLjUtMS45LTEuNS0uMi0yLjkuOS0zLjcuOS0uOCAwLTEuOS0uOS0zLjItLjktMS42IDAtMy4xIDEtNCAyLjQtMS43IDIuOS0uNCA3LjMgMS4yIDkuNy44IDEuMiAxLjggMi41IDMuMSAyLjQgMS4yLS4xIDEuNy0uOCAzLjItLjhzMS45LjggMy4yLjhjMS4zIDAgMi4yLTEuMiAzLTIuNC45LTEuNCAxLjMtMi43IDEuMy0yLjgtLjEgMC0yLjctMS0yLjctMy43ek0xNC4yIDUuNGMuNy0uOCAxLjEtMS45IDEtMy0xIDAtMi4xLjYtMi44IDEuNC0uNi43LTEuMiAxLjktMSAzIDEuMS4xIDIuMS0uNiAyLjgtMS40eiIgLz4KICAgICAgICAgICAgICA8L3N2Zz4KICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImxlYWRpbmctdGlnaHQgdGV4dC1sZWZ0Ij4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC1bOXB4XSB1cHBlcmNhc2UgdGV4dC13aGl0ZS82MCI+RG93bmxvYWQgb24gdGhlPC9zcGFuPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJibG9jayBmb250LWJvbGQiPkFwcCBTdG9yZTwvc3Bhbj4KICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJib3JkZXItdCBib3JkZXItd2hpdGUvMTAiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy1bMTI4MHB4XSBteC1hdXRvIHB4LTMgcHktNCBmbGV4IGZsZXgtY29sIHNtOmZsZXgtcm93IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gZ2FwLTIgdGV4dC1bMTIuNXB4XSB0ZXh0LXdoaXRlLzYwIj4KICAgICAgICAgIDxwPsKpIDIwMjYgVGFsdWtkYXIgU2hvcCB8IEFsbCByaWdodHMgcmVzZXJ2ZWQ8L3A+CiAgICAgICAgICA8cD4KICAgICAgICAgICAgQmVzdCBob21lIGFwcGxpYW5jZSBzaG9wIGluIEJhbmdsYWRlc2gg4oCUIGFpciBmcnllcnMsIHJpY2UgY29va2VycywgZmFucywgY29va3dhcmUgJmFtcDsKICAgICAgICAgICAgaG9tZSBlc3NlbnRpYWxzIGF0IHRoZSBiZXN0IHByaWNlLgogICAgICAgICAgPC9wPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvZm9vdGVyPgogICk7Cn0K
+import Link from 'next/link';
+import type { SiteSettings } from '@/lib/types';
+import {
+  IconAmex,
+  IconBkash,
+  IconDbblNexus,
+  IconFacebook,
+  IconInstagram,
+  IconMail,
+  IconMastercard,
+  IconNagad,
+  IconPhone,
+  IconPin,
+  IconRocket,
+  IconVisa,
+  IconWhatsapp,
+  IconYoutube,
+} from './icons';
+
+const PAYMENTS = [
+  { name: 'bKash', Icon: IconBkash },
+  { name: 'Nagad', Icon: IconNagad },
+  { name: 'Rocket', Icon: IconRocket },
+  { name: 'Visa', Icon: IconVisa },
+  { name: 'Mastercard', Icon: IconMastercard },
+  { name: 'AMEX', Icon: IconAmex },
+  { name: 'DBBL Nexus', Icon: IconDbblNexus },
+];
+
+export default function Footer({ settings }: { settings: SiteSettings }) {
+  return (
+    <footer className="bg-navy text-white mt-8">
+      {/* payment badges */}
+      <div className="border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto px-3 py-4 flex flex-wrap items-center justify-center gap-2">
+          <span className="text-[12px] text-white/60 mr-2">We accept:</span>
+          {PAYMENTS.map(({ name, Icon }) => (
+            <span
+              key={name}
+              title={name}
+              className="inline-flex items-center bg-white/10 border border-white/20 rounded px-1.5 py-1"
+            >
+              <Icon className="w-12 h-8" />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-[1280px] mx-auto px-3 py-10 grid gap-8 md:grid-cols-3">
+        {/* Support */}
+        <div>
+          <h3 className="text-[15px] font-bold uppercase tracking-wide mb-4 text-brand-orange">
+            Support
+          </h3>
+          <ul className="space-y-2.5 text-[13.5px]">
+            <li>
+              <a href={`tel:${settings.hotline}`} className="flex items-center gap-2.5 hover:text-brand-orange">
+                <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <IconPhone className="w-4 h-4" />
+                </span>
+                <span>
+                  <span className="block text-[17px] font-black">{settings.hotline}</span>
+                  <span className="block text-[11px] text-white/60">{settings.hotline_hours}</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="/#stores" className="flex items-center gap-2.5 hover:text-brand-orange">
+                <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <IconPin className="w-4 h-4" />
+                </span>
+                Store Locator — Find Our Stores
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${settings.email}`} className="flex items-center gap-2.5 hover:text-brand-orange">
+                <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <IconMail className="w-4 h-4" />
+                </span>
+                {settings.email}
+              </a>
+            </li>
+            <li>
+              <Link href="/emi" className="hover:text-brand-orange hover:underline">
+                EMI Terms
+              </Link>
+            </li>
+            <li>
+              <Link href="/offers" className="hover:text-brand-orange hover:underline">
+                Latest Offers
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* About */}
+        <div>
+          <h3 className="text-[15px] font-bold uppercase tracking-wide mb-4 text-brand-orange">
+            About Us
+          </h3>
+          <ul className="space-y-2.5 text-[13.5px]">
+            <li>
+              <a href="/#about" className="hover:text-brand-orange hover:underline">
+                About Talukdar Shop
+              </a>
+            </li>
+            <li>
+              <a href="/#brands" className="hover:text-brand-orange hover:underline">
+                Our Brands
+              </a>
+            </li>
+            <li>
+              <Link href="/pc-builder" className="hover:text-brand-orange hover:underline">
+                PC Builder
+              </Link>
+            </li>
+            <li>
+              <Link href="/emi" className="hover:text-brand-orange hover:underline">
+                EMI Facility
+              </Link>
+            </li>
+            <li>
+              <Link href="/account/login" className="hover:text-brand-orange hover:underline">
+                My Account
+              </Link>
+            </li>
+            <li className="text-white/60 text-[12.5px] pt-1">{settings.address}</li>
+          </ul>
+        </div>
+
+        {/* Stay connected */}
+        <div>
+          <h3 className="text-[15px] font-bold uppercase tracking-wide mb-4 text-brand-orange">
+            Stay Connected
+          </h3>
+          <div className="flex items-center gap-2.5 mb-5">
+            {[
+              { href: settings.facebook, label: 'Facebook', Icon: IconFacebook },
+              { href: settings.youtube, label: 'YouTube', Icon: IconYoutube },
+              { href: '#', label: 'Instagram', Icon: IconInstagram },
+              { href: '#', label: 'WhatsApp', Icon: IconWhatsapp },
+            ].map(({ href, label, Icon }) => (
+              <a
+                key={label}
+                href={href ?? '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand flex items-center justify-center transition-colors"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+            ))}
+          </div>
+          <div className="flex gap-2.5">
+            <span className="flex items-center gap-2 border border-white/25 rounded-md px-3 py-2 text-[12px]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M4 3.5v17l9.5-8.5L4 3.5z" opacity=".9" />
+                <path d="M4 3.5l9.5 8.5 3-2.7L4 3.5zM4 20.5l12.5-6.3-3-2.7L4 20.5z" opacity=".55" />
+              </svg>
+              <span className="leading-tight text-left">
+                <span className="block text-[9px] uppercase text-white/60">Get it on</span>
+                <span className="block font-bold">Google Play</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-2 border border-white/25 rounded-md px-3 py-2 text-[12px]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M16.7 12.9c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.9-1.6 0-3.1 1-4 2.4-1.7 2.9-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3.1 2.4 1.2-.1 1.7-.8 3.2-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.7-1-2.7-3.7zM14.2 5.4c.7-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.2 1.9-1 3 1.1.1 2.1-.6 2.8-1.4z" />
+              </svg>
+              <span className="leading-tight text-left">
+                <span className="block text-[9px] uppercase text-white/60">Download on the</span>
+                <span className="block font-bold">App Store</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="max-w-[1280px] mx-auto px-3 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[12.5px] text-white/60">
+          <p>© 2026 Talukdar Shop | All rights reserved</p>
+          <p>
+            Best home appliance shop in Bangladesh — air fryers, rice cookers, fans, cookware &amp;
+            home essentials at the best price.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
