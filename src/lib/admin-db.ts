@@ -82,11 +82,23 @@ export async function upsertProduct(
     reviews_count: input.reviews_count ?? 0,
     created_at: input.created_at ?? new Date().toISOString(),
   });
-  const { data, error } = await sb
+  let { data, error } = await sb
     .from('products')
     .upsert(row, { onConflict: 'id' })
     .select()
     .single();
+  // Fallback: if product_type column doesn't exist yet (migration pending),
+  // retry without it so product save still works.
+  if (error && error.message.includes('product_type')) {
+    const { product_type, ...rowWithoutType } = row as Record<string, unknown>;
+    const retry = await sb
+      .from('products')
+      .upsert(rowWithoutType, { onConflict: 'id' })
+      .select()
+      .single();
+    data = retry.data;
+    error = retry.error;
+  }
   if (error) throw new Error(error.message);
   return data as Product;
   revalidateTag('products', 'max');
