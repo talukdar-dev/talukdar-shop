@@ -37,6 +37,7 @@ export interface Product {
   specs?: Record<string, string | string[]>;
   images: string[];
   stock_qty: number;
+  product_type?: 'physical' | 'digital';
   is_featured: boolean;
   is_new: boolean;
   is_flash_deal: boolean;
@@ -123,6 +124,17 @@ export interface SiteSettings {
   free_shipping_over?: number;
   inside_dhaka_shipping: number;
   outside_dhaka_shipping: number;
+  // payment methods
+  payment_cod_enabled?: boolean;
+  payment_bkash_enabled?: boolean;
+  payment_bkash_number?: string;
+  payment_nagad_enabled?: boolean;
+  payment_nagad_number?: string;
+  payment_rocket_enabled?: boolean;
+  payment_rocket_number?: string;
+  // merchant (online) payment - for future use
+  payment_merchant_enabled?: boolean;
+  payment_merchant_provider?: string;
 }
 
 export interface Coupon {
