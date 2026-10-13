@@ -28,11 +28,14 @@ async function loadProductData(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) return { title: 'Product not found | Talukdar Shop' };
+  if (!product) return { title: 'Product not found' };
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
+  // Strip trailing "| Talukdar Shop" — the layout template already appends it
+  const rawTitle =
+    product.meta_title ?? `${product.name} Price in Bangladesh`;
+  const cleanTitle = rawTitle.replace(/\s*\|\s*Talukdar Shop\s*$/i, '').trim();
   return {
-    title:
-      product.meta_title ?? `${product.name} Price in Bangladesh | Talukdar Shop`,
+    title: cleanTitle,
     description:
       product.meta_description ??
       `Buy ${product.name} at the best price in Bangladesh (${taka(effectivePrice(product))}). 100% genuine, official warranty, EMI & fast delivery from Talukdar Shop.`,
