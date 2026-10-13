@@ -53,6 +53,7 @@ export default async function ProductPage({ params }: Props) {
 
   const price = effectivePrice(product);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
+  const reviews = await getReviews(product.id);
   const crumbs = [
     ...(product.category
       ? [{ label: product.category.name, href: `/category/${product.category.slug}` }]
@@ -76,6 +77,17 @@ export default async function ProductPage({ params }: Props) {
       ratingValue: product.rating,
       reviewCount: product.reviews_count,
     },
+    review: reviews.slice(0, 10).map((r) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: r.customer_name },
+      datePublished: r.review_date ?? r.created_at,
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: r.rating,
+        bestRating: 5,
+      },
+      reviewBody: r.review_text,
+    })),
     offers: {
       '@type': 'Offer',
       url: `${siteUrl}/product/${product.slug}`,
@@ -189,7 +201,7 @@ export default async function ProductPage({ params }: Props) {
       </div>
 
       <div className="mt-6">
-        <Reviews reviews={await getReviews(product.id)} reviewsCount={product.reviews_count} />
+        <Reviews reviews={reviews} reviewsCount={product.reviews_count} />
       </div>
 
       <div className="mt-6">
