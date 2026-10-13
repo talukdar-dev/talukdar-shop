@@ -61,6 +61,46 @@ export default async function BlogPostPage({ params }: Props) {
 
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
 
+  // HowTo schema for the cleaning/maintenance guide (Google rich results)
+  const isHowTo = post.slug === 'how-to-clean-maintain-air-fryer';
+  const howToJsonLd = isHowTo
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: post.title,
+        description: post.metaDescription,
+        image: post.heroImage,
+        totalTime: 'PT30M',
+        step: [
+          {
+            '@type': 'HowToStep',
+            name: 'Unplug and cool down',
+            text: 'Unplug the air fryer and let it cool completely before cleaning.',
+          },
+          {
+            '@type': 'HowToStep',
+            name: 'Remove the basket and pan',
+            text: 'Take out the basket and pan. Soak in warm soapy water for 10 minutes.',
+          },
+          {
+            '@type': 'HowToStep',
+            name: 'Clean the basket',
+            text: 'Scrub gently with a soft sponge. Avoid steel wool to protect the non-stick coating.',
+          },
+          {
+            '@type': 'HowToStep',
+            name: 'Wipe the interior',
+            text: 'Wipe inside the air fryer with a damp cloth. Clean the heating element carefully.',
+          },
+          {
+            '@type': 'HowToStep',
+            name: 'Dry and reassemble',
+            text: 'Dry all parts completely before reassembling to prevent odors.',
+          },
+        ],
+      }
+    : null;
+
   return (
     <>
       <script
@@ -71,6 +111,12 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      {howToJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+        />
+      )}
 
       <Breadcrumb items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
 
