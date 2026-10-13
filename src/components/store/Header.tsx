@@ -62,7 +62,7 @@ function SearchBar() {
   };
 
   return (
-    <div ref={boxRef} className="relative flex-1 max-w-2xl">
+    <div ref={boxRef} className="relative flex-1 min-w-0 max-w-2xl">
       <form onSubmit={submit} className="flex" role="search">
         <input
           value={q}
@@ -123,9 +123,9 @@ export default function Header({ settings }: { settings: SiteSettings }) {
           <SmartImage
             src="https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo-v5.png"
             alt="Talukdar Shop"
-            width={190}
-            height={52}
-            className="h-[42px] sm:h-[52px] w-auto"
+            width={150}
+            height={41}
+            className="h-[34px] sm:h-[42px] w-auto max-w-[130px] sm:max-w-[150px]"
             priority
           />
         </Link>
