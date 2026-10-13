@@ -105,6 +105,11 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
               </a>
             </li>
             <li>
+              <Link href="/blog" className="hover:text-brand-orange hover:underline">
+                Blog & Buying Guides
+              </Link>
+            </li>
+            <li>
               <a href="/#brands" className="hover:text-brand-orange hover:underline">
                 Our Brands
               </a>
