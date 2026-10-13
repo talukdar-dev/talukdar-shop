@@ -159,6 +159,7 @@ export interface SiteSettings {
 export interface HomepageSection {
   title: string;
   category_slug: string;
+  enabled?: boolean;
 }
 
 export interface Coupon {
