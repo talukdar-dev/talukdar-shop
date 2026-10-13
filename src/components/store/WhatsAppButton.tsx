@@ -1,1 +1,64 @@
-J3VzZSBjbGllbnQnOwoKaW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBXaGF0c0FwcEJ1dHRvbih7IG51bWJlciB9OiB7IG51bWJlcj86IHN0cmluZyB9KSB7CiAgY29uc3QgW29wZW4sIHNldE9wZW5dID0gdXNlU3RhdGUoZmFsc2UpOwogIGlmICghbnVtYmVyKSByZXR1cm4gbnVsbDsKCiAgLy8gTm9ybWFsaXplIHRvIGludGVybmF0aW9uYWwgZm9ybWF0IGZvciB3YS5tZSAoQkQgbnVtYmVycykKICBsZXQgZGlnaXRzID0gbnVtYmVyLnJlcGxhY2UoL1xEL2csICcnKTsKICBpZiAoZGlnaXRzLnN0YXJ0c1dpdGgoJzAnKSkgZGlnaXRzID0gJzg4MCcgKyBkaWdpdHMuc2xpY2UoMSk7CiAgZWxzZSBpZiAoIWRpZ2l0cy5zdGFydHNXaXRoKCc4ODAnKSkgZGlnaXRzID0gJzg4MCcgKyBkaWdpdHM7CgogIGNvbnN0IHdhVXJsID0gYGh0dHBzOi8vd2EubWUvJHtkaWdpdHN9P3RleHQ9JHtlbmNvZGVVUklDb21wb25lbnQoJ+CmhuCmuOCmuOCmvuCmsuCmvuCmruCngSDgpobgprLgpr7gpofgppXgp4Hgpq4hIFRhbHVrZGFyIFNob3Ag4Kal4KeH4KaV4KeHIOCmj+CmleCmn+CmvyDgpqrgp43gprDgp4vgpqHgpr7gppXgp43gpp8g4Ka44Kau4KeN4Kaq4Kaw4KeN4KaV4KeHIOCmnOCmvuCmqOCmpOCnhyDgpprgpr7gpofgpaQnKX1gOwoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImZpeGVkIGJvdHRvbS01IHJpZ2h0LTUgei1bOTBdIGZsZXggZmxleC1jb2wgaXRlbXMtZW5kIGdhcC0zIj4KICAgICAge29wZW4gJiYgKAogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTY0IHJvdW5kZWQtMnhsIGJnLXdoaXRlIHNoYWRvdy0yeGwgcmluZy0xIHJpbmctYmxhY2svMTAgb3ZlcmZsb3ctaGlkZGVuIGFuaW1hdGUtW2ZhZGVJbl8wLjJzX2Vhc2Utb3V0XSI+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYmctWyMwNzVFNTRdIHB4LTQgcHktMyB0ZXh0LXdoaXRlIj4KICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtc2VtaWJvbGQiPlRhbHVrZGFyIFNob3A8L3A+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LXdoaXRlLzgwIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUiPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iaW5saW5lLWJsb2NrIGgtMiB3LTIgcm91bmRlZC1mdWxsIGJnLVsjMjVEMzY2XSIgLz4KICAgICAgICAgICAgICDgpoXgpqjgprLgpr7gpofgpqjgp4cg4KaG4Kab4Ka/IOKAlCDgpq7gp4fgprjgp4fgppwg4KaV4Kaw4KeB4KaoCiAgICAgICAgICAgIDwvcD4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtNCI+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1bMTNweF0gdGV4dC1zbGF0ZS02MDAgbGVhZGluZy1yZWxheGVkIj4KICAgICAgICAgICAgICDgpqrgp43gprDgp4vgpqHgpr7gppXgp43gpp8sIOCmpuCmvuCmriDgpqzgpr4g4Kah4KeH4Kay4Ka/4Kat4Ka+4Kaw4Ka/IOCmuOCmruCnjeCmquCmsOCnjeCmleCnhyDgppzgpr7gpqjgpqTgp4cgV2hhdHNBcHAt4KaPIOCmruCnh+CmuOCnh+CmnCDgppXgprDgp4HgpqjgpaQKICAgICAgICAgICAgPC9wPgogICAgICAgICAgICA8YQogICAgICAgICAgICAgIGhyZWY9e3dhVXJsfQogICAgICAgICAgICAgIHRhcmdldD0iX2JsYW5rIgogICAgICAgICAgICAgIHJlbD0ibm9vcGVuZXIgbm9yZWZlcnJlciIKICAgICAgICAgICAgICBjbGFzc05hbWU9Im10LTMgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgZ2FwLTIgcm91bmRlZC14bCBiZy1bIzI1RDM2Nl0gcHgtNCBweS0yLjUgdGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtd2hpdGUgdHJhbnNpdGlvbiBob3ZlcjpiZy1bIzFlYjg1YV0iCiAgICAgICAgICAgID4KICAgICAgICAgICAgICA8c3ZnIHZpZXdCb3g9IjAgMCAyNCAyNCIgY2xhc3NOYW1lPSJoLTQgdy00IGZpbGwtY3VycmVudCIgYXJpYS1oaWRkZW49InRydWUiPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4yOTctLjE0OS0xLjc1OC0uODY3LTIuMDMtLjk2Ny0uMjczLS4wOTktLjQ3MS0uMTQ4LS42Ny4xNS0uMTk3LjI5Ny0uNzY3Ljk2Ni0uOTQgMS4xNjQtLjE3My4xOTktLjM0Ny4yMjMtLjY0NC4wNzUtLjI5Ny0uMTUtMS4yNTUtLjQ2My0yLjM5LTEuNDc1LS44ODMtLjc4OC0xLjQ4LTEuNzYxLTEuNjUzLTIuMDU5LS4xNzMtLjI5Ny0uMDE4LS40NTguMTMtLjYwNi4xMzQtLjEzMy4yOTgtLjM0Ny40NDYtLjUyLjE0OS0uMTc0LjE5OC0uMjk4LjI5OC0uNDk3LjA5OS0uMTk4LjA1LS4zNzEtLjAyNS0uNTItLjA3NS0uMTQ5LS42NjktMS42MTItLjkxNi0yLjIwNy0uMjQyLS41NzktLjQ4Ny0uNS0uNjY5LS41MS0uMTczLS4wMDgtLjM3MS0uMDEtLjU3LS4wMS0uMTk4IDAtLjUyLjA3NC0uNzkyLjM3Mi0uMjcyLjI5Ny0xLjA0IDEuMDE2LTEuMDQgMi40NzkgMCAxLjQ2MiAxLjA2NSAyLjg3NSAxLjIxMyAzLjA3NC4xNDkuMTk4IDIuMDk2IDMuMiA1LjA3NyA0LjQ4Ny43MDkuMzA2IDEuMjYyLjQ4OSAxLjY5NC42MjUuNzEyLjIyNyAxLjM2LjE5NSAxLjg3MS4xMTguNTcxLS4wODUgMS43NTgtLjcxOSAyLjAwNi0xLjQxMy4yNDgtLjY5NC4yNDgtMS4yODkuMTczLTEuNDEzLS4wNzQtLjEyNC0uMjcyLS4xOTgtLjU3LS4zNDdtLTUuNDIxIDcuNDAzaC0uMDA0YTkuODcgOS44NyAwIDAgMS01LjAzMS0xLjM3OGwtLjM2MS0uMjE0LTMuNzQxLjk4Mi45OTgtMy42NDgtLjIzNS0uMzc0YTkuODYgOS44NiAwIDAgMS0xLjUxLTUuMjZjLjAwMS01LjQ1IDQuNDM2LTkuODg0IDkuODg4LTkuODg0IDIuNjQgMCA1LjEyMiAxLjAzIDYuOTg4IDIuODk4YTkuODI1IDkuODI1IDAgMCAxIDIuODkzIDYuOTk0Yy0uMDAzIDUuNDUtNC40MzcgOS44ODQtOS44ODUgOS44ODRtOC40MTMtMTguMjk3QTExLjgxNSAxMS44MTUgMCAwIDAgMTIuMDUgMEM1LjQ5NSAwIC4xNiA1LjMzNS4xNTcgMTEuODkyYzAgMi4wOTYuNTQ3IDQuMTQyIDEuNTg4IDUuOTQ1TC4wNTcgMjRsNi4zMDUtMS42NTRhMTEuODgyIDExLjg4MiAwIDAgMCA1LjY4MyAxLjQ0OGguMDA1YzYuNTU0IDAgMTEuODktNS4zMzUgMTEuODkzLTExLjg5M2ExMS44MjEgMTEuODIxIDAgMCAwLTMuNDgtOC40MTNaIiAvPgogICAgICAgICAgICAgIDwvc3ZnPgogICAgICAgICAgICAgIOCmmuCnjeCmr+CmvuCmnyDgprbgp4HgprDgp4Eg4KaV4Kaw4KeB4KaoCiAgICAgICAgICAgIDwvYT4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICApfQogICAgICA8YnV0dG9uCiAgICAgICAgb25DbGljaz17KCkgPT4gc2V0T3BlbigodikgPT4gIXYpfQogICAgICAgIGFyaWEtbGFiZWw9IldoYXRzQXBwLeCmjyDgpprgp43gpq/gpr7gpp8g4KaV4Kaw4KeB4KaoIgogICAgICAgIGNsYXNzTmFtZT0iZ3JvdXAgcmVsYXRpdmUgZmxleCBoLTE0IHctMTQgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtZnVsbCBiZy1bIzI1RDM2Nl0gdGV4dC13aGl0ZSBzaGFkb3ctWzBfNHB4XzIwcHhfcmdiYSgzNywyMTEsMTAyLDAuNDUpXSB0cmFuc2l0aW9uLXRyYW5zZm9ybSBob3ZlcjpzY2FsZS0xMTAgYWN0aXZlOnNjYWxlLTk1IgogICAgICA+CiAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJhYnNvbHV0ZSBpbnNldC0wIHJvdW5kZWQtZnVsbCBiZy1bIzI1RDM2Nl0gYW5pbWF0ZS1waW5nIG9wYWNpdHktMjAgZ3JvdXAtaG92ZXI6b3BhY2l0eS0wIiAvPgogICAgICAgIHtvcGVuID8gKAogICAgICAgICAgPHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGNsYXNzTmFtZT0iaC02IHctNiBmaWxsLWN1cnJlbnQiIGFyaWEtaGlkZGVuPSJ0cnVlIj4KICAgICAgICAgICAgPHBhdGggZD0iTTE4LjMgNS43MSAxMiAxMi4wMWwtNi4zLTYuMy0xLjQxIDEuNDEgNi4zIDYuMy02LjMgNi4zIDEuNDEgMS40MSA2LjMtNi4zIDYuMyA2LjMgMS40MS0xLjQxLTYuMy02LjMgNi4zLTYuM3oiIC8+CiAgICAgICAgICA8L3N2Zz4KICAgICAgICApIDogKAogICAgICAgICAgPHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGNsYXNzTmFtZT0iaC03IHctNyBmaWxsLWN1cnJlbnQiIGFyaWEtaGlkZGVuPSJ0cnVlIj4KICAgICAgICAgICAgPHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4yOTctLjE0OS0xLjc1OC0uODY3LTIuMDMtLjk2Ny0uMjczLS4wOTktLjQ3MS0uMTQ4LS42Ny4xNS0uMTk3LjI5Ny0uNzY3Ljk2Ni0uOTQgMS4xNjQtLjE3My4xOTktLjM0Ny4yMjMtLjY0NC4wNzUtLjI5Ny0uMTUtMS4yNTUtLjQ2My0yLjM5LTEuNDc1LS44ODMtLjc4OC0xLjQ4LTEuNzYxLTEuNjUzLTIuMDU5LS4xNzMtLjI5Ny0uMDE4LS40NTguMTMtLjYwNi4xMzQtLjEzMy4yOTgtLjM0Ny40NDYtLjUyLjE0OS0uMTc0LjE5OC0uMjk4LjI5OC0uNDk3LjA5OS0uMTk4LjA1LS4zNzEtLjAyNS0uNTItLjA3NS0uMTQ5LS42NjktMS42MTItLjkxNi0yLjIwNy0uMjQyLS41NzktLjQ4Ny0uNS0uNjY5LS41MS0uMTczLS4wMDgtLjM3MS0uMDEtLjU3LS4wMS0uMTk4IDAtLjUyLjA3NC0uNzkyLjM3Mi0uMjcyLjI5Ny0xLjA0IDEuMDE2LTEuMDQgMi40NzkgMCAxLjQ2MiAxLjA2NSAyLjg3NSAxLjIxMyAzLjA3NC4xNDkuMTk4IDIuMDk2IDMuMiA1LjA3NyA0LjQ4Ny43MDkuMzA2IDEuMjYyLjQ4OSAxLjY5NC42MjUuNzEyLjIyNyAxLjM2LjE5NSAxLjg3MS4xMTguNTcxLS4wODUgMS43NTgtLjcxOSAyLjAwNi0xLjQxMy4yNDgtLjY5NC4yNDgtMS4yODkuMTczLTEuNDEzLS4wNzQtLjEyNC0uMjcyLS4xOTgtLjU3LS4zNDdtLTUuNDIxIDcuNDAzaC0uMDA0YTkuODcgOS44NyAwIDAgMS01LjAzMS0xLjM3OGwtLjM2MS0uMjE0LTMuNzQxLjk4Mi45OTgtMy42NDgtLjIzNS0uMzc0YTkuODYgOS44NiAwIDAgMS0xLjUxLTUuMjZjLjAwMS01LjQ1IDQuNDM2LTkuODg0IDkuODg4LTkuODg0IDIuNjQgMCA1LjEyMiAxLjAzIDYuOTg4IDIuODk4YTkuODI1IDkuODI1IDAgMCAxIDIuODkzIDYuOTk0Yy0uMDAzIDUuNDUtNC40MzcgOS44ODQtOS44ODUgOS44ODRtOC40MTMtMTguMjk3QTExLjgxNSAxMS44MTUgMCAwIDAgMTIuMDUgMEM1LjQ5NSAwIC4xNiA1LjMzNS4xNTcgMTEuODkyYzAgMi4wOTYuNTQ3IDQuMTQyIDEuNTg4IDUuOTQ1TC4wNTcgMjRsNi4zMDUtMS42NTRhMTEuODgyIDExLjg4MiAwIDAgMCA1LjY4MyAxLjQ0OGguMDA1YzYuNTU0IDAgMTEuODktNS4zMzUgMTEuODkzLTExLjg5M2ExMS44MjEgMTEuODIxIDAgMCAwLTMuNDgtOC40MTNaIiAvPgogICAgICAgICAgPC9zdmc+CiAgICAgICAgKX0KICAgICAgPC9idXR0b24+CiAgICAgIDxzdHlsZSBqc3g+e2BAa2V5ZnJhbWVzIGZhZGVJbiB7IGZyb20geyBvcGFjaXR5OiAwOyB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoOHB4KTsgfSB0byB7IG9wYWNpdHk6IDE7IHRyYW5zZm9ybTogbm9uZTsgfSB9YH08L3N0eWxlPgogICAgPC9kaXY+CiAgKTsKfQo=
+'use client';
+
+import { useState } from 'react';
+
+export default function WhatsAppButton({ number }: { number?: string }) {
+  const [open, setOpen] = useState(false);
+  if (!number) return null;
+
+  // Normalize to international format for wa.me (BD numbers)
+  let digits = number.replace(/\D/g, '');
+  if (digits.startsWith('0')) digits = '880' + digits.slice(1);
+  else if (!digits.startsWith('880')) digits = '880' + digits;
+
+  const waUrl = `https://wa.me/${digits}?text=${encodeURIComponent('আসসালামু আলাইকুম! Talukdar Shop থেকে একটি প্রোডাক্ট সম্পর্কে জানতে চাই।')}`;
+
+  return (
+    <div className="fixed bottom-5 right-5 z-[90] flex flex-col items-end gap-3">
+      {open && (
+        <div className="w-64 rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          <div className="bg-[#075E54] px-4 py-3 text-white">
+            <p className="text-sm font-semibold">Talukdar Shop</p>
+            <p className="text-xs text-white/80 flex items-center gap-1.5">
+              <span className="inline-block h-2 w-2 rounded-full bg-[#25D366]" />
+              অনলাইনে আছি — মেসেজ করুন
+            </p>
+          </div>
+          <div className="p-4">
+            <p className="text-[13px] text-slate-600 leading-relaxed">
+              প্রোডাক্ট, দাম বা ডেলিভারি সম্পর্কে জানতে WhatsApp-এ মেসেজ করুন।
+            </p>
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1eb85a]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+              </svg>
+              চ্যাট শুরু করুন
+            </a>
+          </div>
+        </div>
+      )}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="WhatsApp-এ চ্যাট করুন"
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_4px_20px_rgba(37,211,102,0.45)] transition-transform hover:scale-110 active:scale-95"
+      >
+        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-20 group-hover:opacity-0" />
+        {open ? (
+          <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current" aria-hidden="true">
+            <path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+          </svg>
+        )}
+      </button>
+      <style jsx>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }`}</style>
+    </div>
+  );
+}
