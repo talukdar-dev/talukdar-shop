@@ -42,6 +42,7 @@ export default async function HomePage() {
         { title: 'Microwave Oven Collection', category_slug: 'microwave-oven' },
         { title: 'Ceiling Fan Collection', category_slug: 'ceiling-fan' },
         { title: 'Room Heater for Winter', category_slug: 'room-heater' },
+        { title: 'Solar Products', category_slug: 'solar' },
         { title: 'Pressure Cooker Collection', category_slug: 'pressure-cooker' },
         { title: 'Cookware Collection', category_slug: 'cookware' },
         { title: 'Multi Cooker Collection', category_slug: 'multi-cooker' },
