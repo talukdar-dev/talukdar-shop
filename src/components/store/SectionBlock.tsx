@@ -28,7 +28,7 @@ export default function SectionBlock({ id, title, href, linkText = 'View All', p
           {linkText} <IconArrowRight className="w-4 h-4" />
         </Link>
       </div>
-      <ProductCarousel products={products} />
+      <ProductCarousel products={products} href={href} linkText={linkText} />
     </section>
   );
 }
