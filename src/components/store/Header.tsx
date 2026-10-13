@@ -121,7 +121,7 @@ export default function Header({ settings }: { settings: SiteSettings }) {
       <div className="max-w-[1280px] mx-auto px-3 py-3 flex items-center gap-3 sm:gap-6">
         <Link href="/" className="shrink-0 leading-none" aria-label="Talukdar Shop home">
           <SmartImage
-            src="https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo.png"
+            src="https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo-v2.png"
             alt="Talukdar Shop"
             width={190}
             height={52}
