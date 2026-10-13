@@ -72,6 +72,44 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
     },
   };
 
+  const storeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Store',
+    name: 'Talukdar Shop',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
+    image: `${SITE_URL}/logo.png`,
+    telephone: settings.hotline,
+    priceRange: '৳৳',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: settings.address,
+      addressLocality: 'Sakhipur',
+      addressRegion: 'Tangail',
+      addressCountry: 'BD',
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: [
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+      ],
+      opens: '09:00',
+      closes: '22:00',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      reviewCount: '219',
+      bestRating: 5,
+    },
+  };
+
   return (
     <>
       <script
@@ -81,6 +119,10 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
       />
       <TopBar />
       <NavigationProgress />
