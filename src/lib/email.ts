@@ -2,7 +2,7 @@ import nodemailer, { type Transporter } from 'nodemailer';
 import type { Order } from './types';
 import { taka } from './format';
 
-const LOGO_URL = 'https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo-v2.png';
+const LOGO_URL = 'https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo-v5.png';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
 
 let transporter: Transporter | null = null;
