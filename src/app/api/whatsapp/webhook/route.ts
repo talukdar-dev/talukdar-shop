@@ -1,0 +1,103 @@
+// WhatsApp Cloud API webhook for Talukdar Shop AI sales agent.
+// GET  -> webhook verification (Meta setup)
+// POST -> incoming message -> AI flow
+// Env needed: WHATSAPP_VERIFY_TOKEN (Meta gives later), GROQ_API_KEY (set)
+
+import { NextRequest, NextResponse } from 'next/server';
+import { handleWaMessage } from '@/lib/wa/flow';
+import { detectLang } from '@/lib/wa/config';
+
+// concurrent processing counter -> adaptive pacing signal
+let activeJobs = 0;
+
+export async function GET(req: NextRequest) {
+  const q = req.nextUrl.searchParams;
+  const mode = q.get('hub.mode');
+  const token = q.get('hub.verify_token');
+  const challenge = q.get('hub.challenge');
+  const verify = process.env.WHATSAPP_VERIFY_TOKEN;
+
+  if (mode === 'subscribe' && verify && token === verify) {
+    return new NextResponse(challenge ?? '', { status: 200 });
+  }
+  // verification endpoint reachable even before Meta creds arrive
+  return NextResponse.json({ ok: true, webhook: 'talukdar-shop-whatsapp', verifySet: !!verify });
+}
+
+interface WaTextMsg {
+  from: string;
+  id: string;
+  type: string;
+  text?: { body: string };
+  interactive?: { type: string; list_reply?: { id: string; title: string }; button_reply?: { id: string; title: string } };
+}
+
+function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
+  try {
+    const entry = (body.entry as Array<Record<string, unknown>>)?.[0];
+    const change = (entry?.changes as Array<Record<string, unknown>>)?.[0];
+    const value = change?.value as Record<string, unknown>;
+    const msg = (value?.messages as Array<Record<string, unknown>>)?.[0];
+    if (!msg) return null;
+    return {
+      from: String(msg.from ?? ''),
+      id: String(msg.id ?? ''),
+      type: String(msg.type ?? ''),
+      text: msg.text as WaTextMsg['text'],
+      interactive: msg.interactive as WaTextMsg['interactive'],
+    };
+  } catch {
+    return null;
+  }
+}
+
+// dedupe: WhatsApp may retry webhooks
+const seen = new Map<string, number>();
+function isDuplicate(id: string): boolean {
+  const now = Date.now();
+  for (const [k, t] of seen) if (now - t > 10 * 60_000) seen.delete(k);
+  if (seen.has(id)) return true;
+  seen.set(id, now);
+  return false;
+}
+
+export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ ok: false }, { status: 400 });
+  }
+
+  const msg = extractMessage(body);
+  if (!msg || isDuplicate(msg.id)) return NextResponse.json({ ok: true });
+
+  // resolve text from text or interactive replies
+  let text = '';
+  if (msg.type === 'text' && msg.text?.body) text = msg.text.body;
+  else if (msg.type === 'interactive' && msg.interactive) {
+    const it = msg.interactive;
+    text = it.list_reply?.id ?? it.list_reply?.title ?? it.button_reply?.id ?? it.button_reply?.title ?? '';
+  }
+  if (!text.trim()) return NextResponse.json({ ok: true });
+
+  // process inline (Hobby has no per-minute cron) with adaptive pacing
+  activeJobs++;
+  const depth = activeJobs;
+  try {
+    // hard cap: never process more than ~8 min in serverless
+    await Promise.race([
+      handleWaMessage(msg.from, text.trim(), depth),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7 * 60_000)),
+    ]);
+  } catch (e) {
+    console.error('[wa] handler error', e);
+  } finally {
+    activeJobs = Math.max(0, activeJobs - 1);
+  }
+
+  // keep variable referenced (language fallback safety)
+  void detectLang;
+
+  return NextResponse.json({ ok: true });
+}
