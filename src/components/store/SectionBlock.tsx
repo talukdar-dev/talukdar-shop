@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
-import ProductCard from './ProductCard';
+import ProductCarousel from './ProductCarousel';
 import { IconArrowRight } from './icons';
 
 interface Props {
@@ -28,13 +28,7 @@ export default function SectionBlock({ id, title, href, linkText = 'View All', p
           {linkText} <IconArrowRight className="w-4 h-4" />
         </Link>
       </div>
-      <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-1 -mx-1 px-1">
-        {products.map((p) => (
-          <div key={p.id} className="snap-start shrink-0 w-[168px] sm:w-[200px]">
-            <ProductCard product={p} />
-          </div>
-        ))}
-      </div>
+      <ProductCarousel products={products} />
     </section>
   );
 }
