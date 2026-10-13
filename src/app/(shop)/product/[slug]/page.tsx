@@ -7,6 +7,7 @@ import { effectivePrice, taka } from '@/lib/format';
 import Breadcrumb from '@/components/store/Breadcrumb';
 import BuyBox from '@/components/store/BuyBox';
 import ProductGallery from '@/components/store/ProductGallery';
+import ProductDescription from '@/components/store/ProductDescription';
 import QA from '@/components/store/QA';
 import RelatedProducts from '@/components/store/RelatedProducts';
 import Reviews from '@/components/store/Reviews';
@@ -192,10 +193,7 @@ export default async function ProductPage({ params }: Props) {
           <h2 className="text-[17px] font-bold text-[#222] border-l-4 border-brand pl-2.5 mb-3">
             Description
           </h2>
-          <div
-            className="text-[13.5px] text-gray-700 leading-relaxed space-y-2 [&>ul]:list-disc [&>ul]:list-inside"
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          />
+          <ProductDescription html={product.description} />
         </section>
       )}
 
