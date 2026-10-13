@@ -28,7 +28,7 @@ export default async function HomePage() {
   ]);
 
   // Admin-configurable homepage sections (fallback to defaults)
-  const configured = settings.homepage_sections?.length
+  const configured = (settings.homepage_sections?.length
     ? settings.homepage_sections
     : [
         { title: 'Best Air Fryer in Bangladesh', category_slug: 'air-fryer' },
@@ -47,7 +47,8 @@ export default async function HomePage() {
         { title: 'Cookware Collection', category_slug: 'cookware' },
         { title: 'Multi Cooker Collection', category_slug: 'multi-cooker' },
         { title: 'Best Iron in Bangladesh', category_slug: 'iron' },
-      ];
+      ]
+  ).filter((s) => s.enabled !== false);
 
   const sectionProducts = await Promise.all(
     configured.map((s) => getProducts({ categorySlug: s.category_slug, perPage: 10 })),
