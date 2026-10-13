@@ -10,7 +10,7 @@ const LIGHT_BG = '#f8f9fb';
 async function fetchLogo(): Promise<Buffer | null> {
   try {
     const res = await fetch(
-      'https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo-v2.png',
+      'https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/talukdar-shop-logo-v5.png',
     );
     if (!res.ok) return null;
     return Buffer.from(await res.arrayBuffer());
