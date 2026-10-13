@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useCart } from '@/lib/cart';
 
 export default function WhatsAppButton({ number }: { number?: string }) {
   const [open, setOpen] = useState(false);
-  if (!number) return null;
+  const { drawerOpen } = useCart();
+  if (!number || drawerOpen) return null;
 
   // Normalize to international format for wa.me (BD numbers)
   let digits = number.replace(/\D/g, '');
