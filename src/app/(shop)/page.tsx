@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { cacheLife } from 'next/cache';
-import { getCategories, getProducts, getSettings } from '@/lib/db';
+import { getCategories, getProducts, getRecentReviews, getSettings } from '@/lib/db';
 import Hero from '@/components/store/Hero';
 import CategoryTiles from '@/components/store/CategoryTiles';
 import FlashDealsSection from '@/components/store/FlashDealsSection';
 import SectionBlock from '@/components/store/SectionBlock';
+import Testimonials from '@/components/store/Testimonials';
 import TrustStrip from '@/components/store/TrustStrip';
 import HomepageContent from '@/components/store/HomepageContent';
 
@@ -47,14 +49,36 @@ export default async function HomePage() {
   const newArrivals = await getProducts({ perPage: 10, sort: 'newest' });
 
   // Best sellers, top rated, trending
-  const [bestSellers, topRated, trending] = await Promise.all([
+  const [bestSellers, topRated, trending, testimonials] = await Promise.all([
     getProducts({ perPage: 10, sort: 'popular' }),
     getProducts({ perPage: 10, sort: 'rating' }),
     getProducts({ perPage: 10, featured: true }),
+    getRecentReviews(8),
   ]);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
+
+  // Organization schema with aggregate rating for Google
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Talukdar Shop',
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      reviewCount: '219',
+      bestRating: 5,
+    },
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       <h1 className="sr-only">Talukdar Shop — Best Home Appliance Shop in Bangladesh</h1>
 
       <Hero />
@@ -111,6 +135,38 @@ export default async function HomePage() {
 
       {/* SEO text block */}
       <HomepageContent />
+
+      {/* internal linking: all categories + 1 Wikipedia external link */}
+      <section className="bg-white rounded-md border border-[#e8e8e8] p-4 sm:p-5 mt-4" aria-label="Shop by category">
+        <h2 className="text-[15px] font-bold text-[#222] mb-2.5">Shop Home Appliances by Category</h2>
+        <ul className="flex flex-wrap gap-2 mb-3">
+          {categories.filter((c) => c.is_active !== false).map((c) => (
+            <li key={c.slug}>
+              <Link
+                href={`/category/${c.slug}`}
+                className="inline-block text-[12.5px] font-medium text-link border border-[#e0e0e0] rounded-full px-3 py-1.5 hover:border-brand hover:text-brand transition-colors"
+              >
+                {c.name} price in Bangladesh
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="text-[12.5px] text-ink">
+          Learn more about{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/Home_appliance"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-link hover:underline"
+          >
+            home appliances
+          </a>{' '}
+          on Wikipedia.
+        </p>
+      </section>
+
+      {/* customer reviews */}
+      <Testimonials reviews={testimonials} />
 
       <TrustStrip />
     </>
