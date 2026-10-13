@@ -322,6 +322,37 @@ export async function getReviews(productId: string): Promise<Review[]> {
   );
 }
 
+/** Recent 5-star reviews across all products for homepage testimonials. */
+export interface TestimonialReview extends Review {
+  product_name: string;
+  product_slug: string;
+}
+
+export async function getRecentReviews(limit = 8): Promise<TestimonialReview[]> {
+  'use cache';
+  cacheLife('hours');
+  cacheTag('reviews');
+  return live(
+    async () => [],
+    async (sb) => {
+      const { data, error } = await sb
+        .from('reviews')
+        .select('*, products!inner(name, slug)')
+        .eq('is_approved', true)
+        .gte('rating', 4)
+        .order('review_date', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return ((data ?? []) as any[]).map((r) => ({
+        ...r,
+        product_name: r.products?.name ?? '',
+        product_slug: r.products?.slug ?? '',
+      })) as TestimonialReview[];
+    },
+  );
+}
+
 export async function getRelated(
   product: Product,
   limit = 8,
