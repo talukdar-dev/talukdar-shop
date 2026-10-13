@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#081621"/>
-  <text x="32" y="42" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#ef4a23" text-anchor="middle">TS</text>
+  <rect width="64" height="64" rx="14" fill="#ef4a23"/>
+  <g transform="translate(32,30)">
+    <!-- shopping bag -->
+    <path d="M-14,-8 h28 l-2.5,22 a6,6 0 0 1 -6,5 h-11 a6,6 0 0 1 -6,-5 z" fill="#ffffff"/>
+    <path d="M-8,-8 v-3 a8,8 0 0 1 16,0 v3" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- lightning bolt -->
+    <path d="M3,-4 L-3,4 h4 L-2,12 L6,0 h-4.5 z" fill="#ef4a23"/>
+  </g>
 </svg>
