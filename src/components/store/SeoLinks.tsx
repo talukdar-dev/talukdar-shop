@@ -17,6 +17,10 @@ export const WIKIPEDIA_BY_CATEGORY: Record<string, { title: string; url: string 
   'light': { title: 'Light-emitting diode', url: 'https://en.wikipedia.org/wiki/Light-emitting_diode' },
   'ac-dc-light': { title: 'Light-emitting diode', url: 'https://en.wikipedia.org/wiki/Light-emitting_diode' },
   'battery': { title: 'Rechargeable battery', url: 'https://en.wikipedia.org/wiki/Rechargeable_battery' },
+  'solar': { title: 'Solar power', url: 'https://en.wikipedia.org/wiki/Solar_power' },
+  'electric-kettle': { title: 'Kettle', url: 'https://en.wikipedia.org/wiki/Kettle' },
+  'microwave-oven': { title: 'Microwave oven', url: 'https://en.wikipedia.org/wiki/Microwave_oven' },
+  'room-heater': { title: 'Space heater', url: 'https://en.wikipedia.org/wiki/Space_heater' },
 };
 
 export const HOME_APPLIANCE_WIKI = {
@@ -39,8 +43,12 @@ export const RELATED_CATEGORIES: Record<string, string[]> = {
   'iron': ['water-heater', 'light', 'battery', 'cookware'],
   'light': ['ac-dc-light', 'battery', 'ceiling-fan', 'water-heater'],
   'ac-dc-light': ['light', 'battery', 'dc-fan', 'ceiling-fan'],
-  'battery': ['dc-fan', 'ac-dc-light', 'light', 'high-speed-fan'],
+  'battery': ['dc-fan', 'ac-dc-light', 'light', 'high-speed-fan', 'solar'],
   'water-heater': ['iron', 'light', 'battery', 'blender'],
+  'solar': ['battery', 'light', 'ac-dc-light', 'dc-fan'],
+  'electric-kettle': ['blender', 'microwave-oven', 'multi-cooker', 'rice-cooker'],
+  'microwave-oven': ['blender', 'electric-kettle', 'multi-cooker', 'air-fryer'],
+  'room-heater': ['water-heater', 'light', 'blender', 'iron'],
 };
 
 export const CATEGORY_NAMES: Record<string, string> = {
@@ -59,6 +67,10 @@ export const CATEGORY_NAMES: Record<string, string> = {
   'light': 'Light',
   'ac-dc-light': 'AC DC Light',
   'battery': 'Battery',
+  'solar': 'Solar Products',
+  'electric-kettle': 'Electric Kettle',
+  'microwave-oven': 'Microwave Oven',
+  'room-heater': 'Room Heater',
 };
 
 interface Props {
