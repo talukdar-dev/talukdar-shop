@@ -167,7 +167,7 @@ export default function SettingsPage() {
 
           <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
             <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-slate-500">Homepage Sections</h2>
-            <p className="mb-4 text-xs text-slate-400">Choose which category sections appear on the homepage, in order. A section shows only when its category has 4+ products.</p>
+            <p className="mb-4 text-xs text-slate-400">Toggle sections on/off, reorder with ↑↓, or add/remove. Only enabled sections with 4+ products show on the homepage.</p>
             <HomepageSectionsManager
               sections={form.homepage_sections ?? []}
               onChange={(v) => set('homepage_sections', v)}
@@ -254,8 +254,8 @@ function HomepageSectionsManager({
   sections,
   onChange,
 }: {
-  sections: { title: string; category_slug: string }[];
-  onChange: (v: { title: string; category_slug: string }[]) => void;
+  sections: { title: string; category_slug: string; enabled?: boolean }[];
+  onChange: (v: { title: string; category_slug: string; enabled?: boolean }[]) => void;
 }) {
   const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
 
@@ -283,7 +283,7 @@ function HomepageSectionsManager({
     onChange(next);
   };
 
-  const update = (i: number, patch: Partial<{ title: string; category_slug: string }>) => {
+  const update = (i: number, patch: Partial<{ title: string; category_slug: string; enabled: boolean }>) => {
     const next = sections.map((s, k) => (k === i ? { ...s, ...patch } : s));
     onChange(next);
   };
@@ -296,7 +296,17 @@ function HomepageSectionsManager({
         <p className="text-sm text-slate-400">No sections yet. Add one below — e.g. Laptop, Mobile, Gadget.</p>
       )}
       {sections.map((s, i) => (
-        <div key={i} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+        <div key={i} className={`flex flex-col sm:flex-row gap-2 items-stretch sm:items-center rounded-lg border p-2.5 ${s.enabled === false ? 'border-slate-200 bg-slate-100 opacity-60' : 'border-slate-200 bg-slate-50'}`}>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={s.enabled !== false}
+            aria-label={`Toggle ${s.title}`}
+            onClick={() => update(i, { enabled: s.enabled === false ? true : false })}
+            className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${s.enabled === false ? 'bg-slate-300' : 'bg-green-500'}`}
+          >
+            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${s.enabled === false ? 'left-0.5' : 'left-[22px]'}`} />
+          </button>
           <span className="flex items-center gap-1 shrink-0">
             <button
               type="button"
