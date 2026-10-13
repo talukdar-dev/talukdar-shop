@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getCategories, getProducts } from '@/lib/db';
+import { BLOG_POSTS } from '@/lib/blog';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
 
@@ -14,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/offers',
     '/pc-builder',
     '/emi',
+    '/blog',
   ];
 
   return [
@@ -34,6 +36,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
+    })),
+    ...BLOG_POSTS.map((b) => ({
+      url: `${SITE_URL}/blog/${b.slug}`,
+      lastModified: new Date(b.date),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
     })),
   ];
 }
