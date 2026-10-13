@@ -8,6 +8,7 @@ import Breadcrumb from '@/components/store/Breadcrumb';
 import Filters from '@/components/store/Filters';
 import Pagination from '@/components/store/Pagination';
 import ProductCard from '@/components/store/ProductCard';
+import SeoLinks from '@/components/store/SeoLinks';
 
 
 interface Props {
@@ -54,10 +55,14 @@ function one(v: string | string[] | undefined): string | undefined {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategory(slug);
-  if (!category) return { title: 'Category not found | Talukdar Shop' };
+  if (!category) return { title: 'Category not found' };
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
+  // Strip trailing "| Talukdar Shop" / "- Talukdar Shop" — layout template appends it
+  const rawTitle =
+    category.meta_title ?? `${category.name} Price in Bangladesh`;
+  const cleanTitle = rawTitle.replace(/\s*[\|\-–]\s*Talukdar Shop\s*$/i, '').trim();
   return {
-    title: category.meta_title ?? `${category.name} Price in Bangladesh | Talukdar Shop`,
+    title: cleanTitle,
     description:
       category.meta_description ??
       category.description ??
@@ -182,6 +187,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           </div>
         </section>
       )}
+
+      <SeoLinks categorySlug={slug} variant="category" />
     </>
   );
 }
