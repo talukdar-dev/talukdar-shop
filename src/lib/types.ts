@@ -1,1 +1,185 @@
-Ly8gVGFsdWtkYXIgU2hvcCDigJQgc2hhcmVkIHR5cGVzCgpleHBvcnQgaW50ZXJmYWNlIENhdGVnb3J5IHsKICBpZDogc3RyaW5nOwogIG5hbWU6IHN0cmluZzsKICBzbHVnOiBzdHJpbmc7CiAgaWNvbj86IHN0cmluZzsKICBpbWFnZT86IHN0cmluZzsKICBwYXJlbnRfaWQ/OiBzdHJpbmcgfCBudWxsOwogIHNvcnRfb3JkZXI6IG51bWJlcjsKICBpc19hY3RpdmU6IGJvb2xlYW47CiAgZGVzY3JpcHRpb24/OiBzdHJpbmc7CiAgbWV0YV90aXRsZT86IHN0cmluZzsKICBtZXRhX2Rlc2NyaXB0aW9uPzogc3RyaW5nOwogIHByb2R1Y3RfY291bnQ/OiBudW1iZXI7Cn0KCmV4cG9ydCBpbnRlcmZhY2UgQnJhbmQgewogIGlkOiBzdHJpbmc7CiAgbmFtZTogc3RyaW5nOwogIHNsdWc6IHN0cmluZzsKICBsb2dvPzogc3RyaW5nOwogIGlzX2FjdGl2ZTogYm9vbGVhbjsKfQoKZXhwb3J0IGludGVyZmFjZSBQcm9kdWN0VmFyaWFudE9wdGlvbiB7CiAgaWQ6IHN0cmluZzsKICBsYWJlbDogc3RyaW5nOwogIHByaWNlX2RlbHRhOiBudW1iZXI7CiAgc2t1X3N1ZmZpeD86IHN0cmluZzsKICBzdG9ja19xdHk/OiBudW1iZXI7Cn0KCmV4cG9ydCBpbnRlcmZhY2UgUHJvZHVjdFZhcmlhbnQgewogIGlkOiBzdHJpbmc7CiAgbmFtZTogc3RyaW5nOwogIG9wdGlvbnM6IFByb2R1Y3RWYXJpYW50T3B0aW9uW107Cn0KCmV4cG9ydCBpbnRlcmZhY2UgUHJvZHVjdCB7CiAgaWQ6IHN0cmluZzsKICBuYW1lOiBzdHJpbmc7CiAgc2x1Zzogc3RyaW5nOwogIHNrdTogc3RyaW5nOwogIGNhdGVnb3J5X2lkOiBzdHJpbmc7CiAgYnJhbmRfaWQ6IHN0cmluZzsKICBwcmljZTogbnVtYmVyOwogIG9sZF9wcmljZT86IG51bWJlciB8IG51bGw7CiAgc2hvcnRfZGVzYz86IHN0cmluZzsKICBkZXNjcmlwdGlvbj86IHN0cmluZzsgLy8gSFRNTAogIHNwZWNzPzogUmVjb3JkPHN0cmluZywgc3RyaW5nIHwgc3RyaW5nW10+OwogIGltYWdlczogc3RyaW5nW107CiAgc3RvY2tfcXR5OiBudW1iZXI7CiAgcHJvZHVjdF90eXBlPzogJ3BoeXNpY2FsJyB8ICdkaWdpdGFsJzsKICB2YXJpYW50cz86IFByb2R1Y3RWYXJpYW50W107CiAgaXNfZmVhdHVyZWQ6IGJvb2xlYW47CiAgaXNfbmV3OiBib29sZWFuOwogIGlzX2ZsYXNoX2RlYWw6IGJvb2xlYW47CiAgZmxhc2hfcHJpY2U/OiBudW1iZXIgfCBudWxsOwogIGZsYXNoX2VuZHNfYXQ/OiBzdHJpbmcgfCBudWxsOwogIHJhdGluZzogbnVtYmVyOwogIHJldmlld3NfY291bnQ6IG51bWJlcjsKICBlbWlfYXZhaWxhYmxlOiBib29sZWFuOwogIG1ldGFfdGl0bGU/OiBzdHJpbmc7CiAgbWV0YV9kZXNjcmlwdGlvbj86IHN0cmluZzsKICBpc19hY3RpdmU6IGJvb2xlYW47CiAgY3JlYXRlZF9hdD86IHN0cmluZzsKICAvLyBqb2luZWQKICBjYXRlZ29yeT86IENhdGVnb3J5OwogIGJyYW5kPzogQnJhbmQ7Cn0KCmV4cG9ydCBpbnRlcmZhY2UgQmFubmVyIHsKICBpZDogc3RyaW5nOwogIHRpdGxlOiBzdHJpbmc7CiAgc3VidGl0bGU/OiBzdHJpbmc7CiAgaW1hZ2U6IHN0cmluZzsKICBsaW5rOiBzdHJpbmc7CiAgc29ydF9vcmRlcjogbnVtYmVyOwogIGlzX2FjdGl2ZTogYm9vbGVhbjsKICBwb3NpdGlvbjogJ2hlcm8nIHwgJ3NpZGUnIHwgJ3Byb21vJyB8ICdicmFuZCc7Cn0KCmV4cG9ydCBpbnRlcmZhY2UgQ2FydEl0ZW0gewogIHByb2R1Y3RfaWQ6IHN0cmluZzsKICBxdHk6IG51bWJlcjsKfQoKZXhwb3J0IGludGVyZmFjZSBPcmRlckl0ZW0gewogIHByb2R1Y3RfaWQ6IHN0cmluZzsKICBuYW1lOiBzdHJpbmc7CiAgcHJpY2U6IG51bWJlcjsKICBxdHk6IG51bWJlcjsKICBpbWFnZT86IHN0cmluZzsKfQoKZXhwb3J0IHR5cGUgT3JkZXJTdGF0dXMgPQogIHwgJ3BlbmRpbmcnCiAgfCAnY29uZmlybWVkJwogIHwgJ3Byb2Nlc3NpbmcnCiAgfCAnc2hpcHBlZCcKICB8ICdkZWxpdmVyZWQnCiAgfCAnY2FuY2VsbGVkJzsKCmV4cG9ydCBpbnRlcmZhY2UgT3JkZXIgewogIGlkOiBzdHJpbmc7CiAgb3JkZXJfbm86IHN0cmluZzsKICBjdXN0b21lcl9uYW1lOiBzdHJpbmc7CiAgcGhvbmU6IHN0cmluZzsKICBlbWFpbD86IHN0cmluZzsKICBhZGRyZXNzOiBzdHJpbmc7CiAgY2l0eTogc3RyaW5nOwogIGFyZWE/OiBzdHJpbmc7CiAgaXRlbXM6IE9yZGVySXRlbVtdOwogIHN1YnRvdGFsOiBudW1iZXI7CiAgc2hpcHBpbmc6IG51bWJlcjsKICBkaXNjb3VudDogbnVtYmVyOwogIHRvdGFsOiBudW1iZXI7CiAgcGF5bWVudF9tZXRob2Q6ICdjb2QnIHwgJ2JrYXNoJyB8ICduYWdhZCcgfCAncm9ja2V0JyB8ICdjYXJkJyB8ICdlbWknOwogIHBheW1lbnRfc3RhdHVzOiAndW5wYWlkJyB8ICdwYWlkJzsKICBzZW5kZXJfbnVtYmVyPzogc3RyaW5nOwogIHRyeF9pZD86IHN0cmluZzsKICBzdGF0dXM6IE9yZGVyU3RhdHVzOwogIG5vdGVzPzogc3RyaW5nOwogIGNyZWF0ZWRfYXQ6IHN0cmluZzsKfQoKZXhwb3J0IGludGVyZmFjZSBTaXRlU2V0dGluZ3MgewogIHNpdGVfbmFtZTogc3RyaW5nOwogIHRhZ2xpbmU6IHN0cmluZzsKICBsb2dvPzogc3RyaW5nOwogIGhvdGxpbmU6IHN0cmluZzsKICBob3RsaW5lX2hvdXJzOiBzdHJpbmc7CiAgd2hhdHNhcHBfbnVtYmVyPzogc3RyaW5nOwogIGVtYWlsOiBzdHJpbmc7CiAgYWRkcmVzczogc3RyaW5nOwogIGFubm91bmNlbWVudDogc3RyaW5nOwogIGFubm91bmNlbWVudF9saW5rPzogc3RyaW5nOwogIGZhY2Vib29rPzogc3RyaW5nOwogIHlvdXR1YmU/OiBzdHJpbmc7CiAgY3VycmVuY3k6IHN0cmluZzsKICBmcmVlX3NoaXBwaW5nX292ZXI/OiBudW1iZXI7CiAgaW5zaWRlX2RoYWthX3NoaXBwaW5nOiBudW1iZXI7CiAgb3V0c2lkZV9kaGFrYV9zaGlwcGluZzogbnVtYmVyOwogIC8vIHBheW1lbnQgbWV0aG9kcwogIHBheW1lbnRfY29kX2VuYWJsZWQ/OiBib29sZWFuOwogIHBheW1lbnRfYmthc2hfZW5hYmxlZD86IGJvb2xlYW47CiAgcGF5bWVudF9ia2FzaF9udW1iZXI/OiBzdHJpbmc7CiAgcGF5bWVudF9uYWdhZF9lbmFibGVkPzogYm9vbGVhbjsKICBwYXltZW50X25hZ2FkX251bWJlcj86IHN0cmluZzsKICBwYXltZW50X3JvY2tldF9lbmFibGVkPzogYm9vbGVhbjsKICBwYXltZW50X3JvY2tldF9udW1iZXI/OiBzdHJpbmc7CiAgLy8gbWVyY2hhbnQgKG9ubGluZSkgcGF5bWVudCAtIGZvciBmdXR1cmUgdXNlCiAgcGF5bWVudF9tZXJjaGFudF9lbmFibGVkPzogYm9vbGVhbjsKICBwYXltZW50X21lcmNoYW50X3Byb3ZpZGVyPzogc3RyaW5nOwogIC8vIGhvbWVwYWdlIGNhdGVnb3J5IHNlY3Rpb25zIChhZG1pbi1jb25maWd1cmFibGUpCiAgaG9tZXBhZ2Vfc2VjdGlvbnM/OiBIb21lcGFnZVNlY3Rpb25bXTsKfQoKZXhwb3J0IGludGVyZmFjZSBIb21lcGFnZVNlY3Rpb24gewogIHRpdGxlOiBzdHJpbmc7CiAgY2F0ZWdvcnlfc2x1Zzogc3RyaW5nOwogIGVuYWJsZWQ/OiBib29sZWFuOwp9CgpleHBvcnQgaW50ZXJmYWNlIENvdXBvbiB7CiAgaWQ6IHN0cmluZzsKICBjb2RlOiBzdHJpbmc7CiAgdHlwZTogJ3BlcmNlbnQnIHwgJ2ZsYXQnOwogIHZhbHVlOiBudW1iZXI7CiAgbWluX29yZGVyOiBudW1iZXI7CiAgaXNfYWN0aXZlOiBib29sZWFuOwp9CgpleHBvcnQgaW50ZXJmYWNlIFJldmlldyB7CiAgaWQ6IHN0cmluZzsKICBwcm9kdWN0X2lkOiBzdHJpbmc7CiAgY3VzdG9tZXJfbmFtZTogc3RyaW5nOwogIGdlbmRlcjogJ01hbGUnIHwgJ0ZlbWFsZScgfCBudWxsOwogIHJldmlld190ZXh0OiBzdHJpbmc7CiAgcmF0aW5nOiBudW1iZXI7CiAgcmV2aWV3X2RhdGU6IHN0cmluZyB8IG51bGw7CiAgaXNfYXBwcm92ZWQ6IGJvb2xlYW47CiAgY3JlYXRlZF9hdDogc3RyaW5nOwp9Cg==
+// Talukdar Shop — shared types
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon?: string;
+  image?: string;
+  parent_id?: string | null;
+  sort_order: number;
+  is_active: boolean;
+  description?: string;
+  meta_title?: string;
+  meta_description?: string;
+  product_count?: number;
+}
+
+export interface Brand {
+  id: string;
+  name: string;
+  slug: string;
+  logo?: string;
+  is_active: boolean;
+}
+
+export interface ProductVariantOption {
+  id: string;
+  label: string;
+  price_delta: number;
+  sku_suffix?: string;
+  stock_qty?: number;
+}
+
+export interface ProductVariant {
+  id: string;
+  name: string;
+  options: ProductVariantOption[];
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  sku: string;
+  category_id: string;
+  brand_id: string;
+  price: number;
+  old_price?: number | null;
+  short_desc?: string;
+  description?: string; // HTML
+  specs?: Record<string, string | string[]>;
+  images: string[];
+  stock_qty: number;
+  product_type?: 'physical' | 'digital';
+  variants?: ProductVariant[];
+  is_featured: boolean;
+  is_new: boolean;
+  is_flash_deal: boolean;
+  flash_price?: number | null;
+  flash_ends_at?: string | null;
+  rating: number;
+  reviews_count: number;
+  emi_available: boolean;
+  meta_title?: string;
+  meta_description?: string;
+  is_active: boolean;
+  created_at?: string;
+  // joined
+  category?: Category;
+  brand?: Brand;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle?: string;
+  image: string;
+  link: string;
+  sort_order: number;
+  is_active: boolean;
+  position: 'hero' | 'side' | 'promo' | 'brand';
+}
+
+export interface CartItem {
+  product_id: string;
+  qty: number;
+}
+
+export interface OrderItem {
+  product_id: string;
+  name: string;
+  price: number;
+  qty: number;
+  image?: string;
+}
+
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled';
+
+export interface Order {
+  id: string;
+  order_no: string;
+  customer_name: string;
+  phone: string;
+  email?: string;
+  address: string;
+  city: string;
+  area?: string;
+  items: OrderItem[];
+  subtotal: number;
+  shipping: number;
+  discount: number;
+  total: number;
+  payment_method: 'cod' | 'bkash' | 'nagad' | 'rocket' | 'card' | 'emi';
+  payment_status: 'unpaid' | 'paid';
+  sender_number?: string;
+  trx_id?: string;
+  status: OrderStatus;
+  notes?: string;
+  created_at: string;
+}
+
+export interface SiteSettings {
+  site_name: string;
+  tagline: string;
+  logo?: string;
+  hotline: string;
+  hotline_hours: string;
+  whatsapp_number?: string;
+  email: string;
+  address: string;
+  announcement: string;
+  announcement_link?: string;
+  facebook?: string;
+  youtube?: string;
+  currency: string;
+  free_shipping_over?: number;
+  inside_dhaka_shipping: number;
+  outside_dhaka_shipping: number;
+  // payment methods
+  payment_cod_enabled?: boolean;
+  payment_bkash_enabled?: boolean;
+  payment_bkash_number?: string;
+  payment_nagad_enabled?: boolean;
+  payment_nagad_number?: string;
+  payment_rocket_enabled?: boolean;
+  payment_rocket_number?: string;
+  // merchant (online) payment - for future use
+  payment_merchant_enabled?: boolean;
+  payment_merchant_provider?: string;
+  // homepage category sections (admin-configurable)
+  homepage_sections?: HomepageSection[];
+}
+
+export interface HomepageSection {
+  title: string;
+  category_slug: string;
+  enabled?: boolean;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  type: 'percent' | 'flat';
+  value: number;
+  min_order: number;
+  is_active: boolean;
+}
+
+export interface Review {
+  id: string;
+  product_id: string;
+  customer_name: string;
+  gender: 'Male' | 'Female' | null;
+  review_text: string;
+  rating: number;
+  review_date: string | null;
+  is_approved: boolean;
+  created_at: string;
+}
