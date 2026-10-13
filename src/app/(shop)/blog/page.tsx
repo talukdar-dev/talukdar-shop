@@ -10,8 +10,31 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
+
+  const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'Talukdar Shop Blog — Buying Guides & Tips',
+    url: `${siteUrl}/blog`,
+    description:
+      'Home appliance buying guides, price comparisons, recipes and maintenance tips for Bangladeshi homes.',
+    blogPost: BLOG_POSTS.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      url: `${siteUrl}/blog/${post.slug}`,
+      image: post.heroImage,
+      datePublished: post.date,
+      author: { '@type': 'Organization', name: 'Talukdar Shop' },
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
       <h1 className="text-[22px] sm:text-[26px] font-bold text-[#1a1a1a] mt-2">
         Buying Guides & Tips
       </h1>
