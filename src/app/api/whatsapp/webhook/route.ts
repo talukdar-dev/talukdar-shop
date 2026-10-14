@@ -74,8 +74,8 @@ async function isDuplicateDb(id: string): Promise<boolean> {
 }
 
 // content dedupe: Meta sometimes delivers the SAME user message multiple times
-// with DIFFERENT message IDs (BSUID/username flow). If the same phone sends the
-// same text within 60s, treat it as a duplicate — don't reprocess.
+// with DIFFERENT message IDs (BSUID/username flow), spaced minutes apart.
+// If the same phone sends the same text within 5 min, treat as duplicate.
 async function isDuplicateContent(phone: string, text: string): Promise<boolean> {
   try {
     const { supabaseAdmin } = await import('@/lib/admin-db');
@@ -89,7 +89,7 @@ async function isDuplicateContent(phone: string, text: string): Promise<boolean>
       { key, value: { text: text.slice(0, 200), at: now } },
       { onConflict: 'key' },
     );
-    if (last?.text && last.at && now - last.at < 60_000) {
+    if (last?.text && last.at && now - last.at < 5 * 60_000) {
       if (last.text.trim().toLowerCase() === text.trim().toLowerCase()) return true;
     }
     return false;
