@@ -123,13 +123,14 @@ export async function waSendList(
 // Product card: image with price caption (best for conversion)
 export async function waSendProductCard(
   to: string,
-  p: { name: string; price: number; imageUrl?: string; stock: number },
+  p: { name: string; slug?: string; price: number; imageUrl?: string; stock: number },
   lang: 'bn' | 'en',
 ): Promise<boolean> {
+  const link = p.slug ? `\nhttps://talukdarshop.com/product/${p.slug}` : '';
   const caption =
     lang === 'bn'
-      ? `${p.name}\nদাম: ${p.price} TK${p.stock > 0 ? '' : '\n(স্টক শেষ)'}\n\nনিতে চাইলে "Order" লিখুন`
-      : `${p.name}\nPrice: ${p.price} TK${p.stock > 0 ? '' : '\n(Out of stock)'}\n\nReply "Order" to buy`;
+      ? `${p.name}\nদাম: ${p.price} TK${p.stock > 0 ? '' : '\n(স্টক শেষ)'}${link}\n\nনিতে চাইলে "Order" লিখুন`
+      : `${p.name}\nPrice: ${p.price} TK${p.stock > 0 ? '' : '\n(Out of stock)'}${link}\n\nReply "Order" to buy`;
   if (p.imageUrl) return waSendImage(to, p.imageUrl, caption);
   return waSendText(to, caption);
 }

@@ -21,6 +21,7 @@ import { waSendText, waSendImage, waSendList, waSendProductCard } from './whatsa
 interface CatProduct {
   id: string;
   name: string;
+  slug: string;
   price: number;
   stock: number;
   imageUrl?: string;
@@ -36,7 +37,7 @@ async function getCatalog() {
   const sb = supabaseAdmin();
   const { data: products } = await sb
     .from('products')
-    .select('id,name,price,stock_qty,images,category_id,brand_id,variants')
+    .select('id,name,slug,price,stock_qty,images,category_id,brand_id,variants')
     .eq('is_active', true);
   const { data: cats } = await sb.from('categories').select('id,name,slug').eq('is_active', true);
   const { data: brands } = await sb.from('brands').select('id,name').eq('is_active', true);
@@ -45,6 +46,7 @@ async function getCatalog() {
   const items: CatProduct[] = (products ?? []).map((p: Record<string, unknown>) => ({
     id: String(p.id),
     name: String(p.name),
+    slug: String(p.slug ?? ''),
     price: Number(p.price) || 0,
     stock: Number(p.stock_qty) || 0,
     imageUrl: Array.isArray(p.images) && p.images[0] ? String(p.images[0]) : undefined,
@@ -353,6 +355,16 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       const byId = msg.startsWith('prod_') ? cat.items.find((p) => `prod_${p.id}` === msg) : undefined;
       const chosen = prod ?? byId;
       if (!chosen) {
+        // not a choice — maybe a NEW question? detect and restart fresh
+        let newIntent: Intent | null = null;
+        try { newIntent = await extractIntent(msg, KEYWORD_PROMPT); } catch { /* ignore */ }
+        if (newIntent && ['search', 'browse', 'price', 'delivery'].includes(newIntent.intent)) {
+          session.step = 'idle';
+          session.shownIds = [];
+          await saveSession(phone, session);
+          await handleWaMessage(phone, msg, queueDepth);
+          return;
+        }
         await ask(lang === 'bn' ? 'Sir, 1, 2 ba 3 er moddhe ekti likhun.' : 'Sir, please reply 1, 2 or 3.');
         return;
       }

@@ -116,7 +116,7 @@ export function finalReplyPrompt(opts: {
   context: string;
 }): string {
   const { lang, customerMsg, products, context } = opts;
-  const prodList = products.map((p, i) => `${i + 1}. ${p.name} — ${p.price} TK${p.stock > 0 ? '' : ' (stock sesh)'}`).join('\n');
+  const prodList = products.map((p, i) => `${i + 1}. ${p.name}\n   ${p.price} TK${p.stock > 0 ? '' : ' (stock sesh)'}`).join('\n\n');
   const langRule = lang === 'bn'
     ? 'Reply in pure Bengali script (বাংলা অক্ষরে).'
     : 'Reply in pure English.';
@@ -129,6 +129,17 @@ Rules (strict):
 - Only use the product data given. Never invent prices or stock.
 - Payment is Cash on Delivery only. Delivery: Dhaka 60 TK, outside Dhaka 120 TK, free above 5000 TK.
 - If asked about delivery/time: inside Dhaka 2-3 days, outside 3-5 days. Hotline 01333600272 (9AM-10PM).
+- FORMAT: when listing products, put EACH product on its own block with a blank line between. Easy to scan at a glance.
+Example:
+Sir, 3 ta pelam:
+
+1. Defender ST-2912 Fan
+   3499 TK
+
+2. Ceiling Fan 56 Inch
+   3500 TK
+
+Konta nite chan? Number likhun.
 Shop strengths (mention naturally when relevant): 100% genuine products, official warranty, fast delivery, careful packaging, best price.
 Products:
 ${prodList || '(none)'}
