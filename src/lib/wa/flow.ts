@@ -275,6 +275,30 @@ async function runAgent(
           toolResults.push({ tool: 'search_products', result: 'Products already shown above.' });
           continue;
         }
+        // cross-webhook card dedupe: if we sent cards for a similar query in the
+        // last 5 min (Meta multi-delivery), don't resend — just tell the agent.
+        const cardsKey = `wa_cards_${phone}`;
+        let skipCards = false;
+        try {
+          const { supabaseAdmin: sba } = await import('@/lib/admin-db');
+          const sbs = sba();
+          const { data: cd } = await sbs.from('settings').select('value').eq('key', cardsKey).maybeSingle();
+          const lastCards = cd?.value as { kw?: string; at?: number } | undefined;
+          if (lastCards?.at && Date.now() - lastCards.at < 5 * 60_000 && lastCards.kw) {
+            const a = lastCards.kw.toLowerCase();
+            if (a === kw || (a && kw && (a.includes(kw) || kw.includes(a)))) skipCards = true;
+          }
+          if (!skipCards) {
+            await sbs.from('settings').upsert(
+              { key: cardsKey, value: { kw, at: Date.now() } },
+              { onConflict: 'key' },
+            );
+          }
+        } catch { /* fail open — send cards */ }
+        if (skipCards) {
+          toolResults.push({ tool: 'search_products', result: 'Cards already sent for this query recently — do not resend, just reply briefly.' });
+          continue;
+        }
         matches.forEach((p) => shownThisTurn.add(p.id));
         const lang = detectLang(msg);
         for (const p of matches) {
