@@ -40,20 +40,45 @@ export function logWebhookHit(from: string, msgId: string, raw: unknown) {
   void logDiag('wa_last_webhook', { from: from.slice(-4), msgId, raw: JSON.stringify(raw).slice(0, 1500) });
 }
 
+// Notify Shipon on WhatsApp when a new order arrives (website or bot).
+// Destination: ORDER_NOTIFY_WA env, defaults to Shipon's own BSUID chat.
+export async function notifyOwnerNewOrder(summary: {
+  orderNo: string;
+  customer: string;
+  phone: string;
+  items: string;
+  total: number;
+  source: string;
+}): Promise<void> {
+  try {
+    const to = process.env.ORDER_NOTIFY_WA || 'BD.1074370902101691';
+    const text =
+      `🔔 New order ${summary.orderNo} (${summary.source})\n` +
+      `👤 ${summary.customer}\n` +
+      `📞 ${summary.phone}\n` +
+      `🛒 ${summary.items}\n` +
+      `💰 Total: ৳${summary.total.toLocaleString('en-US')}`;
+    await waSendText(to, text);
+  } catch {
+    /* notification best-effort */
+  }
+}
+
 // Persistent chat log for admin viewer (stored in settings as wa_chatlog_<phone>).
 // Keeps last 100 messages per phone. Best-effort, never blocks sending.
-export async function logChat(phone: string, direction: 'in' | 'out', text: string) {
+export async function logChat(phone: string, direction: 'in' | 'out', text: string, profileName?: string) {
   try {
     if (!phone || !text) return;
     const { supabaseAdmin } = await import('../admin-db');
     const sb = supabaseAdmin();
     const key = `wa_chatlog_${phone}`;
     const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
-    const cur = (data?.value as { messages?: Array<{ d: string; t: string; at: number }> } | undefined);
+    const cur = (data?.value as { messages?: Array<{ d: string; t: string; at: number }>; name?: string } | undefined);
     const msgs = cur?.messages ?? [];
     msgs.push({ d: direction, t: text.slice(0, 500), at: Date.now() });
     const trimmed = msgs.slice(-100);
-    await sb.from('settings').upsert({ key, value: { messages: trimmed } }, { onConflict: 'key' });
+    const name = profileName || cur?.name || '';
+    await sb.from('settings').upsert({ key, value: { messages: trimmed, name } }, { onConflict: 'key' });
   } catch {
     /* chat log best-effort */
   }

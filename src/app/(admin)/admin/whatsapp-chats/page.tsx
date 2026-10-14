@@ -1,10 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PageHeader, Spinner } from '@/components/admin/UI';
+import { Spinner } from '@/components/admin/UI';
 
 interface ChatSummary {
   phone: string;
+  name?: string;
   count: number;
   lastText: string;
   lastAt: number;
@@ -17,19 +18,30 @@ interface ChatMsg {
   at: number;
 }
 
-function timeStr(ts: number) {
+function fmtTime(ts: number) {
   if (!ts) return '';
-  return new Date(ts).toLocaleString('en-GB', {
-    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit',
-  });
+  const d = new Date(ts);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  const time = d.toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
+  if (isToday) return time;
+  return d.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }) + ', ' + time;
+}
+
+function displayName(c: ChatSummary) {
+  if (c.name) return c.name;
+  // BSUID like BD.1074370902101691 → show shortened
+  if (/^[A-Z]{2}\.\d+$/.test(c.phone)) return `User ${c.phone.slice(-4)}`;
+  return c.phone;
 }
 
 export default function WhatsAppChatsPage() {
   const [chats, setChats] = useState<ChatSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [active, setActive] = useState<string | null>(null);
+  const [active, setActive] = useState<ChatSummary | null>(null);
   const [msgs, setMsgs] = useState<ChatMsg[]>([]);
   const [msgsLoading, setMsgsLoading] = useState(false);
+  const [chatName, setChatName] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const loadChats = useCallback(async () => {
@@ -44,13 +56,15 @@ export default function WhatsAppChatsPage() {
 
   useEffect(() => { loadChats(); }, [loadChats]);
 
-  const openChat = useCallback(async (phone: string) => {
-    setActive(phone);
+  const openChat = useCallback(async (c: ChatSummary) => {
+    setActive(c);
     setMsgsLoading(true);
+    setChatName('');
     try {
-      const res = await fetch(`/api/admin/whatsapp-chats/${encodeURIComponent(phone)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/admin/whatsapp-chats/${encodeURIComponent(c.phone)}`, { cache: 'no-store' });
       const data = await res.json();
       setMsgs(data.messages ?? []);
+      setChatName(data.name ?? '');
     } finally {
       setMsgsLoading(false);
     }
@@ -60,82 +74,106 @@ export default function WhatsAppChatsPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [msgs]);
 
+  const activeName = chatName || (active ? displayName(active) : '');
+
   return (
-    <div>
-      <PageHeader title="WhatsApp Chats" sub="Customer ↔ AI agent conversations" />
+    <div className="overflow-hidden rounded-xl shadow-2xl" style={{ background: '#0b141a' }}>
+      {/* WA header */}
+      <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#1f2c34' }}>
+        <div className="flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold text-white" style={{ background: '#00a884' }}>
+          {active ? activeName.charAt(0).toUpperCase() : '💬'}
+        </div>
+        <div className="flex-1">
+          <p className="text-base font-medium text-white">{active ? activeName : 'WhatsApp Chats'}</p>
+          <p className="text-xs" style={{ color: '#8696a0' }}>
+            {active ? (active.phone + ' • view only') : `${chats.length} conversations`}
+          </p>
+        </div>
+        {active && (
+          <button
+            onClick={() => { setActive(null); loadChats(); }}
+            className="rounded-full px-3 py-1.5 text-sm text-white"
+            style={{ background: '#2a3942' }}
+          >
+            ← Back
+          </button>
+        )}
+      </div>
+
       {loading ? (
-        <div className="flex justify-center py-12"><Spinner /></div>
-      ) : chats.length === 0 ? (
-        <p className="rounded-lg bg-slate-800 p-6 text-center text-sm text-slate-400">
-          No chats yet. Conversations will appear here once customers message the WhatsApp bot.
-        </p>
-      ) : (
-        <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
-          {/* conversation list */}
-          <div className="overflow-hidden rounded-lg bg-slate-800">
-            <div className="border-b border-slate-700 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Conversations ({chats.length})
-            </div>
-            <div className="max-h-[70vh] overflow-y-auto">
-              {chats.map((c) => (
-                <button
-                  key={c.phone}
-                  onClick={() => openChat(c.phone)}
-                  className={`block w-full border-b border-slate-700/50 px-4 py-3 text-left transition-colors ${
-                    active === c.phone ? 'bg-blue-900/40' : 'hover:bg-slate-700/40'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-slate-100">{c.phone}</span>
-                    <span className="text-xs text-slate-500">{timeStr(c.lastAt)}</span>
-                  </div>
-                  <p className="mt-1 truncate text-xs text-slate-400">
-                    {c.lastDir === 'in' ? '👤 ' : '🤖 '}{c.lastText || '—'}
-                  </p>
-                  <span className="mt-1 inline-block rounded-full bg-slate-700 px-2 py-0.5 text-[11px] text-slate-300">
-                    {c.count} msgs
+        <div className="flex justify-center py-16"><Spinner /></div>
+      ) : !active ? (
+        /* conversation list — WA style */
+        <div style={{ background: '#0b141a' }}>
+          {chats.length === 0 && (
+            <p className="p-8 text-center text-sm" style={{ color: '#8696a0' }}>
+              No chats yet. Conversations will appear here once customers message the bot.
+            </p>
+          )}
+          {chats.map((c) => (
+            <button
+              key={c.phone}
+              onClick={() => openChat(c)}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5"
+              style={{ borderBottom: '1px solid #1f2c34' }}
+            >
+              <div
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
+                style={{ background: '#2a3942' }}
+              >
+                {displayName(c).charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="truncate text-[15px] font-medium text-white">{displayName(c)}</p>
+                  <span className="shrink-0 text-xs" style={{ color: c.lastDir === 'in' ? '#00a884' : '#8696a0' }}>
+                    {fmtTime(c.lastAt)}
                   </span>
-                </button>
-              ))}
-            </div>
-          </div>
-          {/* message thread */}
-          <div className="flex max-h-[70vh] flex-col overflow-hidden rounded-lg bg-slate-800">
-            {!active ? (
-              <p className="flex flex-1 items-center justify-center p-8 text-sm text-slate-500">
-                Select a conversation to view messages
-              </p>
-            ) : msgsLoading ? (
-              <div className="flex flex-1 items-center justify-center"><Spinner /></div>
+                </div>
+                <p className="truncate text-sm" style={{ color: '#8696a0' }}>
+                  {c.lastDir === 'out' ? '✓✓ ' : ''}{c.lastText || '—'}
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : (
+        /* chat thread — WA style */
+        <div
+          className="flex flex-col"
+          style={{
+            background: '#0b141a',
+            backgroundImage: 'radial-gradient(#1f2c34 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+            minHeight: '60vh',
+            maxHeight: '75vh',
+          }}
+        >
+          <div className="flex-1 space-y-1.5 overflow-y-auto px-4 py-4">
+            {msgsLoading ? (
+              <div className="flex justify-center py-12"><Spinner /></div>
+            ) : msgs.length === 0 ? (
+              <p className="py-12 text-center text-sm" style={{ color: '#8696a0' }}>No messages yet</p>
             ) : (
-              <>
-                <div className="border-b border-slate-700 px-4 py-2 text-sm font-medium text-slate-200">
-                  {active}
-                  <button onClick={loadChats} className="ml-3 text-xs text-blue-400 hover:text-blue-300">
-                    ↻ refresh
-                  </button>
+              msgs.map((m, i) => (
+                <div key={i} className={`flex ${m.d === 'out' ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className="max-w-[85%] rounded-lg px-2.5 py-1.5 text-[14.5px] leading-snug text-white shadow"
+                    style={{ background: m.d === 'out' ? '#005c4b' : '#1f2c34' }}
+                  >
+                    <p className="whitespace-pre-wrap break-words">{m.t}</p>
+                    <p className="mt-0.5 text-right text-[11px]" style={{ color: m.d === 'out' ? '#8fd3c7' : '#8696a0' }}>
+                      {fmtTime(m.at)}{m.d === 'out' ? ' ✓✓' : ''}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 space-y-2 overflow-y-auto p-4">
-                  {msgs.map((m, i) => (
-                    <div key={i} className={`flex ${m.d === 'out' ? 'justify-end' : 'justify-start'}`}>
-                      <div
-                        className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-                          m.d === 'out'
-                            ? 'bg-blue-700 text-white'
-                            : 'bg-slate-700 text-slate-100'
-                        }`}
-                      >
-                        <p className="whitespace-pre-wrap break-words">{m.t}</p>
-                        <p className={`mt-1 text-right text-[10px] ${m.d === 'out' ? 'text-blue-200' : 'text-slate-400'}`}>
-                          {new Date(m.at).toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={bottomRef} />
-                </div>
-              </>
+              ))
             )}
+            <div ref={bottomRef} />
+          </div>
+          {/* view-only footer */}
+          <div className="px-4 py-3 text-center text-xs" style={{ background: '#1f2c34', color: '#8696a0' }}>
+            🔒 View only — reply from your WhatsApp Business app
           </div>
         </div>
       )}

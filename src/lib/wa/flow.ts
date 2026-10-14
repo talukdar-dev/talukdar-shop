@@ -169,6 +169,7 @@ async function saveOrder(phone: string, d: Record<string, string | number>, prod
     const qty = Number(d.quantity) || 1;
     const isDigital = product.product_type === 'digital';
     const delivery = isDigital ? 0 : 120; // digital: no shipping
+    const total = product.price * qty + delivery;
     await sb.from('orders').insert({
       customer_name: String(d.name || ''),
       phone: String(d.phone || phone),
@@ -179,11 +180,21 @@ async function saveOrder(phone: string, d: Record<string, string | number>, prod
       subtotal: product.price * qty,
       shipping: delivery,
       discount: 0,
-      total: product.price * qty + delivery,
+      total,
       payment_method: 'cod',
       payment_status: 'unpaid',
       status: 'pending',
       notes: `WhatsApp order. ${isDigital ? 'DIGITAL product — deliver to email.' : ''} Variant: ${d.variant || '-'}${d.size ? `, Size: ${d.size}` : ''}`,
+    });
+    // notify Shipon on WhatsApp
+    const { notifyOwnerNewOrder } = await import('./whatsapp');
+    await notifyOwnerNewOrder({
+      orderNo: 'WA-' + Date.now().toString(36).toUpperCase(),
+      customer: String(d.name || ''),
+      phone: String(d.phone || phone),
+      items: `${product.name} x${qty}`,
+      total,
+      source: 'WhatsApp Bot',
     });
     return true;
   } catch {

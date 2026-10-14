@@ -13,11 +13,12 @@ export async function GET() {
       .like('key', 'wa_chatlog_%')
       .order('key');
     const chats = (data ?? []).map((r: { key: string; value: unknown }) => {
-      const v = r.value as { messages?: Array<{ d: string; t: string; at: number }> } | undefined;
+      const v = r.value as { messages?: Array<{ d: string; t: string; at: number }>; name?: string } | undefined;
       const msgs = v?.messages ?? [];
       const last = msgs[msgs.length - 1];
       return {
         phone: r.key.replace('wa_chatlog_', ''),
+        name: v?.name ?? '',
         count: msgs.length,
         lastText: last?.t?.slice(0, 80) ?? '',
         lastAt: last?.at ?? 0,

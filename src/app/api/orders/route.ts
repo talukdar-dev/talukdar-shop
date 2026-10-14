@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createOrder } from '@/lib/db';
 import type { Order } from '@/lib/types';
 import { orderReceivedEmail, sendEmail } from '@/lib/email';
+import { notifyOwnerNewOrder } from '@/lib/wa/whatsapp';
 
 const METHODS: Order['payment_method'][] = ['cod', 'bkash', 'nagad', 'rocket', 'card', 'emi'];
 
@@ -93,4 +94,15 @@ async function notifyCustomer(order: Order) {
   } catch (err) {
     console.error('[order] received-email failed:', err instanceof Error ? err.message : err);
   }
+  // WhatsApp ping to Shipon for every website order
+  try {
+    await notifyOwnerNewOrder({
+      orderNo: order.order_no,
+      customer: order.customer_name,
+      phone: order.phone,
+      items: order.items.map((i) => `${i.name} x${i.qty}`).join(', ').slice(0, 200),
+      total: order.total,
+      source: 'Website',
+    });
+  } catch { /* best-effort */ }
 }

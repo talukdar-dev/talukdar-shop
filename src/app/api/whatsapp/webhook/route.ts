@@ -31,6 +31,7 @@ interface WaTextMsg {
   type: string;
   text?: { body: string };
   interactive?: { type: string; list_reply?: { id: string; title: string }; button_reply?: { id: string; title: string } };
+  profileName?: string;
   raw?: unknown;
 }
 
@@ -47,12 +48,16 @@ function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
     const waId = contacts?.[0]?.wa_id ? String(contacts[0].wa_id)
       : contacts?.[0]?.user_id ? String(contacts[0].user_id) : '';
     const from = String(msg.from ?? '') || waId || String((msg as Record<string, unknown>).from_user_id ?? '');
+    // profile name / username for display (BSUID chats have no phone number)
+    const profile = contacts?.[0]?.profile as Record<string, unknown> | undefined;
+    const profileName = String(profile?.name ?? profile?.username ?? '');
     return {
       from,
       id: String(msg.id ?? ''),
       type: String(msg.type ?? ''),
       text: msg.text as WaTextMsg['text'],
       interactive: msg.interactive as WaTextMsg['interactive'],
+      profileName,
       raw: { message: msg, contacts: contacts ?? null },
     };
   } catch {
@@ -210,7 +215,7 @@ export async function POST(req: NextRequest) {
   if (await isDuplicateContent(msg.from, text.trim())) return NextResponse.json({ ok: true });
 
   // log incoming message for admin chat viewer
-  void logChat(msg.from, 'in', text.trim());
+  void logChat(msg.from, 'in', text.trim(), msg.profileName);
 
   // GATE 2 — verifying layer: claim "currently processing" BEFORE backend.
   // If another webhook already holds this claim, drop (duplicate).
