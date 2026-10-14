@@ -41,8 +41,12 @@ function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
     const value = change?.value as Record<string, unknown>;
     const msg = (value?.messages as Array<Record<string, unknown>>)?.[0];
     if (!msg) return null;
+    // phone can be in messages[0].from (standard) or value.contacts[0].wa_id (alternate routing)
+    const contacts = value?.contacts as Array<Record<string, unknown>> | undefined;
+    const waId = contacts?.[0]?.wa_id ? String(contacts[0].wa_id) : '';
+    const from = String(msg.from ?? '') || waId || String((msg as Record<string, unknown>).from_user_id ?? '');
     return {
-      from: String(msg.from ?? ''),
+      from,
       id: String(msg.id ?? ''),
       type: String(msg.type ?? ''),
       text: msg.text as WaTextMsg['text'],
