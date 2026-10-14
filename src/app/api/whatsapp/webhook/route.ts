@@ -51,7 +51,7 @@ function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
       type: String(msg.type ?? ''),
       text: msg.text as WaTextMsg['text'],
       interactive: msg.interactive as WaTextMsg['interactive'],
-      raw: msg,
+      raw: { message: msg, contacts: contacts ?? null },
     };
   } catch {
     return null;
