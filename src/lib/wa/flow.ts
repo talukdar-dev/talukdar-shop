@@ -223,6 +223,50 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
+  // 0.5) BRAND → CATEGORY → PRODUCT (deterministic, zero AI tokens).
+  // If the message is just a brand name, ask which category first (max 3 buttons).
+  // This narrows down before any product search, saving tokens.
+  const catalog = await getCatalog();
+  if (!session.step.startsWith('await_') || session.step === 'idle') {
+    const brands = [...new Set(catalog.items.map((p) => p.brand).filter(Boolean))];
+    const brandHit = brands.find((b) => {
+      const bl = b.toLowerCase();
+      return lower === bl || (lower.length >= 3 && bl.includes(lower)) || (lower.length >= 4 && lower.includes(bl));
+    });
+    // Only trigger brand flow if message is JUST the brand (not "Kiam fan" — agent handles that)
+    if (brandHit) {
+      const rest = lower.replace(brandHit.toLowerCase(), '').trim().replace(/^(er|der|r|of|the)\b/, '').trim();
+      if (rest.length > 2) {
+        // brand + something else → let agent do targeted search (skip brand flow)
+      } else {
+      const brandCats = [...new Set(
+        catalog.items.filter((p) => p.brand === brandHit).map((p) => p.category).filter(Boolean),
+      )];
+      if (brandCats.length > 0) {
+        const bLang = detectLang(text);
+        const showCats = brandCats.slice(0, 3);
+        const moreNote = brandCats.length > 3
+          ? (bLang === 'bn' ? ` (আরো ${brandCats.length - 3} টা আছে)` : ` (${brandCats.length - 3} more available)`)
+          : '';
+        const bodyText = bLang === 'bn'
+          ? `Sir, ${brandHit}-এর ${brandCats.length}টা category আছে। কোনটা দেখবেন?${moreNote}`
+          : `Sir, ${brandHit} has ${brandCats.length} categories. Which one?${moreNote}`;
+        await waSendButtons(
+          phone,
+          bodyText,
+          showCats.map((c, i) => ({ id: `brandcat_${i}`, title: smartCut(c, 20) })),
+        );
+        pushHistory(session, 'ai', `asked ${brandHit} categories: ${brandCats.join(', ')}`);
+        session.step = 'await_brand_category';
+        session.data = { ...session.data, brand: brandHit };
+        session.shownIds = brandCats;
+        await saveSession(phone, session);
+        return;
+      }
+      } // end else (just brand name)
+    }
+  }
+
   // 1) 🤖 AGENT MODE — like ChatGPT: the 120B thinks, uses tools, replies.
   // Falls back to legacy brain flow if agent fails.
   const pacing = queueDepth >= 8 ? 2500 : queueDepth >= 4 ? 1800 : 1200;
@@ -230,7 +274,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
   await waSendText(phone, pickWaiting('general', quickLang));
   await sleep(pacing);
 
-  const cat = await getCatalog();
+  const cat = catalog;
   const agentOk = await runAgent(phone, msg, {
     products: cat.items,
     history,
@@ -670,8 +714,8 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
   const ask = async (text: string) => { await waSendText(phone, text); };
 
   // --- smart guards: cancellation / language switch / new query ---
-  // (skip for await_product_choice which has its own new-query detection)
-  if (session.step !== 'await_product_choice' && session.step !== 'await_category_choice') {
+  // (skip for choice steps which have their own new-query detection)
+  if (session.step !== 'await_product_choice' && session.step !== 'await_category_choice' && session.step !== 'await_brand_category') {
     if (CANCEL_WORDS.test(lower)) {
       await clearSession(phone);
       pushHistory(session, 'ai', 'order cancelled');
@@ -723,6 +767,62 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
   }
 
   switch (session.step) {
+    case 'await_brand_category': {
+      const brand = String(session.data.brand ?? '');
+      const cats = (session.shownIds ?? []) as string[];
+      const idx = parseInt(msg) - 1;
+      let chosenCat = cats[idx];
+      // button tap: brandcat_0, brandcat_1, brandcat_2
+      if (msg.startsWith('brandcat_')) {
+        const bi = parseInt(msg.split('_')[1] ?? '-1');
+        chosenCat = cats[bi];
+      }
+      // fuzzy match by category name
+      if (!chosenCat) {
+        const ml = msg.toLowerCase();
+        chosenCat = cats.find((c) => c.toLowerCase().includes(ml) || ml.includes(c.toLowerCase())) ?? '';
+      }
+      // "more" — show remaining categories
+      if (!chosenCat && /^(aro|more|baki|rest|others?)$/i.test(msg.trim())) {
+        const rest = cats.slice(3);
+        if (rest.length > 0) {
+          await waSendButtons(
+            phone,
+            effLang === 'bn' ? `Sir, বাকি ${rest.length}টা category:` : `Sir, remaining ${rest.length} categories:`,
+            rest.slice(0, 3).map((c, i) => ({ id: `brandcat_${i + 3}`, title: smartCut(c, 20) })),
+          );
+          return;
+        }
+      }
+      if (!chosenCat) {
+        await ask(effLang === 'bn'
+          ? `Sir, category-র নাম লিখুন বা উপরের button-এ tap করুন।`
+          : `Sir, type the category name or tap a button above.`);
+        return;
+      }
+      // show products from this brand + category (max 3 cards, zero AI tokens)
+      const brandProducts = cat.items
+        .filter((p) => p.brand === brand && p.category === chosenCat)
+        .slice(0, 3);
+      if (brandProducts.length === 0) {
+        await ask(effLang === 'bn' ? 'Sir, এই category-তে এখন product নেই।' : 'Sir, no products in this category right now.');
+        return;
+      }
+      for (const p of brandProducts) {
+        await waSendProductCard(phone, p, effLang);
+        await sleep(800);
+      }
+      await waSendButtons(
+        phone,
+        effLang === 'bn' ? '🛒 Order করতে tap করুন:' : '🛒 Tap to order:',
+        brandProducts.map((p, i) => ({ id: `prod_${p.id}`, title: `${i + 1}. ${smartCut(p.name, 17)}` })),
+      );
+      pushHistory(session, 'ai', `shown ${brand} / ${chosenCat}: ${brandProducts.map((p) => p.name).join(', ')}`);
+      session.step = 'await_product_choice';
+      session.shownIds = brandProducts.map((p) => p.id);
+      await saveSession(phone, session);
+      return;
+    }
     case 'await_category_choice': {
       const cats = (session.shownIds ?? []) as string[];
       const idx = parseInt(msg) - 1;
