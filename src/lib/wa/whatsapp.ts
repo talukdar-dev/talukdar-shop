@@ -40,6 +40,25 @@ export function logWebhookHit(from: string, msgId: string, raw: unknown) {
   void logDiag('wa_last_webhook', { from: from.slice(-4), msgId, raw: JSON.stringify(raw).slice(0, 1500) });
 }
 
+// Persistent chat log for admin viewer (stored in settings as wa_chatlog_<phone>).
+// Keeps last 100 messages per phone. Best-effort, never blocks sending.
+export async function logChat(phone: string, direction: 'in' | 'out', text: string) {
+  try {
+    if (!phone || !text) return;
+    const { supabaseAdmin } = await import('../admin-db');
+    const sb = supabaseAdmin();
+    const key = `wa_chatlog_${phone}`;
+    const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
+    const cur = (data?.value as { messages?: Array<{ d: string; t: string; at: number }> } | undefined);
+    const msgs = cur?.messages ?? [];
+    msgs.push({ d: direction, t: text.slice(0, 500), at: Date.now() });
+    const trimmed = msgs.slice(-100);
+    await sb.from('settings').upsert({ key, value: { messages: trimmed } }, { onConflict: 'key' });
+  } catch {
+    /* chat log best-effort */
+  }
+}
+
 async function post(path: string, body: Record<string, unknown>): Promise<boolean> {
   const c = creds();
   if (!c) {
@@ -65,6 +84,15 @@ async function post(path: string, body: Record<string, unknown>): Promise<boolea
       },
       body: JSON.stringify(payload),
     });
+    if (res.ok) {
+      // log outgoing message for admin chat viewer
+      const t = String(body.type ?? '');
+      let logText = '';
+      if (t === 'text') logText = String((body.text as Record<string, unknown>)?.body ?? '');
+      else if (t === 'image') logText = `[image] ${String((body.image as Record<string, unknown>)?.caption ?? '')}`;
+      else if (t === 'interactive') logText = '[options sent]';
+      if (logText) void logChat(to, 'out', logText);
+    }
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
       void logDiag('wa_last_error', { stage: 'send', http: res.status, bsuid, detail: errText.slice(0, 300) });

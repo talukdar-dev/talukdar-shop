@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { handleWaMessage } from '@/lib/wa/flow';
 import { detectLang } from '@/lib/wa/config';
-import { logWebhookHit } from '@/lib/wa/whatsapp';
+import { logWebhookHit, logChat } from '@/lib/wa/whatsapp';
 
 // concurrent processing counter -> adaptive pacing signal
 let activeJobs = 0;
@@ -132,8 +132,11 @@ export async function POST(req: NextRequest) {
   }
   if (!text.trim()) return NextResponse.json({ ok: true });
 
-  // content dedupe: same text from same phone within 60s → skip (Meta multi-delivery)
+  // content dedupe: same text from same phone within 5 min → skip (Meta multi-delivery)
   if (await isDuplicateContent(msg.from, text.trim())) return NextResponse.json({ ok: true });
+
+  // log incoming message for admin chat viewer
+  void logChat(msg.from, 'in', text.trim());
 
   // Process inline and await — DB dedupe above already blocks Meta retries,
   // so a slow 200 is safe (no duplicates). Fire-and-forget would get killed by Vercel.
