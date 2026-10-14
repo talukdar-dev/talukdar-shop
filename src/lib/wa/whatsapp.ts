@@ -151,8 +151,8 @@ export async function waSendProductCard(
   const link = p.slug ? `\nhttps://talukdarshop.com/product/${p.slug}` : '';
   const caption =
     lang === 'bn'
-      ? `${p.name}\nদাম: ${p.price} TK${p.stock > 0 ? '' : '\n(স্টক শেষ)'}${link}\n\nনিতে চাইলে "Order" লিখুন`
-      : `${p.name}\nPrice: ${p.price} TK${p.stock > 0 ? '' : '\n(Out of stock)'}${link}\n\nReply "Order" to buy`;
+      ? `${p.name}\nদাম: ${p.price} TK${p.stock > 0 ? '' : '\n(স্টক শেষ)'}${link}`
+      : `${p.name}\nPrice: ${p.price} TK${p.stock > 0 ? '' : '\n(Out of stock)'}${link}`;
   if (p.imageUrl) return waSendImage(to, p.imageUrl, caption);
   return waSendText(to, caption);
 }

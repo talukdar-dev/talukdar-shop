@@ -274,7 +274,7 @@ async function runAgent(
         if (matches.length > 0) {
           await waSendButtons(
             phone,
-            lang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
+            lang === 'bn' ? '🛒 Order korte tap korun:' : '🛒 Tap to order:',
             matches.map((p, idx) => ({ id: `prod_${p.id}`, title: `${idx + 1}. ${smartCut(p.name, 17)}` })),
           );
           session.step = 'await_product_choice';
@@ -521,7 +521,7 @@ async function handleLegacyBrain(
     // tap buttons
     await waSendButtons(
       phone,
-      useLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
+      useLang === 'bn' ? '🛒 Order korte tap korun:' : '🛒 Tap to order:',
       found.map((p, i) => ({ id: `prod_${p.id}`, title: `${i + 1}. ${smartCut(p.name, 17)}` })),
     );
 
@@ -685,7 +685,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       }
       await waSendButtons(
         phone,
-        effLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
+        effLang === 'bn' ? '🛒 Order korte tap korun:' : '🛒 Tap to order:',
         catProducts.map((p, i) => ({
           id: `prod_${p.id}`,
           title: `${i + 1}. ${smartCut(p.name, 17)}`,
