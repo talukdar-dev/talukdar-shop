@@ -107,30 +107,23 @@ export async function POST(req: NextRequest) {
   }
   if (!text.trim()) return NextResponse.json({ ok: true });
 
-  // Respond 200 FAST (Meta retries if slow → duplicates).
-  // Process in background without blocking the response.
-  const from = msg.from;
-  const cleanText = text.trim();
-  const processPromise = (async () => {
-    activeJobs++;
-    const depth = activeJobs;
-    try {
-      await Promise.race([
-        handleWaMessage(from, cleanText, depth),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7 * 60_000)),
-      ]);
-    } catch (e) {
-      console.error('[wa] handler error', e);
-    } finally {
-      activeJobs = Math.max(0, activeJobs - 1);
-    }
-  })();
+  // Process inline and await — DB dedupe above already blocks Meta retries,
+  // so a slow 200 is safe (no duplicates). Fire-and-forget would get killed by Vercel.
+  activeJobs++;
+  const depth = activeJobs;
+  try {
+    await Promise.race([
+      handleWaMessage(msg.from, text.trim(), depth),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7 * 60_000)),
+    ]);
+  } catch (e) {
+    console.error('[wa] handler error', e);
+  } finally {
+    activeJobs = Math.max(0, activeJobs - 1);
+  }
 
   // keep variable referenced (language fallback safety)
   void detectLang;
-
-  // Fire-and-forget: don't block the 200 response (Meta retries if slow → duplicates)
-  processPromise.catch(() => {});
 
   return NextResponse.json({ ok: true });
 }
