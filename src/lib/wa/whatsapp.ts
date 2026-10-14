@@ -49,8 +49,13 @@ async function post(path: string, body: Record<string, unknown>): Promise<boolea
   const to = String(body.to ?? '');
   const bsuid = isBsuid(to);
   const base = bsuid ? API_BSUID : API;
+  // BSUID users: address via `recipient` field (phone goes in `to` as usual).
   const payload: Record<string, unknown> = { messaging_product: 'whatsapp', ...body };
-  if (bsuid) payload.recipient_type = 'individual';
+  if (bsuid) {
+    payload.recipient = to;
+    delete payload.to;
+    payload.recipient_type = 'individual';
+  }
   try {
     const res = await fetch(`${base}/${c.phoneId}${path}`, {
       method: 'POST',
