@@ -26,7 +26,7 @@ function smartCut(s: string, max: number): string {
 }
 
 // ---------- catalog cache ----------
-interface CatProduct {
+export interface CatProduct {
   id: string;
   name: string;
   slug: string;
@@ -198,7 +198,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
   pushHistory(session, 'user', msg);
   const history = session.history ?? [];
 
-  // 1) greeting — instant, no AI
+  // 0) greeting — instant, no AI
   if (GREETINGS.has(lower) || (lower.length <= 12 && /^(salam|hello|hi)/.test(lower))) {
     const lang = detectLang(text);
     const reply = lang === 'bn' ? GREETING_REPLY_BN : GREETING_REPLY_EN;
@@ -208,17 +208,167 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
-  // 2) order flow continuation — brain interprets within order context
-  if (session.step !== 'idle') {
-    await handleOrderStep(phone, msg, detectLang(text), session, queueDepth);
-    return;
-  }
-
-  // 3) waiting message
+  // 1) 🤖 AGENT MODE — like ChatGPT: the 120B thinks, uses tools, replies.
+  // Falls back to legacy brain flow if agent fails.
   const pacing = queueDepth >= 8 ? 2500 : queueDepth >= 4 ? 1800 : 1200;
   const quickLang = detectLang(text);
   await waSendText(phone, pickWaiting('search', quickLang));
   await sleep(pacing);
+
+  const cat = await getCatalog();
+  const agentOk = await runAgent(phone, msg, {
+    products: cat.items,
+    history,
+    sessionData: session.data,
+  }, session);
+  if (agentOk) return;
+
+  // 2) Legacy fallback: brain understand flow
+  await handleLegacyBrain(phone, msg, quickLang, session, history, cat, pacing);
+}
+
+// ---------- agent runner ----------
+async function runAgent(
+  phone: string,
+  msg: string,
+  ctx: { products: CatProduct[]; history: string[]; sessionData: Record<string, string | number> },
+  session: Session,
+): Promise<boolean> {
+  const { agentThink, agentExecTool } = await import('./agent');
+  const toolResults: { tool: string; result: string }[] = [];
+
+  for (let i = 0; i < 4; i++) {
+    let step: { thought: string; tool: Record<string, unknown> | null; reply: string | null } | null = null;
+    try {
+      step = await agentThink(msg, ctx, toolResults);
+    } catch { return false; }
+    if (!step) return false;
+
+    // log thought for debugging (not sent to customer)
+    pushHistory(session, 'ai', `[thought] ${step.thought.slice(0, 150)}`);
+
+    if (step.tool) {
+      const toolName = String(step.tool.tool ?? '');
+      // save_order needs DB — handle specially
+      if (toolName === 'save_order') {
+        const ok = await execSaveOrder(phone, step.tool, ctx);
+        toolResults.push({ tool: 'save_order', result: ok ? 'Order saved successfully!' : 'Failed to save order' });
+        // after save, let agent write confirmation
+        continue;
+      }
+      // search_products: also send visual cards
+      if (toolName === 'search_products') {
+        const res = await agentExecTool(step.tool, ctx);
+        toolResults.push(res);
+        // send product cards for visual impact
+        const kw = String(step.tool.keyword ?? '').toLowerCase();
+        const matches = ctx.products.filter((p) =>
+          p.name.toLowerCase().includes(kw) || p.category.toLowerCase().includes(kw),
+        ).slice(0, 3);
+        const lang = detectLang(msg);
+        for (const p of matches) {
+          await waSendProductCard(phone, p, lang);
+          await new Promise((r) => setTimeout(r, 800));
+        }
+        if (matches.length > 0) {
+          await waSendButtons(
+            phone,
+            lang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
+            matches.map((p, idx) => ({ id: `prod_${p.id}`, title: `${idx + 1}. ${smartCut(p.name, 17)}` })),
+          );
+          session.step = 'await_product_choice';
+          session.shownIds = matches.map((p) => p.id);
+        }
+        continue;
+      }
+      const res = await agentExecTool(step.tool, ctx);
+      toolResults.push(res);
+      continue;
+    }
+
+    if (step.reply) {
+      await waSendText(phone, step.reply);
+      pushHistory(session, 'ai', step.reply.slice(0, 200));
+      await saveSession(phone, {
+        step: session.step,
+        data: session.data,
+        shownIds: session.shownIds,
+        updatedAt: Date.now(),
+        history: session.history,
+      });
+      return true;
+    }
+    // no tool, no reply — stop
+    return false;
+  }
+  return false;
+}
+
+async function execSaveOrder(
+  phone: string,
+  tool: Record<string, unknown>,
+  ctx: { products: CatProduct[] },
+): Promise<boolean> {
+  const product = ctx.products.find((p) => p.id === String(tool.product_id));
+  if (!product) return false;
+  const d: Record<string, string | number> = {
+    product_id: product.id,
+    name: String(tool.name ?? ''),
+    address: String(tool.address ?? ''),
+    phone: String(tool.phone ?? '').replace(/\D/g, ''),
+    quantity: String(tool.quantity ?? '1'),
+  };
+  if (!d.name || !d.address || !/^01\d{9}$/.test(String(d.phone))) return false;
+  return await saveOrderToDb(phone, d, product);
+}
+
+// wrapper so agent can save orders (extracted from saveOrder logic)
+async function saveOrderToDb(phone: string, d: Record<string, string | number>, product: CatProduct): Promise<boolean> {
+  try {
+    const { supabaseAdmin } = await import('../admin-db');
+    const sb = supabaseAdmin();
+    const qty = Number(d.quantity) || 1;
+    const addr = String(d.address ?? '').toLowerCase();
+    const isDhaka = /dhaka|ঢাকা/.test(addr);
+    const delivery = product.price * qty >= 5000 ? 0 : isDhaka ? 60 : 120;
+    const { error } = await sb.from('orders').insert({
+      customer_name: String(d.name),
+      customer_phone: String(d.phone),
+      customer_address: String(d.address),
+      items: [{ product_id: product.id, name: product.name, price: product.price, quantity: qty }],
+      subtotal: product.price * qty,
+      shipping: delivery,
+      discount: 0,
+      total: product.price * qty + delivery,
+      payment_method: 'cod',
+      payment_status: 'unpaid',
+      status: 'pending',
+      notes: 'WhatsApp AI order',
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ---------- legacy brain fallback ----------
+async function handleLegacyBrain(
+  phone: string,
+  msg: string,
+  quickLang: 'bn' | 'en',
+  session: Session,
+  history: string[],
+  cat: { items: CatProduct[]; cats: Array<{ name: string; slug: string; count: number }> },
+  pacing: number,
+) {
+  // 2) order flow continuation — brain interprets within order context
+  if (session.step !== 'idle') {
+    await handleOrderStep(phone, msg, quickLang, session, 0);
+    return;
+  }
+
+  // 3) waiting message already sent; proceed to brain
+  const text = msg; // for detectLang fallback
 
   // 4) 🧠 120B UNDERSTANDS the message
   let brain: BrainDecision | null = null;
@@ -279,9 +429,8 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
-  const cat = await getCatalog();
-
   // 8) broad browse — categories with counts
+  // (cat passed as parameter)
   if (action === 'other' && !keyword) {
     const lines = cat.cats.slice(0, 12).map((c, i) => `${i + 1}. ${c.name} (${c.count} ta)`);
     const intro = await brainWriteReply({
