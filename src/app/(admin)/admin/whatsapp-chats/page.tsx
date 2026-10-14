@@ -44,6 +44,7 @@ export default function WhatsAppChatsPage() {
   const [chatName, setChatName] = useState('');
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  const [aiPaused, setAiPaused] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const loadChats = useCallback(async () => {
@@ -62,11 +63,16 @@ export default function WhatsAppChatsPage() {
     setActive(c);
     setMsgsLoading(true);
     setChatName('');
+    setAiPaused(false);
     try {
       const res = await fetch(`/api/admin/whatsapp-chats/${encodeURIComponent(c.phone)}`, { cache: 'no-store' });
       const data = await res.json();
       setMsgs(data.messages ?? []);
       setChatName(data.name ?? '');
+      // check pause status
+      const pr = await fetch(`/api/admin/whatsapp-chats/pause?phone=${encodeURIComponent(c.phone)}`, { cache: 'no-store' });
+      const pd = await pr.json();
+      setAiPaused(pd.paused === true);
     } finally {
       setMsgsLoading(false);
     }
@@ -103,6 +109,19 @@ export default function WhatsAppChatsPage() {
     }
   }, [active, draft, sending]);
 
+  const togglePause = useCallback(async () => {
+    if (!active) return;
+    try {
+      const res = await fetch('/api/admin/whatsapp-chats/pause', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: active.phone, paused: !aiPaused }),
+      });
+      const data = await res.json();
+      if (data.ok) setAiPaused(data.paused === true);
+    } catch { /* ignore */ }
+  }, [active, aiPaused]);
+
   const activeName = chatName || (active ? displayName(active) : '');
 
   return (
@@ -119,13 +138,22 @@ export default function WhatsAppChatsPage() {
           </p>
         </div>
         {active && (
-          <button
-            onClick={() => { setActive(null); setDraft(''); loadChats(); }}
-            className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-white"
-            style={{ background: '#00a884' }}
-          >
-            ← All Chats
-          </button>
+          <>
+            <button
+              onClick={togglePause}
+              className="rounded-full px-4 py-2 text-sm font-medium text-white"
+              style={{ background: aiPaused ? '#00a884' : '#f0a500' }}
+            >
+              {aiPaused ? '▶️ AI On করুন' : '⏸️ AI Off করুন'}
+            </button>
+            <button
+              onClick={() => { setActive(null); setDraft(''); loadChats(); }}
+              className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-white"
+              style={{ background: '#2a3942' }}
+            >
+              ← All Chats
+            </button>
+          </>
         )}
       </div>
 
@@ -226,7 +254,9 @@ export default function WhatsAppChatsPage() {
             </button>
           </div>
           <div className="px-4 py-1.5 text-center text-[11px]" style={{ background: '#1f2c34', color: '#8696a0' }}>
-            You are replying as Talukdar Shop
+            {aiPaused
+              ? '⏸️ AI paused — আপনি manually reply করছেন (৫ মিনিটে auto-on)'
+              : 'You are replying as Talukdar Shop'}
           </div>
         </div>
       )}

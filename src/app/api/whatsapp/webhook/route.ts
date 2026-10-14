@@ -220,6 +220,21 @@ export async function POST(req: NextRequest) {
   // GATE 2 — verifying layer: claim "currently processing" BEFORE backend.
   // If another webhook already holds this claim, drop (duplicate).
   const vfp = fp(text.trim());
+
+  // HUMAN TAKEOVER CHECK: if Shipon paused the AI for this phone (from admin),
+  // don't process — message already logged above. Auto-resumes after 5 min.
+  try {
+    const { supabaseAdmin: sba } = await import('@/lib/admin-db');
+    const sbc = sba();
+    const { data: paused } = await sbc.from('settings').select('value').eq('key', `wa_paused_${msg.from}`).maybeSingle();
+    const pat = (paused?.value as { at?: number } | undefined)?.at ?? 0;
+    if (pat && Date.now() - pat < 5 * 60_000) {
+      return NextResponse.json({ ok: true, paused: true });
+    }
+    // expired pause — clean up
+    if (pat) await sbc.from('settings').delete().eq('key', `wa_paused_${msg.from}`);
+  } catch { /* fail open — process normally */ }
+
   if (!(await claimProcessing(msg.from, vfp))) return NextResponse.json({ ok: true });
 
   // Process inline and await — DB dedupe above already blocks Meta retries,
