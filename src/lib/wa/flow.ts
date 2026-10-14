@@ -17,6 +17,14 @@ import { extractIntent, finalReply, type Intent } from './groq';
 import { brainUnderstand, finderRank, brainWriteReply, type BrainDecision } from './brain';
 import { waSendText, waSendImage, waSendList, waSendButtons, waSendProductCard } from './whatsapp';
 
+// Smart truncate: cut at word boundary, never mid-word
+function smartCut(s: string, max: number): string {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > max * 0.5 ? cut.slice(0, lastSpace) : cut).trim();
+}
+
 // ---------- catalog cache ----------
 interface CatProduct {
   id: string;
@@ -334,7 +342,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     await waSendButtons(
       phone,
       useLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
-      found.map((p, i) => ({ id: `prod_${p.id}`, title: `${i + 1}. ${p.name.slice(0, 17)}` })),
+      found.map((p, i) => ({ id: `prod_${p.id}`, title: `${i + 1}. ${smartCut(p.name, 17)}` })),
     );
 
     pushHistory(session, 'ai', `shown ${found.length} products`);
@@ -447,6 +455,21 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         return;
       }
     }
+    // price/total question about CURRENT order? answer it, don't treat as field data
+    if (/\b(koto|koy|total|dam|price|cost)\b/i.test(lower) && d.product_id) {
+      const product = cat.items.find((p) => p.id === d.product_id);
+      if (product) {
+        const qty = Number(d.quantity) || 1;
+        const total = product.price * qty;
+        await ask(effLang === 'bn'
+          ? `Sir, ${product.name} এর দাম ${product.price} TK।\n${qty} pcs এর মোট: ${total} TK (ডেলিভারি চার্জ আলাদা)।`
+          : `Sir, ${product.name} costs ${product.price} TK.\nTotal for ${qty} pcs: ${total} TK (delivery charge separate).`);
+        pushHistory(session, 'ai', 'answered price mid-order');
+        await saveSession(phone, session);
+        await reaskStep(phone, session, cat, d);
+        return;
+      }
+    }
   }
 
   switch (session.step) {
@@ -485,7 +508,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         effLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
         catProducts.map((p, i) => ({
           id: `prod_${p.id}`,
-          title: `${i + 1}. ${p.name.slice(0, 17)}`,
+          title: `${i + 1}. ${smartCut(p.name, 17)}`,
         })),
       );
       pushHistory(session, 'ai', `shown ${catProducts.length} ${chosenCat} products`);
@@ -583,13 +606,20 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       await saveSession(phone, session);
       const qty = Number(d.quantity) || 1;
       const total = product ? product.price * qty : 0;
-      await ask(effLang === 'bn'
-        ? `Sir, confirm korchi:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQuantity: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nNam: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}\n\nThik ache sir? "Ha" likhun. ✅`
-        : `Sir, confirming:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQty: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nName: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}\n\nCorrect, sir? Reply "Yes". ✅`);
+      const confirmText = effLang === 'bn'
+        ? `Sir, confirm korchi:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQuantity: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nNam: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}`
+        : `Sir, confirming:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQty: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nName: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}`;
+      await waSendText(phone, confirmText);
+      await waSendButtons(phone, effLang === 'bn' ? 'Thik ache sir?' : 'Correct, sir?', [
+        { id: 'confirm_yes', title: effLang === 'bn' ? '✅ Order Confirm' : '✅ Confirm Order' },
+        { id: 'confirm_no', title: effLang === 'bn' ? '❌ Cancel' : '❌ Cancel' },
+      ]);
       return;
     }
     case 'await_confirm': {
-      if (/^(ha|yes|y|hyan|thik|ok|confirm)/i.test(msg.trim())) {
+      const isYes = msg === 'confirm_yes' || /^(ha|yes|y|hyan|thik|ok|confirm)/i.test(msg.trim());
+      const isNo = msg === 'confirm_no';
+      if (isYes) {
         const product = cat.items.find((p) => p.id === d.product_id);
         await waSendText(phone, pickWaiting('order', effLang));
         const ok = product ? await saveOrder(phone, d, product) : false;
