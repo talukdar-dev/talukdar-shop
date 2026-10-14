@@ -212,7 +212,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
   // Falls back to legacy brain flow if agent fails.
   const pacing = queueDepth >= 8 ? 2500 : queueDepth >= 4 ? 1800 : 1200;
   const quickLang = detectLang(text);
-  await waSendText(phone, pickWaiting('search', quickLang));
+  await waSendText(phone, pickWaiting('general', quickLang));
   await sleep(pacing);
 
   const cat = await getCatalog();
