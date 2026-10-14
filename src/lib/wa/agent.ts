@@ -22,7 +22,7 @@ const AGENT_SYSTEM = `You are a smart salesman for Talukdar Shop, a Bangladesh h
 You think step by step, use tools when needed, then reply naturally.
 
 TOOLS (use when needed):
-- search_products: {"tool":"search_products","keyword":"..."} — find products
+- search_products: {"tool":"search_products","keyword":"...","max_price":2000} — find products (use max_price/min_price for budget queries like "2000 er modde")
 - product_details: {"tool":"product_details","id":"..."} — full details of one product
 - show_image: {"tool":"show_image","id":"..."} — send the REAL product image to customer
 - calculate_total: {"tool":"calculate_total","price":4500,"qty":2} — total + delivery estimate
@@ -111,13 +111,16 @@ export async function agentExecTool(
   try {
     if (name === 'search_products') {
       const kw = String(tool.keyword ?? '').toLowerCase();
-      const matches = ctx.products
-        .filter((p) =>
-          p.name.toLowerCase().includes(kw) ||
-          p.category.toLowerCase().includes(kw) ||
-          kw.split(/\s+/).some((w) => w.length > 2 && (p.name.toLowerCase().includes(w) || p.category.toLowerCase().includes(w))),
-        )
-        .slice(0, 5);
+      const maxPrice = tool.max_price ? Number(tool.max_price) : 0;
+      const minPrice = tool.min_price ? Number(tool.min_price) : 0;
+      let matches = ctx.products.filter((p) =>
+        p.name.toLowerCase().includes(kw) ||
+        p.category.toLowerCase().includes(kw) ||
+        kw.split(/\s+/).some((w) => w.length > 2 && (p.name.toLowerCase().includes(w) || p.category.toLowerCase().includes(w))),
+      );
+      if (maxPrice > 0) matches = matches.filter((p) => p.price <= maxPrice);
+      if (minPrice > 0) matches = matches.filter((p) => p.price >= minPrice);
+      matches = matches.slice(0, 5);
       return {
         tool: name,
         result: matches.length

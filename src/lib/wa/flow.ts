@@ -716,10 +716,10 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         }
       }
       if (!chosen) {
-        // not a choice — maybe a NEW question? detect and restart fresh
-        let newIntent: Intent | null = null;
-        try { newIntent = await extractIntent(msg, KEYWORD_PROMPT); } catch { /* ignore */ }
-        if (newIntent && ['search', 'browse', 'price', 'delivery'].includes(newIntent.intent)) {
+        // Not a choice — treat as NEW message. The agent understands context.
+        // Only ask for 1/2/3 if message is empty or gibberish.
+        const isGibberish = msg.trim().length < 2 || /^[?!.]+$/.test(msg.trim());
+        if (!isGibberish) {
           session.step = 'idle';
           session.shownIds = [];
           await saveSession(phone, session);
