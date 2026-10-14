@@ -1,1 +1,47 @@
-Ly8gRGVidWc6IGNoZWNrcyBXaGF0c0FwcCArIEdyb3Egd2lyaW5nIHdpdGhvdXQgZXhwb3Npbmcgc2VjcmV0cy4KLy8gR0VUIC9hcGkvd2hhdHNhcHAvZGVidWcgLT4gSlNPTiBzdGF0dXMKaW1wb3J0IHsgTmV4dFJlc3BvbnNlIH0gZnJvbSAnbmV4dC9zZXJ2ZXInOwoKZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIEdFVCgpIHsKICBjb25zdCBoYXMgPSAoazogc3RyaW5nKSA9PiAhIXByb2Nlc3MuZW52W2tdOwogIGNvbnN0IG91dDogUmVjb3JkPHN0cmluZywgdW5rbm93bj4gPSB7CiAgICBlbnY6IHsKICAgICAgV0hBVFNBUFBfVkVSSUZZX1RPS0VOOiBoYXMoJ1dIQVRTQVBQX1ZFUklGWV9UT0tFTicpLAogICAgICBXSEFUU0FQUF9UT0tFTjogaGFzKCdXSEFUU0FQUF9UT0tFTicpLAogICAgICBXSEFUU0FQUF9QSE9ORV9JRDogaGFzKCdXSEFUU0FQUF9QSE9ORV9JRCcpLAogICAgICBHUk9RX0FQSV9LRVk6IGhhcygnR1JPUV9BUElfS0VZJyksCiAgICB9LAogIH07CgogIC8vIGNoZWNrIFdoYXRzQXBwIHRva2VuIHZhbGlkaXR5IHZpYSBNZXRhIGRlYnVnIGVuZHBvaW50CiAgY29uc3QgdG9rZW4gPSBwcm9jZXNzLmVudi5XSEFUU0FQUF9UT0tFTjsKICBpZiAodG9rZW4pIHsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHIgPSBhd2FpdCBmZXRjaChgaHR0cHM6Ly9ncmFwaC5mYWNlYm9vay5jb20vdjIxLjAvZGVidWdfdG9rZW4/aW5wdXRfdG9rZW49JHt0b2tlbn0mYWNjZXNzX3Rva2VuPSR7dG9rZW59YCwgeyBzaWduYWw6IEFib3J0U2lnbmFsLnRpbWVvdXQoMTUwMDApIH0pOwogICAgICBjb25zdCBqID0gYXdhaXQgci5qc29uKCk7CiAgICAgIG91dC53YVRva2VuID0geyBodHRwOiByLnN0YXR1cywgdmFsaWQ6ICEhaj8uZGF0YT8uaXNfdmFsaWQsIGVycm9yOiBqPy5lcnJvcj8ubWVzc2FnZSA/PyBqPy5kYXRhPy5lcnJvcj8ubWVzc2FnZSA/PyBudWxsLCBzY29wZXM6IGo/LmRhdGE/LnNjb3BlcyA/PyBudWxsIH07CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIG91dC53YVRva2VuID0geyBlcnJvcjogZSBpbnN0YW5jZW9mIEVycm9yID8gZS5tZXNzYWdlIDogJ2ZldGNoIGZhaWxlZCcgfTsKICAgIH0KICB9IGVsc2UgewogICAgb3V0LndhVG9rZW4gPSB7IGVycm9yOiAnV0hBVFNBUFBfVE9LRU4gbWlzc2luZycgfTsKICB9CgogIC8vIGNoZWNrIEdyb3Ega2V5IHdpdGggYSB0aW55IHJlcXVlc3QKICBjb25zdCBncm9xID0gcHJvY2Vzcy5lbnYuR1JPUV9BUElfS0VZOwogIGlmIChncm9xKSB7CiAgICB0cnkgewogICAgICBjb25zdCByID0gYXdhaXQgZmV0Y2goJ2h0dHBzOi8vYXBpLmdyb3EuY29tL29wZW5haS92MS9tb2RlbHMnLCB7CiAgICAgICAgaGVhZGVyczogeyBBdXRob3JpemF0aW9uOiBgQmVhcmVyICR7Z3JvcX1gIH0sCiAgICAgICAgc2lnbmFsOiBBYm9ydFNpZ25hbC50aW1lb3V0KDE1MDAwKSwKICAgICAgfSk7CiAgICAgIG91dC5ncm9xID0geyBodHRwOiByLnN0YXR1cywgb2s6IHIub2sgfTsKICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgb3V0Lmdyb3EgPSB7IGVycm9yOiBlIGluc3RhbmNlb2YgRXJyb3IgPyBlLm1lc3NhZ2UgOiAnZmV0Y2ggZmFpbGVkJyB9OwogICAgfQogIH0gZWxzZSB7CiAgICBvdXQuZ3JvcSA9IHsgZXJyb3I6ICdHUk9RX0FQSV9LRVkgbWlzc2luZycgfTsKICB9CgogIHJldHVybiBOZXh0UmVzcG9uc2UuanNvbihvdXQpOwp9Cg==
+// Debug: checks WhatsApp + Groq wiring without exposing secrets.
+// GET /api/whatsapp/debug -> JSON status
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const has = (k: string) => !!process.env[k];
+  const out: Record<string, unknown> = {
+    env: {
+      WHATSAPP_VERIFY_TOKEN: has('WHATSAPP_VERIFY_TOKEN'),
+      WHATSAPP_TOKEN: has('WHATSAPP_TOKEN'),
+      WHATSAPP_PHONE_ID: has('WHATSAPP_PHONE_ID'),
+      GROQ_API_KEY: has('GROQ_API_KEY'),
+    },
+  };
+
+  // check WhatsApp token validity via Meta debug endpoint
+  const token = process.env.WHATSAPP_TOKEN;
+  if (token) {
+    try {
+      const r = await fetch(`https://graph.facebook.com/v21.0/debug_token?input_token=${token}&access_token=${token}`, { signal: AbortSignal.timeout(15000) });
+      const j = await r.json();
+      out.waToken = { http: r.status, valid: !!j?.data?.is_valid, error: j?.error?.message ?? j?.data?.error?.message ?? null, scopes: j?.data?.scopes ?? null };
+    } catch (e) {
+      out.waToken = { error: e instanceof Error ? e.message : 'fetch failed' };
+    }
+  } else {
+    out.waToken = { error: 'WHATSAPP_TOKEN missing' };
+  }
+
+  // check Groq key with a tiny request
+  const groq = process.env.GROQ_API_KEY;
+  if (groq) {
+    try {
+      const r = await fetch('https://api.groq.com/openai/v1/models', {
+        headers: { Authorization: `Bearer ${groq}` },
+        signal: AbortSignal.timeout(15000),
+      });
+      out.groq = { http: r.status, ok: r.ok };
+    } catch (e) {
+      out.groq = { error: e instanceof Error ? e.message : 'fetch failed' };
+    }
+  } else {
+    out.groq = { error: 'GROQ_API_KEY missing' };
+  }
+
+  return NextResponse.json(out);
+}
