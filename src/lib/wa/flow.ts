@@ -223,10 +223,84 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
+  // 0.3) 📋 IVR MENU — Smart IVR style, text-based, zero AI tokens.
+  // Trigger: "menu" keyword or menu button taps.
+  const catalog = await getCatalog();
+  const menuAsk = async (t: string) => { await waSendText(phone, t); };
+  if (lower === 'menu' || lower === 'মেনু' || msg === 'menu_main') {
+    const mLang = detectLang(text);
+    await waSendButtons(
+      phone,
+      mLang === 'bn'
+        ? 'Talukdar Shop-এ স্বাগতম! 🙏\nকী সাহায্য করতে পারি?'
+        : 'Welcome to Talukdar Shop! 🙏\nHow can I help?',
+      [
+        { id: 'menu_products', title: mLang === 'bn' ? '🛍️ Products' : '🛍️ Products' },
+        { id: 'menu_track', title: mLang === 'bn' ? '📦 Order Track' : '📦 Track Order' },
+        { id: 'menu_delivery', title: mLang === 'bn' ? '🚚 Delivery Info' : '🚚 Delivery Info' },
+      ],
+    );
+    await waSendButtons(
+      phone,
+      mLang === 'bn' ? 'অথবা:' : 'Or:',
+      [{ id: 'menu_human', title: mLang === 'bn' ? '📞 মানুষের সাথে' : '📞 Talk to Human' }],
+    );
+    pushHistory(session, 'ai', 'main menu shown');
+    session.step = 'await_menu_choice';
+    session.data = {};
+    await saveSession(phone, session);
+    return;
+  }
+  // menu button taps (also work from any idle state)
+  if (msg.startsWith('menu_')) {
+    const mLang = detectLang(text);
+    if (msg === 'menu_products') {
+      // show all categories as buttons (first 3 + more note)
+      const allCats = [...new Set(catalog.items.map((p) => p.category).filter(Boolean))];
+      const showCats = allCats.slice(0, 3);
+      const moreNote = allCats.length > 3
+        ? (mLang === 'bn' ? ` (আরো ${allCats.length - 3}টা আছে — নাম লিখুন)` : ` (${allCats.length - 3} more — type name)`)
+        : '';
+      await waSendButtons(
+        phone,
+        (mLang === 'bn' ? `কোন category দেখবেন?${moreNote}` : `Which category?${moreNote}`),
+        showCats.map((c, i) => ({ id: `menucat_${i}`, title: smartCut(c, 20) })),
+      );
+      session.step = 'await_menu_category';
+      session.shownIds = allCats;
+      await saveSession(phone, session);
+      return;
+    }
+    if (msg === 'menu_track') {
+      session.step = 'await_track_phone';
+      await saveSession(phone, session);
+      await menuAsk(mLang === 'bn'
+        ? 'Sir, order-এর phone number-টা দিন (যেটা দিয়ে order করেছিলেন)।'
+        : 'Sir, please give the phone number used for the order.');
+      return;
+    }
+    if (msg === 'menu_delivery') {
+      await waSendText(phone, mLang === 'bn'
+        ? '🚚 Delivery তথ্য:\n• ঢাকার ভিতরে: ৳৬০ (২-৩ দিন)\n• ঢাকার বাইরে: ৳১২০ (৩-৫ দিন)\n• ৳৫,০০০+ অর্ডারে ফ্রি ডেলিভারি\n• Cash on Delivery'
+        : '🚚 Delivery info:\n• Inside Dhaka: ৳60 (2-3 days)\n• Outside Dhaka: ৳120 (3-5 days)\n• Free above ৳5,000\n• Cash on Delivery');
+      pushHistory(session, 'ai', 'delivery info sent');
+      await saveSession(phone, session);
+      return;
+    }
+    if (msg === 'menu_human') {
+      await waSendText(phone, mLang === 'bn'
+        ? '📞 আমাদের hotline: 01333600272 (সকাল ৯টা - রাত ১০টা)\nসরাসরি কল করুন, আমরা সাহায্য করব!'
+        : '📞 Our hotline: 01333600272 (9AM - 10PM)\nCall us directly, we\'ll help!');
+      pushHistory(session, 'ai', 'human support info sent');
+      await saveSession(phone, session);
+      return;
+    }
+  }
+
   // 0.5) BRAND → CATEGORY → PRODUCT (deterministic, zero AI tokens).
   // If the message is just a brand name, ask which category first (max 3 buttons).
   // This narrows down before any product search, saving tokens.
-  const catalog = await getCatalog();
+  // (catalog already loaded above for the menu)
   if (!session.step.startsWith('await_') || session.step === 'idle') {
     const brands = [...new Set(catalog.items.map((p) => p.brand).filter(Boolean))];
     const brandHit = brands.find((b) => {
@@ -715,7 +789,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
 
   // --- smart guards: cancellation / language switch / new query ---
   // (skip for choice steps which have their own new-query detection)
-  if (session.step !== 'await_product_choice' && session.step !== 'await_category_choice' && session.step !== 'await_brand_category') {
+  if (session.step !== 'await_product_choice' && session.step !== 'await_category_choice' && session.step !== 'await_brand_category' && session.step !== 'await_menu_choice' && session.step !== 'await_menu_category' && session.step !== 'await_track_phone') {
     if (CANCEL_WORDS.test(lower)) {
       await clearSession(phone);
       pushHistory(session, 'ai', 'order cancelled');
@@ -767,6 +841,92 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
   }
 
   switch (session.step) {
+    case 'await_menu_choice': {
+      // menu button taps are handled in the menu_ block above (they start with menu_)
+      // if user typed something else, treat as new message
+      if (!msg.startsWith('menu_')) {
+        session.step = 'idle';
+        await saveSession(phone, session);
+        await handleWaMessage(phone, msg, queueDepth);
+        return;
+      }
+      return;
+    }
+    case 'await_menu_category': {
+      const cats = (session.shownIds ?? []) as string[];
+      const idx = parseInt(msg) - 1;
+      let chosenCat = cats[idx];
+      if (msg.startsWith('menucat_')) {
+        const bi = parseInt(msg.split('_')[1] ?? '-1');
+        chosenCat = cats[bi];
+      }
+      if (!chosenCat) {
+        const ml = msg.toLowerCase();
+        chosenCat = cats.find((c) => c.toLowerCase().includes(ml) || ml.includes(c.toLowerCase())) ?? '';
+      }
+      if (!chosenCat) {
+        await ask(effLang === 'bn' ? 'Sir, category-র নাম লিখুন।' : 'Sir, type the category name.');
+        return;
+      }
+      const menuProducts = cat.items.filter((p) => p.category === chosenCat).slice(0, 3);
+      if (menuProducts.length === 0) {
+        await ask(effLang === 'bn' ? 'Sir, এই category-তে product নেই।' : 'Sir, no products here.');
+        return;
+      }
+      for (const p of menuProducts) {
+        await waSendProductCard(phone, p, effLang);
+        await sleep(800);
+      }
+      await waSendButtons(
+        phone,
+        effLang === 'bn' ? '🛒 Order করতে tap করুন:' : '🛒 Tap to order:',
+        menuProducts.map((p, i) => ({ id: `prod_${p.id}`, title: `${i + 1}. ${smartCut(p.name, 17)}` })),
+      );
+      session.step = 'await_product_choice';
+      session.shownIds = menuProducts.map((p) => p.id);
+      await saveSession(phone, session);
+      return;
+    }
+    case 'await_track_phone': {
+      const digits = msg.replace(/\D/g, '');
+      if (!/^01\d{9}$/.test(digits)) {
+        await ask(effLang === 'bn'
+          ? 'Sir, ১১ ডিজিটের সঠিক mobile number দিন (01 দিয়ে শুরু)।'
+          : 'Sir, please give a valid 11-digit mobile number (starts with 01).');
+        return;
+      }
+      try {
+        const { supabaseAdmin: sba } = await import('@/lib/admin-db');
+        const sb = sba();
+        const { data: orders } = await sb.from('orders')
+          .select('order_no,status,total,created_at,items')
+          .eq('phone', digits)
+          .order('created_at', { ascending: false })
+          .limit(3);
+        if (!orders || orders.length === 0) {
+          await ask(effLang === 'bn'
+            ? 'Sir, এই number-এ কোনো order পাইনি। Number-টা ঠিক আছে তো?'
+            : 'Sir, no orders found for this number. Is it correct?');
+          return;
+        }
+        const statusBn: Record<string, string> = {
+          pending: 'অপেক্ষমাণ', confirmed: 'কনফার্মড', processing: 'প্রসেসিং',
+          shipped: 'পাঠানো হয়েছে', delivered: 'ডেলিভারড', cancelled: 'বাতিল',
+        };
+        const lines = (orders as Array<{ order_no: string; status: string; total: number; items: Array<{ name: string; qty: number }> }>).map((o) => {
+          const st = effLang === 'bn' ? (statusBn[o.status] ?? o.status) : o.status;
+          const items = (o.items ?? []).map((i) => `${i.name} x${i.qty}`).join(', ').slice(0, 60);
+          return `📦 ${o.order_no}\n${items}\n৳${o.total} — ${st}`;
+        });
+        await waSendText(phone, (effLang === 'bn' ? 'আপনার সাম্প্রতিক orders:\n\n' : 'Your recent orders:\n\n') + lines.join('\n\n'));
+        pushHistory(session, 'ai', `tracked ${orders.length} orders for ${digits.slice(-4)}`);
+      } catch {
+        await ask(effLang === 'bn' ? 'Sir, একটু সমস্যা হচ্ছে, পরে চেষ্টা করুন।' : 'Sir, something went wrong, try later.');
+      }
+      session.step = 'idle';
+      await saveSession(phone, session);
+      return;
+    }
     case 'await_brand_category': {
       const brand = String(session.data.brand ?? '');
       const cats = (session.shownIds ?? []) as string[];

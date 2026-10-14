@@ -77,9 +77,9 @@ export const GREETINGS = new Set([
 ]);
 
 export const GREETING_REPLY_BN =
-  'Walaikum Assalam Sir! Talukdar Shop-e apnake swagotom. Ki product khujchen sir? Air fryer, rice cooker, fan, geyser — bolun, ami ber kore dicchi.';
+  'Walaikum Assalam Sir! Talukdar Shop-e apnake swagotom. Ki product khujchen sir? Air fryer, rice cooker, fan, geyser — bolun, ami ber kore dicchi. Menu dekhte "menu" likhun.';
 export const GREETING_REPLY_EN =
-  'Hello Sir! Welcome to Talukdar Shop. Which product are you looking for? Air fryer, rice cooker, fan, geyser — just tell me.';
+  'Hello Sir! Welcome to Talukdar Shop. Which product are you looking for? Air fryer, rice cooker, fan, geyser — just tell me. Type "menu" for options.';
 
 // ---- Language detect: Bengali script or Banglish -> bn, else en ----
 export function detectLang(text: string): 'bn' | 'en' {
