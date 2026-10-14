@@ -17,10 +17,13 @@ export interface BrainDecision {
     | 'order_data'
     | 'order_cancel'
     | 'human'
+    | 'clarify'
     | 'other';
   keyword: string;
   lang: 'bn' | 'en';
   understanding: string;
+  confidence: 'high' | 'medium' | 'low';
+  clarifyQuestion?: string;
   // order-related extracted fields (when action is order_data)
   orderFields?: { name?: string; address?: string; phone?: string; quantity?: string };
 }
@@ -30,7 +33,7 @@ const BRAIN_SYSTEM = `You are the brain of Talukdar Shop's WhatsApp salesman. Ta
 Given the conversation history and the customer's latest message, UNDERSTAND what they mean and decide the next action.
 
 Reply ONLY with JSON, no other text:
-{"action":"...","keyword":"...","lang":"bn|en","understanding":"...","orderFields":{...}}
+{"action":"...","keyword":"...","lang":"bn|en","understanding":"...","confidence":"high|medium|low","clarifyQuestion":"...","orderFields":{...}}
 
 Actions:
 - "greeting": hi/hello/salam only
@@ -43,11 +46,15 @@ Actions:
 - "order_data": customer is giving order details (name/address/phone/quantity) in ANY form — extract into orderFields. Even partial info.
 - "order_cancel": customer does NOT want to order ("order korbo na", "lagbe na", "cancel", "bad den", "thak")
 - "human": wants to talk to a human/agent
+- "clarify": you are NOT sure what they want — set confidence "low" and write a clarifying question
 - "other": anything else
 
 Rules:
 - lang: "bn" if customer wrote Bengali script OR Banglish (Latin-script Bangla like "dam koto", "order korbo na"), else "en".
 - understanding: one line on what the customer means, in English.
+- confidence: "high" if clear, "medium" if probable, "low" if vague/confusing (e.g. "eta", "oita", "dam koto" with no product context).
+- If confidence is "low" -> action MUST be "clarify" with a helpful clarifyQuestion.
+- NEVER guess when unsure. Better to ask than to show wrong products.
 - orderFields: extract name/address/phone/quantity whenever the customer provides them, even casually ("amar nam Shipon", "address Dhaka Uttara", "phone 017...").
 - If customer cancels mid-order -> "order_cancel", NOT order_data.
 - If customer asks a new product question mid-order -> "search" with keyword.
@@ -71,15 +78,18 @@ export async function brainUnderstand(
   const d = p as Record<string, unknown>;
   const validActions = [
     'greeting', 'search', 'category_ask', 'product_info', 'price_ask',
-    'delivery_info', 'order_start', 'order_data', 'order_cancel', 'human', 'other',
+    'delivery_info', 'order_start', 'order_data', 'order_cancel', 'human', 'clarify', 'other',
   ];
   const action = validActions.includes(String(d.action)) ? (d.action as BrainDecision['action']) : 'other';
+  const conf = String(d.confidence ?? 'medium');
   const of = d.orderFields as Record<string, unknown> | undefined;
   return {
     action,
     keyword: String(d.keyword ?? ''),
     lang: d.lang === 'en' ? 'en' : 'bn',
     understanding: String(d.understanding ?? ''),
+    confidence: conf === 'high' ? 'high' : conf === 'low' ? 'low' : 'medium',
+    clarifyQuestion: d.clarifyQuestion ? String(d.clarifyQuestion) : undefined,
     orderFields: of && typeof of === 'object' ? {
       name: of.name ? String(of.name) : undefined,
       address: of.address ? String(of.address) : undefined,

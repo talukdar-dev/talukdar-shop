@@ -269,6 +269,16 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
+  // 7b) 🧠 not sure what they want? ASK, don't guess.
+  if (action === 'clarify' || brain?.confidence === 'low') {
+    const q = brain?.clarifyQuestion || (useLang === 'bn'
+      ? 'Sir, bujhte parlam na. Kon product chacchen ektu bolun?'
+      : 'Sir, I did not quite understand. Which product are you looking for?');
+    await waSendText(phone, q);
+    await saveIdle('asked clarification');
+    return;
+  }
+
   const cat = await getCatalog();
 
   // 8) broad browse — categories with counts
