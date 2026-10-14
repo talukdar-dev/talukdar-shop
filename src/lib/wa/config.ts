@@ -84,8 +84,8 @@ export const GREETING_REPLY_EN =
 // ---- Language detect: Bengali script or Banglish -> bn, else en ----
 export function detectLang(text: string): 'bn' | 'en' {
   if (/[\u0980-\u09FF]/.test(text)) return 'bn';
-  // common Banglish markers
-  if (/\b(lagbe|dam|koto|ache|chai|kinte|dokan|valo|khujchi|bolun|din|kore|theke)\b/i.test(text)) return 'bn';
+  // common Banglish markers (expanded)
+  if (/\b(lagbe|lagbo|dam|dham|koto|koyta|ache|achen|nai|nei|chai|chailam|chay|kinte|kinbo|nibo|nite|nita|dokan|valo|bhalo|khujchi|khujchi|bolun|bolo|bolen|din|den|dao|daw|dili|dilen|diben|dibo|kore|koren|koro|korbo|theke|agula|egula|ogula|eita|oita|eigula|kivabe|kemne|kemon|hobe|hbe|tumi|toi|tui|ami|amake|amar|apni|apnar|ekta|duita|tinta|koi|kothay|kobe|keno|karon|kintu|jodi|tobe|akhon|ekhon|pore|age|abar|shudhu|sudhu|eto|oto|khub|onek|kom|beshi|choto|boro|notun|dekhte|dekhbo|dekhao|dekhano|nite|pathao|order|delivery|taka|tk)\b/i.test(text)) return 'bn';
   return 'en';
 }
 
@@ -94,10 +94,18 @@ export const KEYWORD_PROMPT = `You are a keyword extractor for Talukdar Shop, a 
 Customer message may have spelling mistakes, Banglish, or Bengali script.
 Reply ONLY with JSON, no other text:
 {"intent":"greeting|browse|search|variant|price|delivery|order|other","keyword":"product keyword in english or empty","lang":"bn|en"}
+RULES:
+- Single product/category word (fan, fridge, iron, cooker) -> intent "search" with that keyword. NEVER "browse" for a product word.
+- "browse" ONLY for vague messages like "ki ki ache", "what do you have", "dekhte chai".
+- Complaints about previous reply ("egula ki dili", "eta na") -> intent "search", use the product from context if mentioned.
 Appliance categories: air fryer, iron, rice cooker, electric kettle, fan, ceiling fan, rechargeable fan, solar, water heater, geyser, light, battery, ips, infrared cooker, blender, mixer grinder, multi cooker, pressure cooker, cookware, microwave oven, room heater.
 Examples:
 "air fryer lagbe" -> {"intent":"search","keyword":"air fryer","lang":"bn"}
+"fan" -> {"intent":"search","keyword":"fan","lang":"en"}
+"Fan chai" -> {"intent":"search","keyword":"fan","lang":"bn"}
 "geyser er dam koto" -> {"intent":"price","keyword":"geyser","lang":"bn"}
+"ki ki ache" -> {"intent":"browse","keyword":"","lang":"bn"}
+"chailam fan egula ki dili" -> {"intent":"search","keyword":"fan","lang":"bn"}
 "hi" -> {"intent":"greeting","keyword":"","lang":"en"}
 "1 number ta nibo" -> {"intent":"order","keyword":"","lang":"bn"}`;
 

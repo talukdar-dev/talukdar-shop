@@ -100,6 +100,14 @@ interface Session {
   data: Record<string, string | number>;
   updatedAt: number;
   shownIds?: string[];
+  history?: string[];
+}
+
+// keep last 6 turns (user + ai) for context
+function pushHistory(s: Session, who: 'user' | 'ai', text: string) {
+  const h = s.history ?? [];
+  h.push(`${who}: ${text.slice(0, 200)}`);
+  s.history = h.slice(-6);
 }
 
 async function getSession(phone: string): Promise<Session> {
@@ -169,6 +177,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
   }
 
   const session = await getSession(phone);
+  pushHistory(session, 'user', msg);
 
   // 2) order flow continuation (state machine first — no AI needed)
   if (session.step !== 'idle') {
@@ -208,6 +217,8 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
       ? `Sir, amader kache ei category gulo ache:\n${lines.join('\n')}\n\nKonta dekhte chan sir?`
       : `Sir, we have these categories:\n${lines.join('\n')}\n\nWhich one would you like to see?`;
     await waSendText(phone, reply);
+    pushHistory(session, 'ai', 'shown categories');
+    await saveSession(phone, { step: 'idle', data: {}, updatedAt: Date.now(), history: session.history });
     return;
   }
 
@@ -241,14 +252,17 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
   );
 
   // remember shown products, ask variant AFTER selection (lazy)
+  pushHistory(session, 'ai', `shown ${found.length} products`);
   await saveSession(phone, {
     step: 'await_product_choice',
     data: {},
     shownIds: found.map((p) => p.id),
     updatedAt: Date.now(),
+    history: session.history,
   });
 
-  const ctx = `Shown ${found.length} products. Ask which one they want (1/2/3). Variants only when asked.`;
+  const histCtx = session.history?.length ? `\nRecent chat:\n${session.history.join('\n')}` : '';
+  const ctx = `Shown ${found.length} products. Ask which one they want (1/2/3). Variants only when asked.${histCtx}`;
   const aiReply = await finalReply(
     finalReplyPrompt({ lang: useLang, customerMsg: msg, products: found, context: ctx }),
     msg,
