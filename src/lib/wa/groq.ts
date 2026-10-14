@@ -92,7 +92,7 @@ export interface Intent {
 
 // Lenient JSON extractor: handles markdown fences, leading/trailing prose,
 // trailing commas — for gpt-oss which can't use strict JSON mode.
-function extractJsonLenient(raw: string): Record<string, unknown> | null {
+export function extractJsonLenient(raw: string): Record<string, unknown> | null {
   const clean = raw.replace(/```(?:json)?/gi, '').trim();
   try { return JSON.parse(clean); } catch { /* try harder */ }
   const start = clean.indexOf('{');

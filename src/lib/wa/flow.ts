@@ -12,9 +12,9 @@ import {
   detectLang,
   pickWaiting,
   KEYWORD_PROMPT,
-  finalReplyPrompt,
 } from './config';
 import { extractIntent, finalReply, type Intent } from './groq';
+import { brainUnderstand, finderRank, brainWriteReply, type BrainDecision } from './brain';
 import { waSendText, waSendImage, waSendList, waSendButtons, waSendProductCard } from './whatsapp';
 
 // ---------- catalog cache ----------
@@ -168,138 +168,195 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- main handler ----------
 export async function handleWaMessage(phone: string, text: string, queueDepth: number) {
-  const lang = detectLang(text);
   const msg = text.trim();
   const lower = msg.toLowerCase();
 
-  // 1) greeting — instant, no DB/AI
-  if (GREETINGS.has(lower) || (lower.length <= 12 && /^(salam|hello|hi)/.test(lower))) {
-    await waSendText(phone, lang === 'bn' ? GREETING_REPLY_BN : GREETING_REPLY_EN);
-    return;
-  }
-
   const session = await getSession(phone);
   pushHistory(session, 'user', msg);
+  const history = session.history ?? [];
 
-  // 2) order flow continuation (state machine first — no AI needed)
-  if (session.step !== 'idle') {
-    await handleOrderStep(phone, msg, lang, session, queueDepth);
+  // 1) greeting — instant, no AI
+  if (GREETINGS.has(lower) || (lower.length <= 12 && /^(salam|hello|hi)/.test(lower))) {
+    const lang = detectLang(text);
+    const reply = lang === 'bn' ? GREETING_REPLY_BN : GREETING_REPLY_EN;
+    await waSendText(phone, reply);
+    pushHistory(session, 'ai', 'greeting');
+    await saveSession(phone, { step: 'idle', data: {}, updatedAt: Date.now(), history: session.history });
     return;
   }
 
-  // 3) waiting message (varied pool, personal — never "we're busy")
+  // 2) order flow continuation — brain interprets within order context
+  if (session.step !== 'idle') {
+    await handleOrderStep(phone, msg, detectLang(text), session, queueDepth);
+    return;
+  }
+
+  // 3) waiting message
   const pacing = queueDepth >= 8 ? 2500 : queueDepth >= 4 ? 1800 : 1200;
-  await waSendText(phone, pickWaiting('search', lang));
+  const quickLang = detectLang(text);
+  await waSendText(phone, pickWaiting('search', quickLang));
   await sleep(pacing);
 
-  // 4) intent via fast model
-  let intent: Intent | null = null;
+  // 4) 🧠 120B UNDERSTANDS the message
+  let brain: BrainDecision | null = null;
   try {
-    intent = await extractIntent(msg, KEYWORD_PROMPT);
+    brain = await brainUnderstand(msg, history);
   } catch { /* fall through */ }
-  const useLang = intent?.lang ?? lang;
-  const keyword = intent?.keyword ?? '';
-  const kind = intent?.intent ?? 'other';
+  const useLang = brain?.lang ?? quickLang;
+  const action = brain?.action ?? 'other';
+  const keyword = brain?.keyword ?? '';
+  const understanding = brain?.understanding ?? '';
 
-  // 5) delivery question — answer from training, no product search
-  if (kind === 'delivery' || /deliver|cash|payment|bkash|shipping|ডেলিভারি|ক্যাশ/.test(lower)) {
-    const reply = useLang === 'bn'
-      ? `Sir, amader Cash on Delivery সুবিধা আছে।\nঢাকার ভেতরে ডেলিভারি ৬০ টাকা, ঢাকার বাইরে ১২০ টাকা। ৫০০০ টাকার উপরে অর্ডারে ডেলিভারি ফ্রি।\nঢাকার ভেতরে ২-৩ দিনে, বাইরে ৩-৫ দিনে পাবেন।`
-      : `Sir, we offer Cash on Delivery.\nInside Dhaka: 60 TK, outside Dhaka: 120 TK. Free delivery above 5000 TK.\n2-3 days inside Dhaka, 3-5 days outside.`;
-    await waSendText(phone, reply);
+  const saveIdle = async (aiNote: string) => {
+    pushHistory(session, 'ai', aiNote);
+    await saveSession(phone, { step: 'idle', data: {}, updatedAt: Date.now(), history: session.history });
+  };
+
+  // 5) delivery question — 120B writes the answer
+  if (action === 'delivery_info') {
+    const reply = await brainWriteReply({
+      lang: useLang, customerMsg: msg, understanding, history,
+      dataText: 'Delivery: Cash on Delivery only. Inside Dhaka 60 TK (2-3 days), outside Dhaka 120 TK (3-5 days), free above 5000 TK. Hotline 01333600272.',
+      instruction: 'Answer their delivery question briefly using the data.',
+    });
+    await waSendText(phone, reply ?? (useLang === 'bn'
+      ? 'Sir, Cash on Delivery আছে। ঢাকায় ৬০ টাকা, বাইরে ১২০ টাকা।'
+      : 'Sir, Cash on Delivery available. Dhaka 60 TK, outside 120 TK.'));
+    await saveIdle('answered delivery');
+    return;
+  }
+
+  // 6) order cancel (no active order, but they say cancel)
+  if (action === 'order_cancel') {
+    const reply = await brainWriteReply({
+      lang: useLang, customerMsg: msg, understanding, history, dataText: '',
+      instruction: 'They want to cancel. Confirm cancellation politely, ask if they need anything else.',
+    });
+    await waSendText(phone, reply ?? (useLang === 'bn' ? 'ঠিক আছে Sir, cancel করে দিলাম।' : 'Okay Sir, cancelled.'));
+    await saveIdle('cancelled');
+    return;
+  }
+
+  // 7) human handover
+  if (action === 'human') {
+    await waSendText(phone, useLang === 'bn'
+      ? 'Sir, আমাদের টিমের সাথে কথা বলতে হটলাইন 01333600272 তে কল করুন (সকাল ৯টা - রাত ১০টা)।'
+      : 'Sir, please call our hotline 01333600272 (9AM-10PM) to speak with our team.');
+    await saveIdle('human handover');
     return;
   }
 
   const cat = await getCatalog();
 
-  // 6) broad browse — categories with counts (token saving)
-  if (kind === 'browse' || (!keyword && kind !== 'search')) {
+  // 8) broad browse — categories with counts
+  if (action === 'other' && !keyword) {
     const lines = cat.cats.slice(0, 12).map((c, i) => `${i + 1}. ${c.name} (${c.count} ta)`);
-    const reply = useLang === 'bn'
+    const intro = await brainWriteReply({
+      lang: useLang, customerMsg: msg, understanding, history,
+      dataText: `Categories:\n${lines.join('\n')}`,
+      instruction: 'Show the category list briefly, ask which one they want to see.',
+    });
+    await waSendText(phone, intro ?? (useLang === 'bn'
       ? `Sir, amader kache ei category gulo ache:\n${lines.join('\n')}\n\nKonta dekhte chan sir?`
-      : `Sir, we have these categories:\n${lines.join('\n')}\n\nWhich one would you like to see?`;
-    await waSendText(phone, reply);
-    pushHistory(session, 'ai', 'shown categories');
-    await saveSession(phone, { step: 'idle', data: {}, updatedAt: Date.now(), history: session.history });
+      : `Sir, we have these categories:\n${lines.join('\n')}\n\nWhich one would you like to see?`));
+    await saveIdle('shown categories');
     return;
   }
 
-  // 7) product search (max 3, fuzzy)
-  await waSendText(phone, pickWaiting('stock', useLang));
-  await sleep(Math.min(pacing, 1500));
-  const found = searchProducts(keyword || msg, cat.items, WA_CONFIG.maxProductsPerReply);
+  // 9) 🔍 product search — 20B FINDS, 120B presents
+  if (action === 'search' || action === 'category_ask' || action === 'product_info' || action === 'price_ask' || keyword) {
+    await waSendText(phone, pickWaiting('stock', useLang));
+    await sleep(Math.min(pacing, 1500));
 
-  if (found.length === 0) {
-    const reply = useLang === 'bn'
-      ? `Sir, "${msg}" nam e ekhon stock-e pacchi na. Onno nam e likhe dekhun, ba category bolun — ami ber kore dicchi.`
-      : `Sir, I could not find "${msg}" in stock right now. Please try another name or tell me the category.`;
-    await waSendText(phone, reply);
-    return;
-  }
-
-  // category-first: if matches span multiple categories, ask which type first
-  const allMatches = searchProducts(keyword || msg, cat.items, 20);
-  const matchCats = [...new Set(allMatches.map((p) => p.category).filter(Boolean))];
-  if (matchCats.length > 1) {
-    const bodyText = useLang === 'bn'
-      ? `Sir, "${keyword || msg}" er ${matchCats.length} dhoroner ache. Konta chaitasen?`
-      : `Sir, "${keyword || msg}" comes in ${matchCats.length} types. Which one?`;
-    // Telegram-style buttons (max 3) — fallback to numbered text if more
-    if (matchCats.length <= 3) {
-      await waSendButtons(phone, bodyText, matchCats.map((c, i) => ({ id: `catchoose_${i}`, title: c })));
-    } else {
-      const catLines = matchCats.map((c, i) => {
-        const n = allMatches.filter((p) => p.category === c).length;
-        return `${i + 1}. ${c} (${n} ta)`;
+    const candidates = searchProducts(keyword || msg, cat.items, 12);
+    if (candidates.length === 0) {
+      const reply = await brainWriteReply({
+        lang: useLang, customerMsg: msg, understanding, history, dataText: '',
+        instruction: `No products found for "${keyword || msg}". Apologize briefly, suggest trying another name or category.`,
       });
-      await waSendText(phone, `${bodyText}\n${catLines.join('\n')}\n\nNumber likhun.`);
+      await waSendText(phone, reply ?? (useLang === 'bn'
+        ? `Sir, "${msg}" এখন stock-e pacchi na. Onno nam e likhe dekhun.`
+        : `Sir, could not find "${msg}" in stock. Try another name.`));
+      await saveIdle('not found');
+      return;
     }
-    pushHistory(session, 'ai', `asked fan type: ${matchCats.join(', ')}`);
+
+    // category-first: multiple types? ask which one
+    const matchCats = [...new Set(candidates.map((p) => p.category).filter(Boolean))];
+    if (matchCats.length > 1 && action === 'search') {
+      const bodyText = useLang === 'bn'
+        ? `Sir, "${keyword}" er ${matchCats.length} dhoroner ache. Konta chaitasen?`
+        : `Sir, "${keyword}" comes in ${matchCats.length} types. Which one?`;
+      if (matchCats.length <= 3) {
+        await waSendButtons(phone, bodyText, matchCats.map((c, i) => ({ id: `catchoose_${i}`, title: c })));
+      } else {
+        await waSendText(phone, bodyText);
+      }
+      pushHistory(session, 'ai', `asked type: ${matchCats.join(', ')}`);
+      await saveSession(phone, {
+        step: 'await_category_choice',
+        data: { keyword: keyword || msg },
+        shownIds: matchCats,
+        updatedAt: Date.now(),
+        history: session.history,
+      });
+      return;
+    }
+
+    // 20B ranks the candidates, picks best 3
+    const rankedIds = await finderRank(keyword || msg, candidates);
+    const found = rankedIds
+      .map((id) => candidates.find((c) => c.id === id))
+      .filter((p): p is NonNullable<typeof p> => !!p)
+      .slice(0, 3);
+
+    // product cards with images + links
+    for (const p of found) {
+      await waSendProductCard(phone, p, useLang);
+      await sleep(900);
+    }
+    // tap buttons
+    await waSendButtons(
+      phone,
+      useLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
+      found.map((p, i) => ({ id: `prod_${p.id}`, title: `${i + 1}. ${p.name.slice(0, 17)}` })),
+    );
+
+    pushHistory(session, 'ai', `shown ${found.length} products`);
     await saveSession(phone, {
-      step: 'await_category_choice',
-      data: { keyword: keyword || msg },
-      shownIds: matchCats,
+      step: 'await_product_choice',
+      data: {},
+      shownIds: found.map((p) => p.id),
       updatedAt: Date.now(),
       history: session.history,
     });
     return;
   }
 
-  // 8) show products: image cards + tap buttons
-  for (const p of found) {
-    await waSendProductCard(phone, p, useLang);
-    await sleep(900);
+  // 10) order start — begin conversational order
+  if (action === 'order_start') {
+    // (handled via product choice normally; fallback: ask what they want)
+    const reply = await brainWriteReply({
+      lang: useLang, customerMsg: msg, understanding, history, dataText: '',
+      instruction: 'They want to order but no product selected yet. Ask which product they want.',
+    });
+    await waSendText(phone, reply ?? (useLang === 'bn' ? 'Sir, kon product ta order korte chan?' : 'Sir, which product would you like to order?'));
+    await saveIdle('order start w/o product');
+    return;
   }
-  await waSendButtons(
-    phone,
-    useLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
-    found.map((p, i) => ({
-      id: `prod_${p.id}`,
-      title: `${i + 1}. ${p.name.slice(0, 17)}`,
-    })),
-  );
 
-  // remember shown products, ask variant AFTER selection (lazy)
-  pushHistory(session, 'ai', `shown ${found.length} products`);
-  await saveSession(phone, {
-    step: 'await_product_choice',
-    data: {},
-    shownIds: found.map((p) => p.id),
-    updatedAt: Date.now(),
-    history: session.history,
+  // 11) fallback — 120B handles it naturally
+  const reply = await brainWriteReply({
+    lang: useLang, customerMsg: msg, understanding: understanding || 'unclear message', history, dataText: '',
+    instruction: 'Respond naturally and helpfully. If unclear, ask what product they are looking for.',
   });
-
-  const histCtx = session.history?.length ? `\nRecent chat:\n${session.history.join('\n')}` : '';
-  const ctx = `Shown ${found.length} products. Ask which one they want (1/2/3). Variants only when asked.${histCtx}`;
-  const aiReply = await finalReply(
-    finalReplyPrompt({ lang: useLang, customerMsg: msg, products: found, context: ctx }),
-    msg,
-  );
-  if (aiReply) await waSendText(phone, aiReply);
-  else await waSendText(phone, useLang === 'bn'
-    ? 'Sir, konta nite chan? 1, 2 na 3 likhun.'
-    : 'Sir, which one would you like? Reply 1, 2 or 3.');
+  if (reply) {
+    await waSendText(phone, reply);
+    await saveIdle('fallback reply');
+  }
 }
+
+// NOTE: old product-display block removed — brain flow handles it above.
 
 // re-ask the current order step question (after language switch)
 async function reaskStep(phone: string, session: Session, cat: Awaited<ReturnType<typeof getCatalog>>, d: Record<string, string | number>) {
