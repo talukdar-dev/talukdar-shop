@@ -31,6 +31,7 @@ interface WaTextMsg {
   type: string;
   text?: { body: string };
   interactive?: { type: string; list_reply?: { id: string; title: string }; button_reply?: { id: string; title: string } };
+  raw?: unknown;
 }
 
 function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
@@ -46,6 +47,7 @@ function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
       type: String(msg.type ?? ''),
       text: msg.text as WaTextMsg['text'],
       interactive: msg.interactive as WaTextMsg['interactive'],
+      raw: msg,
     };
   } catch {
     return null;
@@ -73,8 +75,8 @@ export async function POST(req: NextRequest) {
   const msg = extractMessage(body);
   if (!msg || isDuplicate(msg.id)) return NextResponse.json({ ok: true });
 
-  // diagnostic: record that Meta's webhook reached us
-  logWebhookHit(msg.from, msg.id, 0);
+  // diagnostic: record that Meta's webhook reached us (raw payload for structure check)
+  logWebhookHit(msg.from, msg.id, msg.raw ?? msg);
 
   // resolve text from text or interactive replies
   let text = '';

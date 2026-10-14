@@ -27,8 +27,8 @@ async function logDiag(key: string, value: Record<string, unknown>) {
   }
 }
 
-export function logWebhookHit(from: string, msgId: string, textLen: number) {
-  void logDiag('wa_last_webhook', { from: from.slice(-4), msgId, textLen });
+export function logWebhookHit(from: string, msgId: string, raw: unknown) {
+  void logDiag('wa_last_webhook', { from: from.slice(-4), msgId, raw: JSON.stringify(raw).slice(0, 1500) });
 }
 
 async function post(path: string, body: Record<string, unknown>): Promise<boolean> {
