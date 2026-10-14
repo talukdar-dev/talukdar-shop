@@ -88,12 +88,27 @@ function similarity(a: string, b: string): number {
 function searchProducts(keyword: string, items: CatProduct[], limit = 3): CatProduct[] {
   const kw = keyword.toLowerCase().trim();
   if (!kw) return [];
-  return items
+  const scored = items
     .map((p) => ({ p, s: Math.max(similarity(kw, p.name), similarity(kw, p.category), similarity(kw, p.brand)) }))
     .filter((x) => x.s > 0.35)
-    .sort((a, b) => b.s - a.s)
-    .slice(0, limit)
-    .map((x) => x.p);
+    .sort((a, b) => b.s - a.s);
+  if (scored.length === 0) return [];
+
+  // Smart filter: if ONE category dominates (strong exact-ish match), drop weak cross-category noise.
+  // e.g. "room heater" -> Room Heater (1.0), not Water Heater (0.5) or Battery.
+  // e.g. "fan" -> Ceiling Fan (0.9) AND DC Fan (0.9) tie -> keep both.
+  const catBest = new Map<string, number>();
+  for (const x of scored) {
+    const cs = Math.max(similarity(kw, x.p.category), similarity(kw, x.p.name));
+    catBest.set(x.p.category, Math.max(catBest.get(x.p.category) ?? 0, cs));
+  }
+  const sorted_cats = [...catBest.entries()].sort((a, b) => b[1] - a[1]);
+  const [topCat, topScore] = sorted_cats[0];
+  const secondScore = sorted_cats[1]?.[1] ?? 0;
+  // dominant = top is near-exact (>=0.85) and clearly ahead of runner-up (gap > 0.25)
+  const dominant = topScore >= 0.85 && topScore - secondScore > 0.25;
+  const filtered = dominant ? scored.filter((x) => x.p.category === topCat) : scored;
+  return filtered.slice(0, limit).map((x) => x.p);
 }
 
 // ---------- sessions (settings table, no DDL) ----------
