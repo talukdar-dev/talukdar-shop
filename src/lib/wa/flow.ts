@@ -183,7 +183,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
 
   // 2) order flow continuation (state machine first — no AI needed)
   if (session.step !== 'idle') {
-    await handleOrderStep(phone, msg, lang, session);
+    await handleOrderStep(phone, msg, lang, session, queueDepth);
     return;
   }
 
@@ -299,7 +299,7 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
 }
 
 // ---------- order steps ----------
-async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', session: Session) {
+async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', session: Session, queueDepth: number) {
   const cat = await getCatalog();
   const d = session.data;
 
