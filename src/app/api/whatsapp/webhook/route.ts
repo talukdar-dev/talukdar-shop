@@ -73,6 +73,31 @@ async function isDuplicateDb(id: string): Promise<boolean> {
   }
 }
 
+// content dedupe: Meta sometimes delivers the SAME user message multiple times
+// with DIFFERENT message IDs (BSUID/username flow). If the same phone sends the
+// same text within 60s, treat it as a duplicate — don't reprocess.
+async function isDuplicateContent(phone: string, text: string): Promise<boolean> {
+  try {
+    const { supabaseAdmin } = await import('@/lib/admin-db');
+    const sb = supabaseAdmin();
+    const key = `wa_lastmsg_${phone}`;
+    const now = Date.now();
+    const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
+    const last = data?.value as { text?: string; at?: number } | undefined;
+    // always record the latest
+    await sb.from('settings').upsert(
+      { key, value: { text: text.slice(0, 200), at: now } },
+      { onConflict: 'key' },
+    );
+    if (last?.text && last.at && now - last.at < 60_000) {
+      if (last.text.trim().toLowerCase() === text.trim().toLowerCase()) return true;
+    }
+    return false;
+  } catch {
+    return false; // fail open
+  }
+}
+
 // in-memory fallback for same-instance speed
 const seen = new Map<string, number>();
 function isDuplicateMem(id: string): boolean {
@@ -106,6 +131,9 @@ export async function POST(req: NextRequest) {
     text = it.list_reply?.id ?? it.list_reply?.title ?? it.button_reply?.id ?? it.button_reply?.title ?? '';
   }
   if (!text.trim()) return NextResponse.json({ ok: true });
+
+  // content dedupe: same text from same phone within 60s → skip (Meta multi-delivery)
+  if (await isDuplicateContent(msg.from, text.trim())) return NextResponse.json({ ok: true });
 
   // Process inline and await — DB dedupe above already blocks Meta retries,
   // so a slow 200 is safe (no duplicates). Fire-and-forget would get killed by Vercel.
