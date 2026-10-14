@@ -58,9 +58,24 @@ function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
   }
 }
 
-// dedupe: WhatsApp may retry webhooks
+// dedupe: WhatsApp may retry webhooks. Use DB (not memory) — serverless instances don't share memory.
+async function isDuplicateDb(id: string): Promise<boolean> {
+  try {
+    const { supabaseAdmin } = await import('@/lib/admin-db');
+    const sb = supabaseAdmin();
+    const key = `wa_msg_${id}`;
+    const { data } = await sb.from('settings').select('key').eq('key', key).maybeSingle();
+    if (data) return true;
+    await sb.from('settings').upsert({ key, value: { at: Date.now() } }, { onConflict: 'key' });
+    return false;
+  } catch {
+    return false; // fail open — better to risk dup than drop message
+  }
+}
+
+// in-memory fallback for same-instance speed
 const seen = new Map<string, number>();
-function isDuplicate(id: string): boolean {
+function isDuplicateMem(id: string): boolean {
   const now = Date.now();
   for (const [k, t] of seen) if (now - t > 10 * 60_000) seen.delete(k);
   if (seen.has(id)) return true;
@@ -77,7 +92,8 @@ export async function POST(req: NextRequest) {
   }
 
   const msg = extractMessage(body);
-  if (!msg || isDuplicate(msg.id)) return NextResponse.json({ ok: true });
+  if (!msg || isDuplicateMem(msg.id)) return NextResponse.json({ ok: true });
+  if (await isDuplicateDb(msg.id)) return NextResponse.json({ ok: true });
 
   // diagnostic: record that Meta's webhook reached us (raw payload for structure check)
   logWebhookHit(msg.from, msg.id, msg.raw ?? msg);
@@ -91,23 +107,30 @@ export async function POST(req: NextRequest) {
   }
   if (!text.trim()) return NextResponse.json({ ok: true });
 
-  // process inline (Hobby has no per-minute cron) with adaptive pacing
-  activeJobs++;
-  const depth = activeJobs;
-  try {
-    // hard cap: never process more than ~8 min in serverless
-    await Promise.race([
-      handleWaMessage(msg.from, text.trim(), depth),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7 * 60_000)),
-    ]);
-  } catch (e) {
-    console.error('[wa] handler error', e);
-  } finally {
-    activeJobs = Math.max(0, activeJobs - 1);
-  }
+  // Respond 200 FAST (Meta retries if slow → duplicates).
+  // Process in background without blocking the response.
+  const from = msg.from;
+  const cleanText = text.trim();
+  const processPromise = (async () => {
+    activeJobs++;
+    const depth = activeJobs;
+    try {
+      await Promise.race([
+        handleWaMessage(from, cleanText, depth),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7 * 60_000)),
+      ]);
+    } catch (e) {
+      console.error('[wa] handler error', e);
+    } finally {
+      activeJobs = Math.max(0, activeJobs - 1);
+    }
+  })();
 
   // keep variable referenced (language fallback safety)
   void detectLang;
+
+  // Fire-and-forget: don't block the 200 response (Meta retries if slow → duplicates)
+  processPromise.catch(() => {});
 
   return NextResponse.json({ ok: true });
 }
