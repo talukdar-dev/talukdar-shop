@@ -36,6 +36,7 @@ export interface CatProduct {
   category: string;
   brand: string;
   variants: Array<{ name: string; options: Array<{ label: string }> }>;
+  product_type?: 'physical' | 'digital';
 }
 
 let catalogCache: { at: number; items: CatProduct[]; cats: Array<{ name: string; slug: string; count: number }> } | null = null;
@@ -45,7 +46,7 @@ async function getCatalog() {
   const sb = supabaseAdmin();
   const { data: products } = await sb
     .from('products')
-    .select('id,name,slug,price,stock_qty,images,category_id,brand_id,variants')
+    .select('id,name,slug,price,stock_qty,images,category_id,brand_id,variants,product_type')
     .eq('is_active', true);
   const { data: cats } = await sb.from('categories').select('id,name,slug').eq('is_active', true);
   const { data: brands } = await sb.from('brands').select('id,name').eq('is_active', true);
@@ -61,6 +62,7 @@ async function getCatalog() {
     category: String(catMap.get(String(p.category_id)) ?? ''),
     brand: String(brandMap.get(String(p.brand_id)) ?? ''),
     variants: Array.isArray(p.variants) ? (p.variants as CatProduct['variants']) : [],
+    product_type: p.product_type === 'digital' ? 'digital' : 'physical',
   }));
   const counts = new Map<string, number>();
   for (const it of items) counts.set(it.category, (counts.get(it.category) ?? 0) + 1);
@@ -165,11 +167,13 @@ async function saveOrder(phone: string, d: Record<string, string | number>, prod
   try {
     const sb = supabaseAdmin();
     const qty = Number(d.quantity) || 1;
-    const delivery = 120; // default outside Dhaka; refined by district later
+    const isDigital = product.product_type === 'digital';
+    const delivery = isDigital ? 0 : 120; // digital: no shipping
     await sb.from('orders').insert({
       customer_name: String(d.name || ''),
       phone: String(d.phone || phone),
-      address: String(d.address || ''),
+      email: String(d.email || ''),
+      address: isDigital ? 'Digital delivery' : String(d.address || ''),
       city: 'WhatsApp',
       items: [{ product_id: product.id, name: product.name, price: product.price, qty, image: product.imageUrl }],
       subtotal: product.price * qty,
@@ -179,7 +183,7 @@ async function saveOrder(phone: string, d: Record<string, string | number>, prod
       payment_method: 'cod',
       payment_status: 'unpaid',
       status: 'pending',
-      notes: `WhatsApp order. Variant: ${d.variant || '-'}${d.size ? `, Size: ${d.size}` : ''}`,
+      notes: `WhatsApp order. ${isDigital ? 'DIGITAL product — deliver to email.' : ''} Variant: ${d.variant || '-'}${d.size ? `, Size: ${d.size}` : ''}`,
     });
     return true;
   } catch {
@@ -351,14 +355,21 @@ async function execSaveOrder(
 ): Promise<boolean> {
   const product = ctx.products.find((p) => p.id === String(tool.product_id));
   if (!product) return false;
+  const isDigital = product.product_type === 'digital';
   const d: Record<string, string | number> = {
     product_id: product.id,
     name: String(tool.name ?? ''),
     address: String(tool.address ?? ''),
+    email: String(tool.email ?? ''),
     phone: String(tool.phone ?? '').replace(/\D/g, ''),
     quantity: String(tool.quantity ?? '1'),
   };
-  if (!d.name || !d.address || !/^01\d{9}$/.test(String(d.phone))) return false;
+  if (!d.name || !/^01\d{9}$/.test(String(d.phone))) return false;
+  if (isDigital) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(d.email))) return false;
+  } else {
+    if (!d.address) return false;
+  }
   return await saveOrderToDb(phone, d, product);
 }
 
@@ -816,9 +827,33 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         return;
       }
       d.name = name;
+      // digital product → ask email (skip address); physical → ask address
+      const prod = cat.items.find((p) => p.id === d.product_id);
+      if (prod?.product_type === 'digital') {
+        session.step = 'await_email';
+        await saveSession(phone, session);
+        await ask(effLang === 'bn'
+          ? 'Sir, apnar email address ta din (activation details email-e jabe).'
+          : 'Sir, your email address please (activation details will be sent there).');
+        return;
+      }
       session.step = 'await_address';
       await saveSession(phone, session);
       await ask(effLang === 'bn' ? 'Sir, full address ta din (basa/road, area, thana, district).' : 'Sir, your full address please (house/road, area, district).');
+      return;
+    }
+    case 'await_email': {
+      const email = msg.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        await ask(effLang === 'bn'
+          ? 'Sir, email ta thik ache na. Sothik email din (example@gmail.com).'
+          : 'Sir, that email looks wrong. Please give a valid email address.');
+        return;
+      }
+      d.email = email;
+      session.step = 'await_phone';
+      await saveSession(phone, session);
+      await ask(effLang === 'bn' ? 'Sir, phone number ta diben.' : 'Sir, your phone number please.');
       return;
     }
     case 'await_address': {
@@ -844,13 +879,17 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       }
       d.phone = digits;
       const product = cat.items.find((p) => p.id === d.product_id);
+      const isDigital = product?.product_type === 'digital';
       session.step = 'await_confirm';
       await saveSession(phone, session);
       const qty = Number(d.quantity) || 1;
       const total = product ? product.price * qty : 0;
+      const addrLine = isDigital
+        ? (effLang === 'bn' ? `Email: ${d.email}` : `Email: ${d.email}`)
+        : (effLang === 'bn' ? `Address: ${d.address}` : `Address: ${d.address}`);
       const confirmText = effLang === 'bn'
-        ? `Sir, confirm korchi:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQuantity: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nNam: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}`
-        : `Sir, confirming:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQty: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nName: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}`;
+        ? `Sir, confirm korchi:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQuantity: ${qty} pcs\nTotal: ${total} TK${isDigital ? '' : ' (Cash on Delivery)'}\nNam: ${d.name}\n${addrLine}\nPhone: ${d.phone}`
+        : `Sir, confirming:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQty: ${qty} pcs\nTotal: ${total} TK${isDigital ? '' : ' (Cash on Delivery)'}\nName: ${d.name}\n${addrLine}\nPhone: ${d.phone}`;
       await waSendText(phone, confirmText);
       await waSendButtons(phone, effLang === 'bn' ? 'Thik ache sir?' : 'Correct, sir?', [
         { id: 'confirm_yes', title: effLang === 'bn' ? '✅ Order Confirm' : '✅ Confirm Order' },

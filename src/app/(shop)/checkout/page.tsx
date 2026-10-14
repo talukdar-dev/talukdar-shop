@@ -54,6 +54,10 @@ export default function CheckoutPage() {
     () => lines.some((l) => l.product.product_type !== 'digital'),
     [lines],
   );
+  const hasDigital = useMemo(
+    () => lines.some((l) => l.product.product_type === 'digital'),
+    [lines],
+  );
 
   useEffect(() => {
     fetch('/api/settings')
@@ -174,6 +178,12 @@ export default function CheckoutPage() {
         return;
       }
     }
+    if (hasDigital) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        setError('Email is required for digital products — activation details will be sent to your email.');
+        return;
+      }
+    }
     if (!payment) {
       setError('Please select a payment method.');
       return;
@@ -256,7 +266,7 @@ export default function CheckoutPage() {
             <div className="grid sm:grid-cols-2 gap-3">
               <input className={inputCls} placeholder="Full name *" value={name} onChange={(e) => setName(e.target.value)} aria-label="Full name" />
               <input className={inputCls} placeholder="Mobile number * (01XXXXXXXXX)" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" aria-label="Mobile number" />
-              <input className={inputCls + ' sm:col-span-2'} placeholder="Email (optional — for digital delivery)" value={email} onChange={(e) => setEmail(e.target.value)} type="email" aria-label="Email" />
+              <input className={inputCls + ' sm:col-span-2'} placeholder={hasDigital ? "Email (required — digital delivery)" : "Email (optional)"} value={email} onChange={(e) => setEmail(e.target.value)} type="email" aria-label="Email" required={hasDigital} />
             </div>
           </section>
 

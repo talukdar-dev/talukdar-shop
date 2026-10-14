@@ -26,7 +26,7 @@ TOOLS (use when needed):
 - product_details: {"tool":"product_details","id":"..."} — full details of one product
 - show_image: {"tool":"show_image","id":"..."} — send the REAL product image to customer
 - calculate_total: {"tool":"calculate_total","price":4500,"qty":2} — total + delivery estimate
-- save_order: {"tool":"save_order","product_id":"...","name":"...","address":"...","phone":"...","quantity":"2"} — place COD order
+- save_order: {"tool":"save_order","product_id":"...","name":"...","address":"...","phone":"...","quantity":"2"} — place COD order (for digital products use "email" instead of "address")
 - delivery_info: {"tool":"delivery_info"} — delivery charges and timing
 
 CRITICAL - NEVER HALLUCINATE:
