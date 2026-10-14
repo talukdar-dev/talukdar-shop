@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BLOG_POSTS } from '@/lib/blog';
+import { getCategory, getProducts } from '@/lib/db';
 import Breadcrumb from '@/components/store/Breadcrumb';
+import ProductCard from '@/components/store/ProductCard';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -15,7 +17,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = BLOG_POSTS.find((p) => p.slug === slug);
-  if (!post) return { title: 'Post not found | Talukdar Shop' };
+  if (!post) return { title: 'Post not found' };
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://talukdarshop.com';
   return {
     title: post.metaTitle,
@@ -60,6 +62,13 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+
+  // Products from this guide's shop category — lets readers buy what they just read about
+  const [guideCategory, guideProducts] = await Promise.all([
+    getCategory(post.shopCategory),
+    getProducts({ categorySlug: post.shopCategory, perPage: 4 }),
+  ]);
+  const shopProducts = guideProducts.items.slice(0, 4);
 
   // HowTo schema for the cleaning/maintenance guide (Google rich results)
   const isHowTo = post.slug === 'how-to-clean-maintain-air-fryer';
@@ -152,6 +161,28 @@ export default async function BlogPostPage({ params }: Props) {
             [&>blockquote]:border-l-4 [&>blockquote]:border-brand [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-ink"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+
+        {/* Products featured in this guide — buy directly */}
+        {shopProducts.length > 0 && (
+          <section className="mt-8" aria-label="Products featured in this guide">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-[19px] font-bold text-[#1a1a1a]">
+                {guideCategory ? `Shop ${guideCategory.name}` : 'Shop Featured Products'}
+              </h2>
+              <Link
+                href={`/category/${post.shopCategory}`}
+                className="text-[13px] font-semibold text-link hover:underline"
+              >
+                View all →
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {shopProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* CTA to shop */}
         <div className="mt-8 bg-navy text-white rounded-md p-5 text-center">
