@@ -42,6 +42,8 @@ export default function WhatsAppChatsPage() {
   const [msgs, setMsgs] = useState<ChatMsg[]>([]);
   const [msgsLoading, setMsgsLoading] = useState(false);
   const [chatName, setChatName] = useState('');
+  const [draft, setDraft] = useState('');
+  const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const loadChats = useCallback(async () => {
@@ -74,6 +76,33 @@ export default function WhatsAppChatsPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [msgs]);
 
+  const sendManual = useCallback(async () => {
+    if (!active || !draft.trim() || sending) return;
+    setSending(true);
+    const text = draft.trim();
+    setDraft('');
+    try {
+      const res = await fetch('/api/admin/whatsapp-chats/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: active.phone, text }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        // append locally for instant feedback
+        setMsgs((m) => [...m, { d: 'out', t: text, at: Date.now() }]);
+      } else {
+        setDraft(text); // restore on failure
+        alert('পাঠানো যায়নি, আবার চেষ্টা করুন');
+      }
+    } catch {
+      setDraft(text);
+      alert('পাঠানো যায়নি, আবার চেষ্টা করুন');
+    } finally {
+      setSending(false);
+    }
+  }, [active, draft, sending]);
+
   const activeName = chatName || (active ? displayName(active) : '');
 
   return (
@@ -91,11 +120,11 @@ export default function WhatsAppChatsPage() {
         </div>
         {active && (
           <button
-            onClick={() => { setActive(null); loadChats(); }}
-            className="rounded-full px-3 py-1.5 text-sm text-white"
-            style={{ background: '#2a3942' }}
+            onClick={() => { setActive(null); setDraft(''); loadChats(); }}
+            className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-white"
+            style={{ background: '#00a884' }}
           >
-            ← Back
+            ← All Chats
           </button>
         )}
       </div>
@@ -171,9 +200,33 @@ export default function WhatsAppChatsPage() {
             )}
             <div ref={bottomRef} />
           </div>
-          {/* view-only footer */}
-          <div className="px-4 py-3 text-center text-xs" style={{ background: '#1f2c34', color: '#8696a0' }}>
-            🔒 View only — reply from your WhatsApp Business app
+          {/* manual reply input */}
+          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: '#1f2c34' }}>
+            <input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') sendManual(); }}
+              placeholder="Type a message..."
+              className="flex-1 rounded-full px-4 py-2.5 text-[14.5px] text-white outline-none placeholder:text-gray-500"
+              style={{ background: '#2a3942' }}
+              maxLength={4000}
+            />
+            <button
+              onClick={sendManual}
+              disabled={sending || !draft.trim()}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white disabled:opacity-40"
+              style={{ background: '#00a884' }}
+              aria-label="Send"
+            >
+              {sending ? '…' : (
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+              )}
+            </button>
+          </div>
+          <div className="px-4 py-1.5 text-center text-[11px]" style={{ background: '#1f2c34', color: '#8696a0' }}>
+            You are replying as Talukdar Shop
           </div>
         </div>
       )}
