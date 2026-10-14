@@ -267,8 +267,12 @@ async function runAgent(
       const toolName = String(step.tool.tool ?? '');
       // save_order needs DB — handle specially
       if (toolName === 'save_order') {
-        const ok = await execSaveOrder(phone, step.tool, ctx);
-        toolResults.push({ tool: 'save_order', result: ok ? 'Order saved successfully!' : 'Failed to save order' });
+        const ok = await execSaveOrder(phone, step.tool, ctx, session.shownIds);
+        if (!ok) {
+          toolResults.push({ tool: 'save_order', result: 'BLOCKED: customer has not selected this product. Ask them to tap a product button first, then retry.' });
+        } else {
+          toolResults.push({ tool: 'save_order', result: 'Order saved successfully!' });
+        }
         // after save, let agent write confirmation
         continue;
       }
@@ -383,9 +387,14 @@ async function execSaveOrder(
   phone: string,
   tool: Record<string, unknown>,
   ctx: { products: CatProduct[] },
+  shownIds?: string[],
 ): Promise<boolean> {
   const product = ctx.products.find((p) => p.id === String(tool.product_id));
   if (!product) return false;
+  // SAFEGUARD: agent can only order a product that was actually shown to the
+  // customer as a card/button in this conversation. Prevents the AI from
+  // picking a product the customer never selected.
+  if (shownIds && shownIds.length > 0 && !shownIds.includes(product.id)) return false;
   const isDigital = product.product_type === 'digital';
   const d: Record<string, string | number> = {
     product_id: product.id,
