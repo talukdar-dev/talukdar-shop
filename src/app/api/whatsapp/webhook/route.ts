@@ -135,6 +135,43 @@ async function isDuplicateContent(phone: string, text: string): Promise<boolean>
   }
 }
 
+// Gate 2 — VERIFYING LAYER (before backend): atomic "currently processing" claim.
+// Even if Gate 1 somehow passes twice, only one webhook can hold the claim
+// for this phone+message. Explicitly released after processing; stale claims
+// (>2 min, e.g. crashed function) are reclaimed.
+async function claimProcessing(phone: string, fph: string): Promise<boolean> {
+  try {
+    const { supabaseAdmin } = await import('@/lib/admin-db');
+    const sb = supabaseAdmin();
+    const key = `wa_verify_${phone}_${fph}`;
+    const now = Date.now();
+    const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
+    const at = (data?.value as { at?: number } | undefined)?.at ?? 0;
+    if (at && now - at < 2 * 60_000) return false; // another webhook is processing this now
+    if (at) {
+      // stale claim — remove it so we can reclaim
+      await sb.from('settings').delete().eq('key', key);
+    }
+    const { error } = await sb.from('settings').insert({ key, value: { at: now } });
+    if (error) {
+      const code = (error as { code?: string }).code;
+      const msg = String(error.message ?? '').toLowerCase();
+      if (code === '23505' || msg.includes('duplicate') || msg.includes('already exists')) return false;
+    }
+    return true;
+  } catch {
+    return true; // fail open
+  }
+}
+
+async function releaseProcessing(phone: string, fph: string): Promise<void> {
+  try {
+    const { supabaseAdmin } = await import('@/lib/admin-db');
+    const sb = supabaseAdmin();
+    await sb.from('settings').delete().eq('key', `wa_verify_${phone}_${fph}`);
+  } catch { /* best-effort */ }
+}
+
 // in-memory fallback for same-instance speed
 const seen = new Map<string, number>();
 function isDuplicateMem(id: string): boolean {
@@ -175,6 +212,11 @@ export async function POST(req: NextRequest) {
   // log incoming message for admin chat viewer
   void logChat(msg.from, 'in', text.trim());
 
+  // GATE 2 — verifying layer: claim "currently processing" BEFORE backend.
+  // If another webhook already holds this claim, drop (duplicate).
+  const vfp = fp(text.trim());
+  if (!(await claimProcessing(msg.from, vfp))) return NextResponse.json({ ok: true });
+
   // Process inline and await — DB dedupe above already blocks Meta retries,
   // so a slow 200 is safe (no duplicates). Fire-and-forget would get killed by Vercel.
   activeJobs++;
@@ -188,6 +230,7 @@ export async function POST(req: NextRequest) {
     console.error('[wa] handler error', e);
   } finally {
     activeJobs = Math.max(0, activeJobs - 1);
+    await releaseProcessing(msg.from, vfp);
   }
 
   // keep variable referenced (language fallback safety)
