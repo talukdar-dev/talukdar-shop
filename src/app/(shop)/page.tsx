@@ -12,9 +12,9 @@ import HomepageContent from '@/components/store/HomepageContent';
 
 
 export const metadata: Metadata = {
-  title: 'Talukdar Shop — Best Home Appliance Shop in Bangladesh',
+  title: 'Talukdar Shop — Home Appliances & Digital Subscriptions in Bangladesh',
   description:
-    'Buy air fryers, rice cookers, fans, cookware & home essentials at the best price in Bangladesh. Quality products & fastest delivery.',
+    'Buy air fryers, rice cookers, fans, cookware & home appliances plus Google AI Pro, digital subscriptions at the best price in Bangladesh. One shop for everything.',
   alternates: { canonical: '/' },
 };
 
