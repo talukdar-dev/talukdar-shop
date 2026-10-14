@@ -301,12 +301,81 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     : 'Sir, which one would you like? Reply 1, 2 or 3.');
 }
 
+// re-ask the current order step question (after language switch)
+async function reaskStep(phone: string, session: Session, cat: Awaited<ReturnType<typeof getCatalog>>, d: Record<string, string | number>) {
+  const lang = (session.data.lang as 'bn' | 'en') || 'bn';
+  const ask = async (t: string) => { await waSendText(phone, t); };
+  switch (session.step) {
+    case 'await_quantity':
+      await ask(lang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
+      break;
+    case 'await_name':
+      await ask(lang === 'bn' ? 'Sir, apnar nam ta bolun.' : 'Sir, your name please.');
+      break;
+    case 'await_address':
+      await ask(lang === 'bn' ? 'Sir, full address ta din (basa/road, area, thana, district).' : 'Sir, your full address please (house/road, area, district).');
+      break;
+    case 'await_phone':
+      await ask(lang === 'bn' ? 'Sir, phone number ta diben.' : 'Sir, your phone number please.');
+      break;
+    case 'await_confirm':
+      await ask(lang === 'bn' ? 'Sir, confirm korte "Ha" likhun.' : 'Sir, reply "Yes" to confirm.');
+      break;
+    default:
+      break;
+  }
+}
+
 // ---------- order steps ----------
+const CANCEL_WORDS = /\b(cancel|bad\s?den|bad|lagbe\s?na|chai\s?na|korbo\s?na|dibo\s?na|dimo\s?na|nibo\s?na|order\s?(korbo|dibo|dimo)\s?na|thak|na\s?lagbe)\b/i;
+const BANGLA_SWITCH = /\bbangla\s?(bolo|te|bhasha)\b/i;
+const ENGLISH_SWITCH = /\benglish\s?(bolo|speak|me)\b/i;
+
 async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', session: Session, queueDepth: number) {
   const cat = await getCatalog();
   const d = session.data;
+  const lower = msg.toLowerCase().trim();
+  const effLang = (session.data.lang as 'bn' | 'en') || lang;
 
   const ask = async (text: string) => { await waSendText(phone, text); };
+
+  // --- smart guards: cancellation / language switch / new query ---
+  // (skip for await_product_choice which has its own new-query detection)
+  if (session.step !== 'await_product_choice' && session.step !== 'await_category_choice') {
+    if (CANCEL_WORDS.test(lower)) {
+      await clearSession(phone);
+      pushHistory(session, 'ai', 'order cancelled');
+      await ask(effLang === 'bn'
+        ? 'ঠিক আছে Sir, order cancel করে দিলাম। অন্য কিছু লাগলে জানাবেন।'
+        : 'Okay Sir, order cancelled. Let me know if you need anything else.');
+      return;
+    }
+    if (BANGLA_SWITCH.test(lower)) {
+      session.data.lang = 'bn';
+      await saveSession(phone, session);
+      await ask('ঠিক আছে Sir, বাংলায় বলছি। আগের প্রশ্নটা আবার করি —');
+      // re-ask current step in Bangla
+      await reaskStep(phone, session, cat, d);
+      return;
+    }
+    if (ENGLISH_SWITCH.test(lower)) {
+      session.data.lang = 'en';
+      await saveSession(phone, session);
+      await ask('Okay Sir, switching to English. Let me ask again —');
+      await reaskStep(phone, session, cat, d);
+      return;
+    }
+    // new product question during order flow? check intent
+    if (!/^(ha|hyan|yes|ok|thik|1|2|3)$/i.test(lower) && lower.length > 3) {
+      let ni: Intent | null = null;
+      try { ni = await extractIntent(msg, KEYWORD_PROMPT); } catch { /* ignore */ }
+      if (ni && ['search', 'browse', 'price', 'delivery'].includes(ni.intent) && ni.keyword) {
+        await clearSession(phone);
+        await handleWaMessage(phone, msg, queueDepth);
+        return;
+      }
+    }
+  }
 
   switch (session.step) {
     case 'await_category_choice': {
@@ -324,7 +393,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         chosenCat = cats.find((c) => c.toLowerCase().includes(lower) || lower.includes(c.toLowerCase())) ?? '';
       }
       if (!chosenCat) {
-        await ask(lang === 'bn'
+        await ask(effLang === 'bn'
           ? `Sir, 1-${cats.length} er moddhe number likhun, ba category nam bolun.`
           : `Sir, please reply 1-${cats.length}, or the category name.`);
         return;
@@ -332,7 +401,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       const keyword = String(session.data.keyword ?? '');
       const catProducts = cat.items.filter((p) => p.category === chosenCat).slice(0, WA_CONFIG.maxProductsPerReply);
       if (catProducts.length === 0) {
-        await ask(lang === 'bn' ? 'Sir, ei category te ekhon product nei.' : 'Sir, no products in this category right now.');
+        await ask(effLang === 'bn' ? 'Sir, ei category te ekhon product nei.' : 'Sir, no products in this category right now.');
         return;
       }
       for (const p of catProducts) {
@@ -341,7 +410,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       }
       await waSendButtons(
         phone,
-        lang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
+        effLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
         catProducts.map((p, i) => ({
           id: `prod_${p.id}`,
           title: `${i + 1}. ${p.name.slice(0, 17)}`,
@@ -370,7 +439,7 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
           await handleWaMessage(phone, msg, queueDepth);
           return;
         }
-        await ask(lang === 'bn' ? 'Sir, 1, 2 ba 3 er moddhe ekti likhun.' : 'Sir, please reply 1, 2 or 3.');
+        await ask(effLang === 'bn' ? 'Sir, 1, 2 ba 3 er moddhe ekti likhun.' : 'Sir, please reply 1, 2 or 3.');
         return;
       }
       d.product_id = chosen.id;
@@ -379,13 +448,13 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         const v = chosen.variants[0];
         session.step = 'await_variant';
         await saveSession(phone, session);
-        await ask(lang === 'bn'
+        await ask(effLang === 'bn'
           ? `Sir, "${chosen.name}" er ${v.name} gulo: ${v.options.map((o) => o.label).join(', ')}. Konta lagbe sir?`
           : `Sir, "${chosen.name}" options for ${v.name}: ${v.options.map((o) => o.label).join(', ')}. Which one, sir?`);
       } else {
         session.step = 'await_quantity';
         await saveSession(phone, session);
-        await ask(lang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
+        await ask(effLang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
       }
       return;
     }
@@ -393,38 +462,56 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       d.variant = msg;
       session.step = 'await_quantity';
       await saveSession(phone, session);
-      await ask(lang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
+      await ask(effLang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
       return;
     }
     case 'await_quantity': {
       d.quantity = /^\d+$/.test(msg.trim()) ? msg.trim() : '1';
       session.step = 'await_name';
       await saveSession(phone, session);
-      await ask(lang === 'bn' ? 'Sir, apnar nam ta bolun.' : 'Sir, your name please.');
+      await ask(effLang === 'bn' ? 'Sir, apnar nam ta bolun.' : 'Sir, your name please.');
       return;
     }
     case 'await_name': {
-      d.name = msg;
+      const name = msg.trim();
+      if (name.length < 2 || name.length > 50) {
+        await ask(effLang === 'bn' ? 'Sir, nam ta thik kore bolun.' : 'Sir, please tell me your name.');
+        return;
+      }
+      d.name = name;
       session.step = 'await_address';
       await saveSession(phone, session);
-      await ask(lang === 'bn' ? 'Sir, full address ta din (basa/road, area, thana, district).' : 'Sir, your full address please (house/road, area, district).');
+      await ask(effLang === 'bn' ? 'Sir, full address ta din (basa/road, area, thana, district).' : 'Sir, your full address please (house/road, area, district).');
       return;
     }
     case 'await_address': {
-      d.address = msg;
+      const addr = msg.trim();
+      if (addr.length < 8) {
+        await ask(effLang === 'bn' ? 'Sir, full address ta din (basa/road, area, thana, district).' : 'Sir, please give your full address (house/road, area, district).');
+        return;
+      }
+      d.address = addr;
       session.step = 'await_phone';
       await saveSession(phone, session);
-      await ask(lang === 'bn' ? 'Sir, phone number ta diben.' : 'Sir, your phone number please.');
+      await ask(effLang === 'bn' ? 'Sir, phone number ta diben.' : 'Sir, your phone number please.');
       return;
     }
     case 'await_phone': {
-      d.phone = msg.replace(/\D/g, '');
+      const digits = msg.replace(/\D/g, '');
+      // BD mobile: 11 digits starting with 01
+      if (!/^01\d{9}$/.test(digits)) {
+        await ask(effLang === 'bn'
+          ? 'Sir, phone number ta thik ache na. 11 digit mobile number din (01 diye shuru).'
+          : 'Sir, that number looks wrong. Please give your 11-digit mobile number (starts with 01).');
+        return;
+      }
+      d.phone = digits;
       const product = cat.items.find((p) => p.id === d.product_id);
       session.step = 'await_confirm';
       await saveSession(phone, session);
       const qty = Number(d.quantity) || 1;
       const total = product ? product.price * qty : 0;
-      await ask(lang === 'bn'
+      await ask(effLang === 'bn'
         ? `Sir, confirm korchi:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQuantity: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nNam: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}\n\nThik ache sir? "Ha" likhun. ✅`
         : `Sir, confirming:\n${product?.name ?? ''}${d.variant ? ` (${d.variant})` : ''}\nQty: ${qty} pcs\nTotal: ${total} TK (Cash on Delivery)\nName: ${d.name}\nAddress: ${d.address}\nPhone: ${d.phone}\n\nCorrect, sir? Reply "Yes". ✅`);
       return;
@@ -432,19 +519,19 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
     case 'await_confirm': {
       if (/^(ha|yes|y|hyan|thik|ok|confirm)/i.test(msg.trim())) {
         const product = cat.items.find((p) => p.id === d.product_id);
-        await waSendText(phone, pickWaiting('order', lang));
+        await waSendText(phone, pickWaiting('order', effLang));
         const ok = product ? await saveOrder(phone, d, product) : false;
         await clearSession(phone);
         await ask(ok
-          ? (lang === 'bn'
+          ? (effLang === 'bn'
             ? 'Dhonnobad Sir! ✅ Apnar order confirm hoyeche. Amader team call kore confirm korbe. Hotline: 01333600272'
             : 'Thank you Sir! ✅ Your order is confirmed. Our team will call you to confirm. Hotline: 01333600272')
-          : (lang === 'bn'
+          : (effLang === 'bn'
             ? 'Sir, order save korte somossa hocche. Hotline 01333600272 te call korun.'
             : 'Sir, there was an issue saving your order. Please call 01333600272.'));
       } else {
         await clearSession(phone);
-        await ask(lang === 'bn' ? 'Thik ache Sir, order cancel kora holo. Abar proyojon hole janaben.' : 'Alright Sir, order cancelled. Let me know if you need anything.');
+        await ask(effLang === 'bn' ? 'Thik ache Sir, order cancel kora holo. Abar proyojon hole janaben.' : 'Alright Sir, order cancelled. Let me know if you need anything.');
       }
       return;
     }
