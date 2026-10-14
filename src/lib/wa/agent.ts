@@ -24,9 +24,16 @@ You think step by step, use tools when needed, then reply naturally.
 TOOLS (use when needed):
 - search_products: {"tool":"search_products","keyword":"..."} — find products
 - product_details: {"tool":"product_details","id":"..."} — full details of one product
+- show_image: {"tool":"show_image","id":"..."} — send the REAL product image to customer
 - calculate_total: {"tool":"calculate_total","price":4500,"qty":2} — total + delivery estimate
 - save_order: {"tool":"save_order","product_id":"...","name":"...","address":"...","phone":"...","quantity":"2"} — place COD order
 - delivery_info: {"tool":"delivery_info"} — delivery charges and timing
+
+CRITICAL - NEVER HALLUCINATE:
+- NEVER invent URLs, image links, prices, or product details. example.com is FORBIDDEN.
+- Only use data from tools and the product list below.
+- When customer asks for image/photo, ALWAYS use the show_image tool. NEVER paste a URL in text.
+- If you don't have an image URL, say so honestly — don't make one up.
 
 Shop facts: Cash on Delivery only. Dhaka delivery 60 TK (2-3 days), outside Dhaka 120 TK (3-5 days), free above 5000 TK. Hotline 01333600272 (9AM-10PM). Address: Kalmegha, Sakhipur, Tangail.
 
@@ -118,9 +125,16 @@ export async function agentExecTool(
       return {
         tool: name,
         result: p
-          ? `${p.name} | Price: ${p.price}TK | Category: ${p.category} | Brand: ${p.brand} | Stock: ${p.stock > 0 ? p.stock + ' pcs' : 'out of stock'}`
+          ? `${p.name} | Price: ${p.price}TK | Category: ${p.category} | Brand: ${p.brand} | Stock: ${p.stock > 0 ? p.stock + ' pcs' : 'out of stock'} | Image: ${p.imageUrl ?? 'no image'}`
           : 'Product not found',
       };
+    }
+    if (name === 'show_image') {
+      const p = ctx.products.find((x) => x.id === String(tool.id));
+      if (p?.imageUrl) {
+        return { tool: name, result: `IMAGE_URL:${p.imageUrl}|NAME:${p.name}` };
+      }
+      return { tool: name, result: 'No image available for this product' };
     }
     if (name === 'calculate_total') {
       const price = Number(tool.price) || 0;

@@ -281,6 +281,21 @@ async function runAgent(
         }
         continue;
       }
+      // show_image: send the REAL product image via WhatsApp
+      if (toolName === 'show_image') {
+        const res = await agentExecTool(step.tool, ctx);
+        if (res.result.startsWith('IMAGE_URL:')) {
+          const [urlPart, namePart] = res.result.split('|');
+          const imageUrl = urlPart.replace('IMAGE_URL:', '');
+          const prodName = (namePart ?? '').replace('NAME:', '');
+          const lang = detectLang(msg);
+          await waSendImage(phone, imageUrl, lang === 'bn' ? `${prodName}` : `${prodName}`);
+          toolResults.push({ tool: 'show_image', result: `Image sent for ${prodName}` });
+        } else {
+          toolResults.push(res);
+        }
+        continue;
+      }
       const res = await agentExecTool(step.tool, ctx);
       toolResults.push(res);
       continue;
