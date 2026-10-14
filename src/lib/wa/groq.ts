@@ -47,6 +47,9 @@ export async function groqChat(opts: GroqOpts): Promise<string | null> {
   if (!key) return null;
   await respectRateLimit();
   try {
+    // NOTE: gpt-oss models do NOT support response_format json_object on Groq
+    // (HTTP 400 json_validate_failed). Use prompt instruction + lenient parse instead.
+    const isGptOss = /gpt-oss/i.test(opts.model);
     const res = await fetch(GROQ_API, {
       method: 'POST',
       headers: {
@@ -57,7 +60,7 @@ export async function groqChat(opts: GroqOpts): Promise<string | null> {
         model: opts.model,
         max_tokens: opts.maxTokens,
         temperature: 0.3,
-        ...(opts.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+        ...(!isGptOss && opts.jsonMode ? { response_format: { type: 'json_object' } } : {}),
         messages: [
           { role: 'system', content: opts.system },
           { role: 'user', content: opts.user },
@@ -87,6 +90,22 @@ export interface Intent {
   lang: 'bn' | 'en';
 }
 
+// Lenient JSON extractor: handles markdown fences, leading/trailing prose,
+// trailing commas — for gpt-oss which can't use strict JSON mode.
+function extractJsonLenient(raw: string): Record<string, unknown> | null {
+  const clean = raw.replace(/```(?:json)?/gi, '').trim();
+  try { return JSON.parse(clean); } catch { /* try harder */ }
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
+  if (start >= 0 && end > start) {
+    try {
+      const fixed = clean.slice(start, end + 1).replace(/,(\s*[}\]])/g, '$1');
+      return JSON.parse(fixed);
+    } catch { /* fall through */ }
+  }
+  return null;
+}
+
 export async function extractIntent(
   message: string,
   systemPrompt: string,
@@ -99,8 +118,9 @@ export async function extractIntent(
     jsonMode: true,
   });
   if (!raw) return null;
+  const p = extractJsonLenient(raw);
+  if (!p) return null;
   try {
-    const p = JSON.parse(raw);
     return {
       intent: String(p.intent || 'other'),
       keyword: String(p.keyword || ''),
