@@ -86,36 +86,49 @@ function fp(text: string): string {
   return `h${(h >>> 0).toString(36)}`;
 }
 const DEDUPE_TTL = 5 * 60_000;
+// ATOMIC entry-point gate: the same message text can NEVER reach the backend twice.
+// Uses database unique constraint — INSERT (not upsert) so only one concurrent
+// webhook can claim a fingerprint; the loser gets 23505 conflict = duplicate.
+// Key includes a 5-min time bucket so fingerprints auto-expire.
 async function isDuplicateContent(phone: string, text: string): Promise<boolean> {
   try {
     const { supabaseAdmin } = await import('@/lib/admin-db');
     const sb = supabaseAdmin();
     const now = Date.now();
     const myFp = fp(text);
-    // 1) per-phone fingerprints (5 min) — normal case
-    const key = `wa_seen_${phone}`;
-    const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
-    const cur = data?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
-    const live = (cur?.fps ?? []).filter((e) => now - e.at < DEDUPE_TTL).slice(-20);
-    if (live.some((e) => e.f === myFp)) return true;
-    live.push({ f: myFp, at: now });
-    await sb.from('settings').upsert(
-      { key, value: { fps: live.slice(-20) } },
-      { onConflict: 'key' },
-    );
-    // 2) GLOBAL fingerprints (30 sec) — catches the case where Meta delivers the
-    // same message with a DIFFERENT `from` identity (BSUID vs phone number),
-    // which would otherwise bypass the per-phone check above.
-    const gkey = 'wa_seen_global';
-    const { data: gdata } = await sb.from('settings').select('value').eq('key', gkey).maybeSingle();
-    const gcur = gdata?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
-    const glive = (gcur?.fps ?? []).filter((e) => now - e.at < 30_000).slice(-20);
-    if (glive.some((e) => e.f === myFp)) return true;
-    glive.push({ f: myFp, at: now });
-    await sb.from('settings').upsert(
-      { key: gkey, value: { fps: glive.slice(-20) } },
-      { onConflict: 'key' },
-    );
+    const bucket = Math.floor(now / DEDUPE_TTL);
+    // current + previous bucket (handles bucket boundary, e.g. msg at 04:59, dup at 05:01)
+    // per-phone: different customers sending the same text must NOT block each other
+    const curKey = `wa_fp_${phone}_${myFp}_${bucket}`;
+    const prevKey = `wa_fp_${phone}_${myFp}_${bucket - 1}`;
+    const { data } = await sb.from('settings').select('key,value').in('key', [curKey, prevKey]);
+    if (data) {
+      for (const row of data as Array<{ value: unknown }>) {
+        const at = (row.value as { at?: number } | undefined)?.at ?? 0;
+        if (now - at < DEDUPE_TTL) return true;
+      }
+    }
+    // atomic claim — unique key constraint makes this race-proof
+    const { error } = await sb.from('settings').insert({ key: curKey, value: { at: now, phone } });
+    if (error) {
+      const code = (error as { code?: string }).code;
+      const msg = String(error.message ?? '').toLowerCase();
+      if (code === '23505' || msg.includes('duplicate') || msg.includes('already exists')) return true;
+      return false; // other DB error → fail open
+    }
+    // lazy cleanup: drop fingerprint rows older than 30 min (best-effort)
+    if (Math.random() < 0.05) {
+      void (async () => {
+        try {
+          const { data: old } = await sb.from('settings').select('key,value').like('key', 'wa_fp_%').limit(200);
+          const stale = (old ?? []).filter((r: { value: unknown }) => {
+            const at = ((r.value as { at?: number } | undefined)?.at ?? 0);
+            return now - at > 30 * 60_000;
+          }).map((r: { key: string }) => r.key);
+          if (stale.length) await sb.from('settings').delete().in('key', stale);
+        } catch { /* cleanup best-effort */ }
+      })();
+    }
     return false;
   } catch {
     return false; // fail open

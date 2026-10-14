@@ -275,27 +275,20 @@ async function runAgent(
           toolResults.push({ tool: 'search_products', result: 'Products already shown above.' });
           continue;
         }
-        // cross-webhook card dedupe: per-query fingerprints kept 5 min —
-        // even a late duplicate of an older query won't resend cards.
-        const cardsKey = `wa_sentcards_${phone}`;
+        // ATOMIC card gate: same query's cards can NEVER be sent twice within 5 min.
+        // INSERT with unique key — concurrent webhooks race, only one wins.
+        const cardsKey = `wa_cardfp_${phone}_${kw.replace(/[^a-z0-9]/g, '').slice(0, 40)}_${Math.floor(Date.now() / 300000)}`;
         let skipCards = false;
         try {
           const { supabaseAdmin: sba } = await import('@/lib/admin-db');
           const sbs = sba();
-          const nowMs = Date.now();
-          const { data: cd } = await sbs.from('settings').select('value').eq('key', cardsKey).maybeSingle();
-          const cur = cd?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
-          const live = (cur?.fps ?? []).filter((e) => nowMs - e.at < 5 * 60_000).slice(-20);
-          skipCards = live.some((e) => {
-            const a = e.f;
-            return a === kw || (a && kw && (a.includes(kw) || kw.includes(a)));
+          const { error: cardErr } = await sbs.from('settings').insert({
+            key: cardsKey, value: { at: Date.now(), phone },
           });
-          if (!skipCards) {
-            live.push({ f: kw, at: nowMs });
-            await sbs.from('settings').upsert(
-              { key: cardsKey, value: { fps: live.slice(-20) } },
-              { onConflict: 'key' },
-            );
+          if (cardErr) {
+            const code = (cardErr as { code?: string }).code;
+            const cmsg = String(cardErr.message ?? '').toLowerCase();
+            if (code === '23505' || cmsg.includes('duplicate') || cmsg.includes('already exists')) skipCards = true;
           }
         } catch { /* fail open — send cards */ }
         if (skipCards) {
