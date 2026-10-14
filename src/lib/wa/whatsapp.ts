@@ -2,6 +2,15 @@
 // Env: WHATSAPP_TOKEN, WHATSAPP_PHONE_ID (Meta provides later — graceful no-op until set).
 
 const API = 'https://graph.facebook.com/v21.0';
+// BSUID (Business-Scoped User ID) needs a newer API version — Meta introduced
+// WhatsApp usernames in 2026; v21.0 rejects BSUID in `to` as malformed.
+const API_BSUID = 'https://graph.facebook.com/v23.0';
+
+// Business-Scoped User ID, e.g. "BD.1074370902101691" — sent instead of a
+// phone number when the user chats via WhatsApp username.
+export function isBsuid(to: string): boolean {
+  return /^[A-Z]{2}\.[0-9]+$/.test(to);
+}
 
 function creds() {
   const token = process.env.WHATSAPP_TOKEN;
@@ -37,18 +46,25 @@ async function post(path: string, body: Record<string, unknown>): Promise<boolea
     void logDiag('wa_last_error', { stage: 'creds', detail: 'WHATSAPP_TOKEN or WHATSAPP_PHONE_ID missing' });
     return false;
   }
+  const to = String(body.to ?? '');
+  const bsuid = isBsuid(to);
+  const base = bsuid ? API_BSUID : API;
+  const payload: Record<string, unknown> = { messaging_product: 'whatsapp', ...body };
+  if (bsuid) payload.recipient_type = 'individual';
   try {
-    const res = await fetch(`${API}/${c.phoneId}${path}`, {
+    const res = await fetch(`${base}/${c.phoneId}${path}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${c.token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ messaging_product: 'whatsapp', ...body }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
-      void logDiag('wa_last_error', { stage: 'send', http: res.status, detail: errText.slice(0, 300) });
+      void logDiag('wa_last_error', { stage: 'send', http: res.status, bsuid, detail: errText.slice(0, 300) });
+    } else if (bsuid) {
+      void logDiag('wa_last_error', { stage: 'send_ok_bsuid', http: res.status });
     }
     return res.ok;
   } catch (e) {
