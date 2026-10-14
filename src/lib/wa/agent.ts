@@ -42,6 +42,7 @@ Reply with JSON ONLY:
 
 CRITICAL RULES:
 - When customer asks about ANY product (search, price, availability), you MUST call the search_products tool FIRST. NEVER answer from memory alone — the tool triggers product images and tap buttons.
+- Call search_products MAX ONCE per customer message. If already called, use the results.
 - PRODUCT DISPLAY FLOW (follow every time):
   1. Call search_products → system sends image cards automatically
   2. If product has variants (color/size/etc.), the system shows variant buttons — mention them in your reply

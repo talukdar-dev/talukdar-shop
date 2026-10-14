@@ -236,6 +236,7 @@ async function runAgent(
 ): Promise<boolean> {
   const { agentThink, agentExecTool } = await import('./agent');
   const toolResults: { tool: string; result: string }[] = [];
+  const shownThisTurn = new Set<string>(); // dedupe: never send same product card twice per message
 
   for (let i = 0; i < 4; i++) {
     let step: { thought: string; tool: Record<string, unknown> | null; reply: string | null } | null = null;
@@ -260,12 +261,17 @@ async function runAgent(
       if (toolName === 'search_products') {
         const res = await agentExecTool(step.tool, ctx);
         toolResults.push(res);
-        // send product cards for visual impact
+        // send product cards for visual impact (dedupe within this turn)
         const kw = String(step.tool.keyword ?? '').toLowerCase();
         const allMatches = ctx.products.filter((p) =>
           p.name.toLowerCase().includes(kw) || p.category.toLowerCase().includes(kw),
         );
-        const matches = allMatches.slice(0, 3);
+        const matches = allMatches.filter((p) => !shownThisTurn.has(p.id)).slice(0, 3);
+        if (matches.length === 0) {
+          toolResults.push({ tool: 'search_products', result: 'Products already shown above.' });
+          continue;
+        }
+        matches.forEach((p) => shownThisTurn.add(p.id));
         const lang = detectLang(msg);
         for (const p of matches) {
           await waSendProductCard(phone, p, lang);
