@@ -100,6 +100,28 @@ export interface WaListRow {
   description?: string;
 }
 
+// Reply buttons: Telegram-style tap to select (max 3 buttons, title max 20 chars)
+export async function waSendButtons(
+  to: string,
+  bodyText: string,
+  buttons: Array<{ id: string; title: string }>,
+): Promise<boolean> {
+  return post('/messages', {
+    to,
+    type: 'interactive',
+    interactive: {
+      type: 'button',
+      body: { text: bodyText },
+      action: {
+        buttons: buttons.slice(0, 3).map((b) => ({
+          type: 'reply',
+          reply: { id: b.id, title: b.title.slice(0, 20) },
+        })),
+      },
+    },
+  });
+}
+
 export async function waSendList(
   to: string,
   bodyText: string,

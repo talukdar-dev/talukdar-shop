@@ -15,7 +15,7 @@ import {
   finalReplyPrompt,
 } from './config';
 import { extractIntent, finalReply, type Intent } from './groq';
-import { waSendText, waSendImage, waSendList, waSendProductCard } from './whatsapp';
+import { waSendText, waSendImage, waSendList, waSendButtons, waSendProductCard } from './whatsapp';
 
 // ---------- catalog cache ----------
 interface CatProduct {
@@ -241,14 +241,19 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
   const allMatches = searchProducts(keyword || msg, cat.items, 20);
   const matchCats = [...new Set(allMatches.map((p) => p.category).filter(Boolean))];
   if (matchCats.length > 1) {
-    const catLines = matchCats.map((c, i) => {
-      const n = allMatches.filter((p) => p.category === c).length;
-      return `${i + 1}. ${c} (${n} ta)`;
-    });
-    const reply = useLang === 'bn'
-      ? `Sir, "${keyword || msg}" er ${matchCats.length} dhoroner ache:\n${catLines.join('\n')}\n\nKonta chaitasen sir? Number likhun.`
-      : `Sir, "${keyword || msg}" comes in ${matchCats.length} types:\n${catLines.join('\n')}\n\nWhich one would you like? Reply with the number.`;
-    await waSendText(phone, reply);
+    const bodyText = useLang === 'bn'
+      ? `Sir, "${keyword || msg}" er ${matchCats.length} dhoroner ache. Konta chaitasen?`
+      : `Sir, "${keyword || msg}" comes in ${matchCats.length} types. Which one?`;
+    // Telegram-style buttons (max 3) — fallback to numbered text if more
+    if (matchCats.length <= 3) {
+      await waSendButtons(phone, bodyText, matchCats.map((c, i) => ({ id: `catchoose_${i}`, title: c })));
+    } else {
+      const catLines = matchCats.map((c, i) => {
+        const n = allMatches.filter((p) => p.category === c).length;
+        return `${i + 1}. ${c} (${n} ta)`;
+      });
+      await waSendText(phone, `${bodyText}\n${catLines.join('\n')}\n\nNumber likhun.`);
+    }
     pushHistory(session, 'ai', `asked fan type: ${matchCats.join(', ')}`);
     await saveSession(phone, {
       step: 'await_category_choice',
@@ -260,19 +265,17 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
-  // 8) show products: image cards + interactive list
+  // 8) show products: image cards + tap buttons
   for (const p of found) {
     await waSendProductCard(phone, p, useLang);
     await sleep(900);
   }
-  await waSendList(
+  await waSendButtons(
     phone,
-    useLang === 'bn' ? 'Sir, tap kore select korun:' : 'Sir, tap to select:',
-    useLang === 'bn' ? 'Products' : 'Products',
+    useLang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
     found.map((p, i) => ({
       id: `prod_${p.id}`,
-      title: `${i + 1}. ${p.name.slice(0, 24)}`,
-      description: `${p.price} TK${p.stock > 0 ? '' : ' (stock sesh)'}`,
+      title: `${i + 1}. ${p.name.slice(0, 17)}`,
     })),
   );
 
@@ -310,6 +313,11 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       const cats = (session.shownIds ?? []) as string[];
       const idx = parseInt(msg) - 1;
       let chosenCat = cats[idx];
+      // button tap: catchoose_0, catchoose_1...
+      if (msg.startsWith('catchoose_')) {
+        const bi = parseInt(msg.split('_')[1] ?? '-1');
+        chosenCat = cats[bi];
+      }
       // also match by name (fuzzy)
       if (!chosenCat) {
         const lower = msg.toLowerCase();
@@ -331,21 +339,18 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         await waSendProductCard(phone, p, lang);
         await sleep(900);
       }
-      await waSendList(
+      await waSendButtons(
         phone,
-        lang === 'bn' ? 'Sir, tap kore select korun:' : 'Sir, tap to select:',
-        lang === 'bn' ? 'Products' : 'Products',
+        lang === 'bn' ? 'Sir, konta nite chan? Tap korun:' : 'Sir, which one? Tap to select:',
         catProducts.map((p, i) => ({
           id: `prod_${p.id}`,
-          title: `${i + 1}. ${p.name.slice(0, 24)}`,
-          description: `${p.price} TK${p.stock > 0 ? '' : ' (stock sesh)'}`,
+          title: `${i + 1}. ${p.name.slice(0, 17)}`,
         })),
       );
       pushHistory(session, 'ai', `shown ${catProducts.length} ${chosenCat} products`);
       session.step = 'await_product_choice';
       session.shownIds = catProducts.map((p) => p.id);
       await saveSession(phone, session);
-      await ask(lang === 'bn' ? 'Sir, konta nite chan? Number likhun.' : 'Sir, which one? Reply with the number.');
       return;
     }
     case 'await_product_choice': {
