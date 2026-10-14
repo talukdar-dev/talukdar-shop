@@ -150,7 +150,9 @@ export async function brainWriteReply(opts: {
 }): Promise<string | null> {
   const { lang, customerMsg, understanding, dataText, instruction, history } = opts;
   const histText = history.length ? `Recent chat:\n${history.slice(-4).join('\n')}\n\n` : '';
-  const langRule = lang === 'bn' ? 'Write in pure Bengali script (বাংলা অক্ষরে).' : 'Write in pure English.';
+  const langRule = lang === 'bn'
+    ? 'Write in pure Bengali Unicode script (বাংলা অক্ষরে). STRICT: NEVER write Banglish (Latin-script Bangla like "Sir, amader"). ALWAYS use বাংলা অক্ষর.'
+    : 'Write in pure English.';
   return groqChat({
     model: WA_CONFIG.groqModelSmart, // 120B = the writer
     system: `You are a polite salesman for Talukdar Shop (Bangladesh home appliances). Address customer as Sir, respectful tone. ${langRule}
