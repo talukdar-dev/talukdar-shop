@@ -275,22 +275,25 @@ async function runAgent(
           toolResults.push({ tool: 'search_products', result: 'Products already shown above.' });
           continue;
         }
-        // cross-webhook card dedupe: if we sent cards for a similar query in the
-        // last 5 min (Meta multi-delivery), don't resend — just tell the agent.
-        const cardsKey = `wa_cards_${phone}`;
+        // cross-webhook card dedupe: per-query fingerprints kept 5 min —
+        // even a late duplicate of an older query won't resend cards.
+        const cardsKey = `wa_sentcards_${phone}`;
         let skipCards = false;
         try {
           const { supabaseAdmin: sba } = await import('@/lib/admin-db');
           const sbs = sba();
+          const nowMs = Date.now();
           const { data: cd } = await sbs.from('settings').select('value').eq('key', cardsKey).maybeSingle();
-          const lastCards = cd?.value as { kw?: string; at?: number } | undefined;
-          if (lastCards?.at && Date.now() - lastCards.at < 5 * 60_000 && lastCards.kw) {
-            const a = lastCards.kw.toLowerCase();
-            if (a === kw || (a && kw && (a.includes(kw) || kw.includes(a)))) skipCards = true;
-          }
+          const cur = cd?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
+          const live = (cur?.fps ?? []).filter((e) => nowMs - e.at < 5 * 60_000).slice(-20);
+          skipCards = live.some((e) => {
+            const a = e.f;
+            return a === kw || (a && kw && (a.includes(kw) || kw.includes(a)));
+          });
           if (!skipCards) {
+            live.push({ f: kw, at: nowMs });
             await sbs.from('settings').upsert(
-              { key: cardsKey, value: { kw, at: Date.now() } },
+              { key: cardsKey, value: { fps: live.slice(-20) } },
               { onConflict: 'key' },
             );
           }

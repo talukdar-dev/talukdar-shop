@@ -75,24 +75,34 @@ async function isDuplicateDb(id: string): Promise<boolean> {
 
 // content dedupe: Meta sometimes delivers the SAME user message multiple times
 // with DIFFERENT message IDs (BSUID/username flow), spaced minutes apart.
-// If the same phone sends the same text within 5 min, treat as duplicate.
+// Every unique (phone + text) gets a fingerprint, kept for 5 min —
+// so even a LATE duplicate of an older message is caught, not just the last one.
+function fp(text: string): string {
+  const t = text.trim().toLowerCase();
+  let h = 0;
+  for (let i = 0; i < t.length; i++) { h = ((h << 5) - h + t.charCodeAt(i)) | 0; }
+  return `h${(h >>> 0).toString(36)}`;
+}
+const DEDUPE_TTL = 5 * 60_000;
 async function isDuplicateContent(phone: string, text: string): Promise<boolean> {
   try {
     const { supabaseAdmin } = await import('@/lib/admin-db');
     const sb = supabaseAdmin();
-    const key = `wa_lastmsg_${phone}`;
+    const key = `wa_seen_${phone}`;
     const now = Date.now();
+    const myFp = fp(text);
     const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
-    const last = data?.value as { text?: string; at?: number } | undefined;
-    // always record the latest
+    const cur = data?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
+    // prune expired, keep last 20
+    const live = (cur?.fps ?? []).filter((e) => now - e.at < DEDUPE_TTL).slice(-20);
+    const dup = live.some((e) => e.f === myFp);
+    // record this fingerprint (even if dup — refresh recency)
+    live.push({ f: myFp, at: now });
     await sb.from('settings').upsert(
-      { key, value: { text: text.slice(0, 200), at: now } },
+      { key, value: { fps: live.slice(-20) } },
       { onConflict: 'key' },
     );
-    if (last?.text && last.at && now - last.at < 5 * 60_000) {
-      if (last.text.trim().toLowerCase() === text.trim().toLowerCase()) return true;
-    }
-    return false;
+    return dup;
   } catch {
     return false; // fail open
   }
