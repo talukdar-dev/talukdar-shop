@@ -42,8 +42,10 @@ function extractMessage(body: Record<string, unknown>): WaTextMsg | null {
     const msg = (value?.messages as Array<Record<string, unknown>>)?.[0];
     if (!msg) return null;
     // phone can be in messages[0].from (standard) or value.contacts[0].wa_id (alternate routing)
+    // BSUID/username flow uses from_user_id + contacts[0].user_id instead
     const contacts = value?.contacts as Array<Record<string, unknown>> | undefined;
-    const waId = contacts?.[0]?.wa_id ? String(contacts[0].wa_id) : '';
+    const waId = contacts?.[0]?.wa_id ? String(contacts[0].wa_id)
+      : contacts?.[0]?.user_id ? String(contacts[0].user_id) : '';
     const from = String(msg.from ?? '') || waId || String((msg as Record<string, unknown>).from_user_id ?? '');
     return {
       from,
@@ -88,21 +90,33 @@ async function isDuplicateContent(phone: string, text: string): Promise<boolean>
   try {
     const { supabaseAdmin } = await import('@/lib/admin-db');
     const sb = supabaseAdmin();
-    const key = `wa_seen_${phone}`;
     const now = Date.now();
     const myFp = fp(text);
+    // 1) per-phone fingerprints (5 min) — normal case
+    const key = `wa_seen_${phone}`;
     const { data } = await sb.from('settings').select('value').eq('key', key).maybeSingle();
     const cur = data?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
-    // prune expired, keep last 20
     const live = (cur?.fps ?? []).filter((e) => now - e.at < DEDUPE_TTL).slice(-20);
-    const dup = live.some((e) => e.f === myFp);
-    // record this fingerprint (even if dup — refresh recency)
+    if (live.some((e) => e.f === myFp)) return true;
     live.push({ f: myFp, at: now });
     await sb.from('settings').upsert(
       { key, value: { fps: live.slice(-20) } },
       { onConflict: 'key' },
     );
-    return dup;
+    // 2) GLOBAL fingerprints (30 sec) — catches the case where Meta delivers the
+    // same message with a DIFFERENT `from` identity (BSUID vs phone number),
+    // which would otherwise bypass the per-phone check above.
+    const gkey = 'wa_seen_global';
+    const { data: gdata } = await sb.from('settings').select('value').eq('key', gkey).maybeSingle();
+    const gcur = gdata?.value as { fps?: Array<{ f: string; at: number }> } | undefined;
+    const glive = (gcur?.fps ?? []).filter((e) => now - e.at < 30_000).slice(-20);
+    if (glive.some((e) => e.f === myFp)) return true;
+    glive.push({ f: myFp, at: now });
+    await sb.from('settings').upsert(
+      { key: gkey, value: { fps: glive.slice(-20) } },
+      { onConflict: 'key' },
+    );
+    return false;
   } catch {
     return false; // fail open
   }
