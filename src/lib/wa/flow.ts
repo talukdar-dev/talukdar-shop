@@ -271,19 +271,6 @@ async function runAgent(
           await waSendProductCard(phone, p, lang);
           await new Promise((r) => setTimeout(r, 800));
         }
-        // variants: if single product with variants, show variant buttons
-        if (matches.length === 1 && matches[0].variants.length > 0) {
-          const v = matches[0].variants[0];
-          const variantBtns = v.options.slice(0, 3).map((o, i) => ({
-            id: `var_${matches[0].id}_${i}`,
-            title: smartCut(o.label, 20),
-          }));
-          await waSendButtons(
-            phone,
-            lang === 'bn' ? `${v.name} select korun:` : `Select ${v.name}:`,
-            variantBtns,
-          );
-        }
         if (matches.length > 0) {
           await waSendButtons(
             phone,
@@ -751,14 +738,30 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         await ask(effLang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
         return;
       }
-      // variant lazy: only if product HAS variants
+      // variant: ONLY if product HAS variants — show as tap buttons
       if (chosen.variants.length > 0) {
         const v = chosen.variants[0];
         session.step = 'await_variant';
+        // store variant options for button tap handling
+        session.data.variant_options = v.options.map((o) => o.label).join('|');
         await saveSession(phone, session);
-        await ask(effLang === 'bn'
-          ? `Sir, "${chosen.name}" er ${v.name} gulo: ${v.options.map((o) => o.label).join(', ')}. Konta lagbe sir?`
-          : `Sir, "${chosen.name}" options for ${v.name}: ${v.options.map((o) => o.label).join(', ')}. Which one, sir?`);
+        const vBtns = v.options.slice(0, 3).map((o, i) => ({
+          id: `vopt_${i}`,
+          title: smartCut(o.label, 20),
+        }));
+        await waSendButtons(
+          phone,
+          effLang === 'bn'
+            ? `Sir, "${smartCut(chosen.name, 30)}" er ${v.name}:`
+            : `Sir, "${smartCut(chosen.name, 30)}" ${v.name}:`,
+          vBtns,
+        );
+        // if more than 3 options, list the rest as text
+        if (v.options.length > 3) {
+          await ask(effLang === 'bn'
+            ? `Aro ache: ${v.options.slice(3).map((o) => o.label).join(', ')}. Nam likhe janaben.`
+            : `More: ${v.options.slice(3).map((o) => o.label).join(', ')}. Type the name.`);
+        }
       } else {
         session.step = 'await_quantity';
         await saveSession(phone, session);
@@ -767,7 +770,14 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       return;
     }
     case 'await_variant': {
-      d.variant = msg;
+      // button tap: vopt_0, vopt_1... — or typed variant name
+      let variantLabel = msg;
+      if (msg.startsWith('vopt_')) {
+        const vi = parseInt(msg.split('_')[1] ?? '-1');
+        const opts = String(session.data.variant_options ?? '').split('|');
+        if (opts[vi]) variantLabel = opts[vi];
+      }
+      d.variant = variantLabel;
       session.step = 'await_quantity';
       await saveSession(phone, session);
       await ask(effLang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
