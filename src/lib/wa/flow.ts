@@ -326,9 +326,22 @@ async function runAgent(
       return true;
     }
     // no tool, no reply — stop
+    // if cards were already sent, consider it handled (don't let legacy resend)
+    if (shownThisTurn.size > 0) {
+      pushHistory(session, 'ai', `shown ${shownThisTurn.size} products (no text reply)`);
+      await saveSession(phone, {
+        step: session.step,
+        data: session.data,
+        shownIds: session.shownIds,
+        updatedAt: Date.now(),
+        history: session.history,
+      });
+      return true;
+    }
     return false;
   }
-  return false;
+  // loop exhausted — if cards sent, don't fallback to legacy (avoids duplicates)
+  return shownThisTurn.size > 0;
 }
 
 async function execSaveOrder(
