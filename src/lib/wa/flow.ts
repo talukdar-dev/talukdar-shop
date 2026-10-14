@@ -235,6 +235,29 @@ export async function handleWaMessage(phone: string, text: string, queueDepth: n
     return;
   }
 
+  // category-first: if matches span multiple categories, ask which type first
+  const allMatches = searchProducts(keyword || msg, cat.items, 20);
+  const matchCats = [...new Set(allMatches.map((p) => p.category).filter(Boolean))];
+  if (matchCats.length > 1) {
+    const catLines = matchCats.map((c, i) => {
+      const n = allMatches.filter((p) => p.category === c).length;
+      return `${i + 1}. ${c} (${n} ta)`;
+    });
+    const reply = useLang === 'bn'
+      ? `Sir, "${keyword || msg}" er ${matchCats.length} dhoroner ache:\n${catLines.join('\n')}\n\nKonta chaitasen sir? Number likhun.`
+      : `Sir, "${keyword || msg}" comes in ${matchCats.length} types:\n${catLines.join('\n')}\n\nWhich one would you like? Reply with the number.`;
+    await waSendText(phone, reply);
+    pushHistory(session, 'ai', `asked fan type: ${matchCats.join(', ')}`);
+    await saveSession(phone, {
+      step: 'await_category_choice',
+      data: { keyword: keyword || msg },
+      shownIds: matchCats,
+      updatedAt: Date.now(),
+      history: session.history,
+    });
+    return;
+  }
+
   // 8) show products: image cards + interactive list
   for (const p of found) {
     await waSendProductCard(phone, p, useLang);
@@ -281,6 +304,48 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
   const ask = async (text: string) => { await waSendText(phone, text); };
 
   switch (session.step) {
+    case 'await_category_choice': {
+      const cats = (session.shownIds ?? []) as string[];
+      const idx = parseInt(msg) - 1;
+      let chosenCat = cats[idx];
+      // also match by name (fuzzy)
+      if (!chosenCat) {
+        const lower = msg.toLowerCase();
+        chosenCat = cats.find((c) => c.toLowerCase().includes(lower) || lower.includes(c.toLowerCase())) ?? '';
+      }
+      if (!chosenCat) {
+        await ask(lang === 'bn'
+          ? `Sir, 1-${cats.length} er moddhe number likhun, ba category nam bolun.`
+          : `Sir, please reply 1-${cats.length}, or the category name.`);
+        return;
+      }
+      const keyword = String(session.data.keyword ?? '');
+      const catProducts = cat.items.filter((p) => p.category === chosenCat).slice(0, WA_CONFIG.maxProductsPerReply);
+      if (catProducts.length === 0) {
+        await ask(lang === 'bn' ? 'Sir, ei category te ekhon product nei.' : 'Sir, no products in this category right now.');
+        return;
+      }
+      for (const p of catProducts) {
+        await waSendProductCard(phone, p, lang);
+        await sleep(900);
+      }
+      await waSendList(
+        phone,
+        lang === 'bn' ? 'Sir, tap kore select korun:' : 'Sir, tap to select:',
+        lang === 'bn' ? 'Products' : 'Products',
+        catProducts.map((p, i) => ({
+          id: `prod_${p.id}`,
+          title: `${i + 1}. ${p.name.slice(0, 24)}`,
+          description: `${p.price} TK${p.stock > 0 ? '' : ' (stock sesh)'}`,
+        })),
+      );
+      pushHistory(session, 'ai', `shown ${catProducts.length} ${chosenCat} products`);
+      session.step = 'await_product_choice';
+      session.shownIds = catProducts.map((p) => p.id);
+      await saveSession(phone, session);
+      await ask(lang === 'bn' ? 'Sir, konta nite chan? Number likhun.' : 'Sir, which one? Reply with the number.');
+      return;
+    }
     case 'await_product_choice': {
       const idx = parseInt(msg) - 1;
       const prod = (session.shownIds ?? [])[idx] ? cat.items.find((p) => p.id === (session.shownIds ?? [])[idx]) : undefined;
