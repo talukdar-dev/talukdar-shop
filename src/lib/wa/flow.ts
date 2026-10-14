@@ -262,13 +262,27 @@ async function runAgent(
         toolResults.push(res);
         // send product cards for visual impact
         const kw = String(step.tool.keyword ?? '').toLowerCase();
-        const matches = ctx.products.filter((p) =>
+        const allMatches = ctx.products.filter((p) =>
           p.name.toLowerCase().includes(kw) || p.category.toLowerCase().includes(kw),
-        ).slice(0, 3);
+        );
+        const matches = allMatches.slice(0, 3);
         const lang = detectLang(msg);
         for (const p of matches) {
           await waSendProductCard(phone, p, lang);
           await new Promise((r) => setTimeout(r, 800));
+        }
+        // variants: if single product with variants, show variant buttons
+        if (matches.length === 1 && matches[0].variants.length > 0) {
+          const v = matches[0].variants[0];
+          const variantBtns = v.options.slice(0, 3).map((o, i) => ({
+            id: `var_${matches[0].id}_${i}`,
+            title: smartCut(o.label, 20),
+          }));
+          await waSendButtons(
+            phone,
+            lang === 'bn' ? `${v.name} select korun:` : `Select ${v.name}:`,
+            variantBtns,
+          );
         }
         if (matches.length > 0) {
           await waSendButtons(
@@ -278,6 +292,11 @@ async function runAgent(
           );
           session.step = 'await_product_choice';
           session.shownIds = matches.map((p) => p.id);
+        }
+        // more products? tell the agent
+        const remaining = allMatches.length - matches.length;
+        if (remaining > 0) {
+          toolResults.push({ tool: 'more_products', result: `${remaining} more products available. Ask if they want to see more.` });
         }
         continue;
       }
@@ -696,7 +715,19 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
       const prod = (session.shownIds ?? [])[idx] ? cat.items.find((p) => p.id === (session.shownIds ?? [])[idx]) : undefined;
       // also allow tapping list row id
       const byId = msg.startsWith('prod_') ? cat.items.find((p) => `prod_${p.id}` === msg) : undefined;
-      const chosen = prod ?? byId;
+      // variant button tap: var_<productId>_<optionIdx> — product + variant in one tap
+      let variantChoice: string | undefined;
+      let chosen = prod ?? byId;
+      if (msg.startsWith('var_')) {
+        const parts = msg.split('_');
+        const varProdId = parts.slice(1, -1).join('_');
+        const varIdx = parseInt(parts[parts.length - 1] ?? '-1');
+        const varProd = cat.items.find((p) => p.id === varProdId);
+        if (varProd && varProd.variants[0]?.options[varIdx]) {
+          chosen = varProd;
+          variantChoice = varProd.variants[0].options[varIdx].label;
+        }
+      }
       if (!chosen) {
         // not a choice — maybe a NEW question? detect and restart fresh
         let newIntent: Intent | null = null;
@@ -712,6 +743,14 @@ async function handleOrderStep(phone: string, msg: string, lang: 'bn' | 'en', se
         return;
       }
       d.product_id = chosen.id;
+      // variant already chosen via button? skip to quantity
+      if (variantChoice) {
+        d.variant = variantChoice;
+        session.step = 'await_quantity';
+        await saveSession(phone, session);
+        await ask(effLang === 'bn' ? 'Sir, quantity koto pcs lagbe?' : 'Sir, how many pieces?');
+        return;
+      }
       // variant lazy: only if product HAS variants
       if (chosen.variants.length > 0) {
         const v = chosen.variants[0];

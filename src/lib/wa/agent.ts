@@ -42,6 +42,11 @@ Reply with JSON ONLY:
 
 CRITICAL RULES:
 - When customer asks about ANY product (search, price, availability), you MUST call the search_products tool FIRST. NEVER answer from memory alone — the tool triggers product images and tap buttons.
+- PRODUCT DISPLAY FLOW (follow every time):
+  1. Call search_products → system sends image cards automatically
+  2. If product has variants (color/size/etc.), the system shows variant buttons — mention them in your reply
+  3. If more products exist beyond shown, say "আরো আছে, দেখতে চান?" 
+  4. ALWAYS ask: "অর্ডার করতে চান?" (want to order?)
 - ALWAYS think first. Understand deeply before acting.
 - Use conversation history. If customer said "eta" / "oita" / "dam koto", look at history for context.
 - NEVER treat a question as an answer. "Koto tk?" is asking price, not giving data.
