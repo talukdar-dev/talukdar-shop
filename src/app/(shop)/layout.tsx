@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
-import { getBrands, getCategories, getCategoryBrands, getSettings } from '@/lib/db';
+import { getBrands, getCategories, getCategoryBrands, getCategoryProductCounts, getSettings } from '@/lib/db';
 import TopBar from '@/components/store/TopBar';
 import Header from '@/components/store/Header';
 import MegaMenu from '@/components/store/MegaMenu';
@@ -31,17 +31,24 @@ export const metadata: Metadata = {
 async function loadLayoutData() {
   'use cache';
   cacheLife('minutes');
-  const [settings, categories, brands, catBrands] = await Promise.all([
+  const [settings, categories, brands, catBrands, catCounts] = await Promise.all([
     getSettings(),
     getCategories(),
     getBrands(),
     getCategoryBrands(),
+    getCategoryProductCounts(),
   ]);
-  return { settings, categories, brands, catBrands };
+  // Hide empty categories from navigation automatically. When counts are
+  // unavailable (empty map), keep everything rather than hiding all.
+  const hasCounts = Object.keys(catCounts).length > 0;
+  const navCategories = hasCounts
+    ? categories.filter((c) => (catCounts[c.id] ?? 0) > 0)
+    : categories;
+  return { settings, categories, brands, catBrands, navCategories };
 }
 
 export default async function ShopLayout({ children }: { children: React.ReactNode }) {
-  const { settings, categories, catBrands } = await loadLayoutData();
+  const { settings, catBrands, navCategories } = await loadLayoutData();
 
   const orgJsonLd = {
     '@context': 'https://schema.org',
@@ -128,7 +135,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
       <TopBar />
       <NavigationProgress />
       <Header settings={settings} />
-      <MegaMenu categories={categories} catBrands={catBrands} />
+      <MegaMenu categories={navCategories} catBrands={catBrands} />
       <main className="flex-1 w-full min-w-0">
         <div className="max-w-[1280px] mx-auto px-3 py-4 space-y-4 overflow-x-clip">{children}</div>
       </main>

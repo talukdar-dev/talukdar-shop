@@ -1,5 +1,5 @@
 import type { Product } from '@/lib/types';
-import { taka } from '@/lib/format';
+import { effectivePrice, taka } from '@/lib/format';
 
 function GroupHead({ children }: { children: string }) {
   return (
@@ -31,7 +31,7 @@ export default function SpecTable({ product }: { product: Product }) {
       <table className="w-full">
         <tbody>
           <GroupHead>General Information</GroupHead>
-          <Row k="Price" v={taka(product.price)} />
+          <Row k="Price" v={taka(effectivePrice(product))} />
           {product.old_price ? <Row k="Regular Price" v={taka(product.old_price)} /> : null}
           <Row k="Status" v={stock} />
           <Row k="Product Code" v={product.sku} />
