@@ -483,7 +483,7 @@ export default function CheckoutPage() {
             {hasPhysical && (
               <div className="flex justify-between">
                 <dt className="text-ink">Shipping</dt>
-                <dd className="font-semibold">{shipping === 0 ? 'Free' : taka(shipping)}</dd>
+                <dd className="font-semibold">{!district ? '—' : shipping === 0 ? 'Free' : taka(shipping)}</dd>
               </div>
             )}
             {couponDiscount > 0 && (

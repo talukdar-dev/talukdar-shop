@@ -39,7 +39,11 @@ export default function Filters({ brands, total }: Props) {
       <div className="p-4 flex items-center justify-between">
         <h2 className="font-bold text-[15px]">Filters</h2>
         <button
-          onClick={() => router.push(pathname)}
+          onClick={() => {
+            // Preserve the search query when resetting filters on the search page
+            const q = sp.get('q');
+            router.push(q ? `${pathname}?q=${encodeURIComponent(q)}` : pathname);
+          }}
           className="text-link text-[12.5px] hover:underline"
         >
           Reset

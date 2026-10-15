@@ -34,7 +34,7 @@ export default function CartPage() {
   return (
     <>
       <h1 className="text-[20px] font-bold text-[#1a1a1a]">
-        Shopping Cart <span className="text-ink font-normal text-[15px]">({count} items)</span>
+        Shopping Cart <span className="text-ink font-normal text-[15px]">({count} {count === 1 ? 'item' : 'items'})</span>
       </h1>
       <div className="grid lg:grid-cols-[1fr_320px] gap-4 mt-4 items-start">
         <div className="bg-white rounded-md border border-[#e8e8e8] divide-y divide-gray-100">
@@ -89,7 +89,7 @@ export default function CartPage() {
         <aside className="bg-white rounded-md border border-[#e8e8e8] p-4 lg:sticky lg:top-16">
           <h2 className="font-bold text-[15px] mb-3">Order Summary</h2>
           <div className="flex justify-between text-[13.5px] mb-1.5">
-            <span className="text-ink">Subtotal ({count} items)</span>
+            <span className="text-ink">Subtotal ({count} {count === 1 ? 'item' : 'items'})</span>
             <span className="font-bold">{taka(subtotal)}</span>
           </div>
           <p className="text-[12px] text-ink mb-4">Shipping calculated at checkout.</p>
