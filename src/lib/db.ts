@@ -183,6 +183,40 @@ export async function getCategoryBrands(): Promise<Record<string, Brand[]>> {
   );
 }
 
+/**
+ * Active product count per category id. Used to hide empty categories
+ * from navigation. Seed fallback counts from seedProducts.
+ */
+export async function getCategoryProductCounts(): Promise<Record<string, number>> {
+  'use cache';
+  cacheLife('hours');
+  cacheTag('catalog');
+  return live(
+    async () => {
+      const counts: Record<string, number> = {};
+      for (const p of seedProducts) {
+        if (!p.is_active || !p.category_id) continue;
+        counts[p.category_id] = (counts[p.category_id] ?? 0) + 1;
+      }
+      return counts;
+    },
+    async (sb) => {
+      const { data, error } = await sb
+        .from('products')
+        .select('category_id')
+        .eq('is_active', true)
+        .limit(2000);
+      if (error) throw error;
+      const counts: Record<string, number> = {};
+      for (const row of (data ?? []) as Array<{ category_id: string | null }>) {
+        if (!row.category_id) continue;
+        counts[row.category_id] = (counts[row.category_id] ?? 0) + 1;
+      }
+      return counts;
+    },
+  );
+}
+
 export interface ProductFilter {
   categorySlug?: string;
   brandSlug?: string;

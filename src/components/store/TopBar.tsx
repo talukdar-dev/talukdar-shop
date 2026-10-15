@@ -7,7 +7,6 @@ import { useAuth } from '@/lib/auth';
 import {
   IconCart,
   IconChevronDown,
-  IconChip,
   IconCompare,
   IconFlash,
   IconGift,
@@ -38,10 +37,6 @@ export default function TopBar() {
             <IconFlash className="w-4 h-4 shrink-0" />
             <span className="font-semibold">Flash Deals</span>
             <span className="hidden md:inline text-white/60">Special Deals</span>
-          </Link>
-          <Link href="/pc-builder" className="hidden sm:flex items-center gap-1.5 hover:text-brand-orange transition-colors">
-            <IconChip className="w-4 h-4 shrink-0" />
-            <span className="font-semibold">PC Builder</span>
           </Link>
           <div className="relative group">
             <button className="flex items-center gap-1.5 hover:text-brand-orange transition-colors">
