@@ -58,7 +58,7 @@ const P = (
   is_featured: false, is_new: false, is_flash_deal: false,
   flash_price: null, flash_ends_at: null,
   rating: 4.5, reviews_count: 12,
-  emi_available: price >= 20000,
+  emi_available: price >= 10000,
   is_active: true,
   short_desc: `${name} — 100% genuine product with official warranty from Talukdar Shop.`,
   description: `<p>${name} is available at the best price in Bangladesh from Talukdar Shop. Buy 100% genuine products with official warranty, fast delivery inside & outside Dhaka, and easy EMI facility.</p><ul><li>100% genuine & brand new</li><li>Official warranty included</li><li>Fast delivery across Bangladesh</li><li>EMI available on selected banks</li></ul>`,

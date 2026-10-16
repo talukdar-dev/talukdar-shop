@@ -23,10 +23,10 @@ const NOT_ELIGIBLE = [
 ];
 
 const STEPS = [
-  'Contact us within 7 days of delivery on our hotline 01333600272 (9:00 AM – 10:00 PM, every day) or WhatsApp, with your order number and a short video/photo showing the issue.',
+  'Contact us within 7 days of delivery on our hotline 01616266559 (9:00 AM – 10:00 PM, every day) or WhatsApp, with your order number and a short video/photo showing the issue.',
   'Our team will verify the issue — usually within 24 hours — and arrange a replacement pickup.',
   'Once we receive and inspect the returned item, a replacement is dispatched. If a replacement is not available, a refund is issued.',
-  'Refunds for bKash/Nagad/Rocket/bank payments are sent to the same account within 5–7 working days. Cash on Delivery orders are refunded via bKash or bank transfer.',
+  'Cash on Delivery orders are refunded via bKash or bank transfer within 5–7 working days.',
 ];
 
 export default function ReturnsPage() {

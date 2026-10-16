@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BLOG_POSTS } from '@/lib/blog';
 
 export const metadata: Metadata = {
-  title: 'Blog — Buying Guides & Tips | Talukdar Shop',
+  title: 'Blog — Buying Guides & Tips',
   description:
     'Home appliance buying guides, price comparisons, recipes and maintenance tips for Bangladeshi homes. Expert advice from Talukdar Shop.',
   alternates: { canonical: '/blog' },

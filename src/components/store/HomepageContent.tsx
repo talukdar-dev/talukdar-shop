@@ -5,7 +5,7 @@ export default function HomepageContent() {
       <div
         className="category-content text-[13.5px] text-ink leading-relaxed"
         dangerouslySetInnerHTML={{ __html: `<h2>Welcome to Talukdar Shop — Home Appliances & Digital Subscriptions in One Place</h2>
-<p>Looking for the best online shop in Bangladesh? Welcome to <strong>Talukdar Shop (talukdarshop.com)</strong> — your one-stop destination for genuine home appliances, electronics AND digital subscriptions at the best prices in Bangladesh. Shop everyday household essentials — air fryers, rice cookers, rechargeable fans, infrared cookers, pressure cookers, non-stick cookware sets, roti makers, irons, lights, blenders and more — plus premium digital subscriptions like <strong>Google AI Pro</strong> with Gemini Advanced and Veo video generation. All with cash on delivery and bKash payment available across the country.</p>
+<p>Looking for the best online shop in Bangladesh? Welcome to <strong>Talukdar Shop (talukdarshop.com)</strong> — your one-stop destination for genuine home appliances, electronics AND digital subscriptions at the best prices in Bangladesh. Shop everyday household essentials — air fryers, rice cookers, rechargeable fans, infrared cookers, pressure cookers, non-stick cookware sets, roti makers, irons, lights, blenders and more — plus premium digital subscriptions like <strong>Google AI Pro</strong> with Gemini Advanced and Veo video generation. All with cash on delivery available across the country.</p>
 <p>Whether you are setting up a new home, upgrading your kitchen, or preparing for load-shedding season with a reliable rechargeable fan, Talukdar Shop brings trusted brands and honest prices together in one place. Every product listed on our site is carefully selected, quality-checked, and backed by our customer-first support so you can shop with complete confidence.</p>
 <p>Our mission is simple: make online shopping for home appliances in Bangladesh easy, affordable and trustworthy. No fake products, no hidden charges, no confusing terms — just the appliances your home needs, at prices that make sense, delivered fast.</p>
 <h2>Shop Home Appliances by Category</h2>
@@ -37,14 +37,14 @@ export default function HomepageContent() {
 <h3>More Categories Coming Soon</h3>
 <p>We are constantly expanding our catalogue. Watch this space for LED lights, AC/DC lights, ceiling fans, high-speed fans, water heaters, batteries, blenders and more household essentials — all at honest Bangladeshi prices.</p>
 <h2>Digital Subscriptions — Premium AI Tools at Unbeatable Prices</h2>
-<p>Talukdar Shop is more than appliances — we bring you premium <strong>digital subscriptions</strong> at prices no one else in Bangladesh can match. Get <strong>Google AI Pro (18 months)</strong> with Gemini 3.1 Pro, Veo AI video generation, 5TB cloud storage and NotebookLM — personal account for just <strong>৳200</strong>, shared for <strong>৳100</strong>. Pay with bKash, no international card needed. Home appliances, electronics and digital subscriptions — everything your modern life needs, in one trusted shop.</p>
+<p>Talukdar Shop is more than appliances — we bring you premium <strong>digital subscriptions</strong> at prices no one else in Bangladesh can match. Get <strong>Google AI Pro (18 months)</strong> with Gemini 3.1 Pro, Veo AI video generation, 5TB cloud storage and NotebookLM — personal account for just <strong>৳200</strong>, shared for <strong>৳100</strong>. No international card needed. Home appliances, electronics and digital subscriptions — everything your modern life needs, in one trusted shop.</p>
 <h2>Top Brands at Talukdar Shop</h2>
 <p>We stock brands that Bangladeshi households already know and love. Each brand is chosen for quality, durability and value for money:</p>
 <ul>
 <li><strong>Ajnur</strong> — modern air fryers with touch panels and visible cooking windows.</li>
 <li><strong>National</strong> — reliable air fryers with generous capacity and multi-function cooking.</li>
 <li><strong>Vision</strong> — a household name in Bangladesh for dependable rice cookers.</li>
-<li><strong>Hundai</strong> — versatile rice cookers with double pots and multiple colour options.</li>
+<li><strong>Hyundai</strong> — versatile rice cookers with double pots and multiple colour options.</li>
 <li><strong>Miyako</strong> — innovative multi makers for roti, dosa and everyday frying.</li>
 <li><strong>Kiam</strong> — trusted pressure cookers, cookware sets and irons.</li>
 <li><strong>Defender</strong> — rechargeable fans built for load-shedding season.</li>
@@ -58,7 +58,7 @@ export default function HomepageContent() {
 <h3>Best Prices in Bangladesh</h3>
 <p>We keep our prices honest and competitive. Compare our prices with any major retailer — you'll find Talukdar Shop consistently offers great value, plus regular discounts and combo deals across categories.</p>
 <h3>Cash on Delivery Nationwide</h3>
-<p>Pay when your product arrives at your door. We offer cash on delivery (COD) across Bangladesh, along with mobile banking options like bKash, Nagad and Rocket for your convenience.</p>
+<p>Pay when your product arrives at your door. We offer cash on delivery (COD) on all orders across Bangladesh — no advance payment needed.</p>
 <h3>Fast Delivery — Dhaka &amp; Beyond</h3>
 <p>Orders inside Dhaka are dispatched quickly, and we deliver to all 64 districts via reliable courier partners. You'll receive order updates by email and can track your delivery every step of the way.</p>
 <h3>After-Sales Support You Can Reach</h3>
@@ -97,7 +97,7 @@ export default function HomepageContent() {
 <h3>Is Talukdar Shop a trusted online shop in Bangladesh?</h3>
 <p>Yes. Talukdar Shop (talukdarshop.com) is a dedicated home appliance online store serving customers across Bangladesh. We sell genuine products, offer cash on delivery, provide order tracking and support every purchase with responsive after-sales service.</p>
 <h3>Do you offer cash on delivery?</h3>
-<p>Yes — cash on delivery is available on orders across Bangladesh. You can also pay via bKash, Nagad or Rocket at checkout if you prefer digital payment.</p>
+<p>Yes — cash on delivery (COD) is available on all orders across Bangladesh. Pay in cash when your order arrives at your door.</p>
 <h3>How long does delivery take?</h3>
 <p>Orders inside Dhaka are typically dispatched quickly and arrive within a few working days. Deliveries outside Dhaka via courier usually take a bit longer depending on your district. You'll receive email updates at every stage.</p>
 <h3>Are the products genuine?</h3>

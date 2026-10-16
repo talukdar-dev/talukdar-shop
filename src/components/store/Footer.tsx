@@ -77,6 +77,16 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
                 Return &amp; Refund Policy
               </Link>
             </li>
+            <li>
+              <Link href="/privacy" className="hover:text-brand-orange hover:underline">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="hover:text-brand-orange hover:underline">
+                Terms &amp; Conditions
+              </Link>
+            </li>
           </ul>
         </div>
 

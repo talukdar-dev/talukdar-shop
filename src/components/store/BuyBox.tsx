@@ -227,10 +227,17 @@ export default function BuyBox({ product }: { product: Product }) {
           <p className="text-[11px] font-bold text-gray-700">Official Warranty</p>
           <p className="text-[10.5px] text-ink mt-0.5">100% Genuine</p>
         </div>
-        <div className="rounded-lg bg-slate-50 border border-slate-100 p-2.5 text-center">
-          <p className="text-[11px] font-bold text-gray-700">EMI Available</p>
-          <p className="text-[10.5px] text-ink mt-0.5">0% up to 12 mo</p>
-        </div>
+        {product.emi_available ? (
+          <div className="rounded-lg bg-slate-50 border border-slate-100 p-2.5 text-center">
+            <p className="text-[11px] font-bold text-gray-700">EMI Available</p>
+            <p className="text-[10.5px] text-ink mt-0.5">0% up to 12 mo</p>
+          </div>
+        ) : (
+          <div className="rounded-lg bg-slate-50 border border-slate-100 p-2.5 text-center">
+            <p className="text-[11px] font-bold text-gray-700">Cash on Delivery</p>
+            <p className="text-[10.5px] text-ink mt-0.5">Pay on arrival</p>
+          </div>
+        )}
       </div>
     </div>
   );

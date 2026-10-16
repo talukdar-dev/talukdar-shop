@@ -41,7 +41,7 @@ export default function EmiPage() {
     <>
       <Breadcrumb items={[{ label: 'EMI Terms' }]} />
       <h1 className="text-[20px] sm:text-[24px] font-bold text-[#1a1a1a] mt-2">
-        EMI Terms — 0% EMI for up to 12 Months
+        EMI Terms — 0% EMI up to 12 Months
       </h1>
       <p className="text-[13.5px] text-ink mt-1 mb-4">
         Split your purchase into easy monthly installments with 0% interest.
