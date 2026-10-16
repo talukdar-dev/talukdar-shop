@@ -4,7 +4,7 @@ export const BLOG_POSTS_1: BlogPost[] = [
   {
     slug: 'best-air-fryer-in-bangladesh-2026',
     title: 'Best Air Fryer in Bangladesh 2026: Top 5 Models Compared (Price & Features)',
-    metaTitle: 'Best Air Fryer Price in Bangladesh 2026 | Talukdar Shop',
+    metaTitle: 'Best Air Fryer Price in Bangladesh 2026',
     metaDescription:
       'Compare the best air fryer price in Bangladesh 2026. Top 5 models from Ajnur, National & more (৳4,500–15,000) with buying guide, capacity & wattage tips.',
     category: 'Buying Guide',
@@ -109,7 +109,7 @@ export const BLOG_POSTS_1: BlogPost[] = [
 </ol>
 
 <h2>Where to Buy an Air Fryer in Bangladesh</h2>
-<p>Buy from a trusted seller with real warranty support — not a random Facebook page with no return policy. At <a href="/category/air-fryer">Talukdar Shop</a>, you get 100% genuine air fryers, official service warranty, cash on delivery anywhere in Bangladesh, and bKash/Nagad/Rocket payment options. Orders inside Dhaka typically arrive in 24–48 hours. Also see our guides on <a href="/blog/rice-cooker-price-in-bangladesh-buying-guide">rice cooker prices</a> and <a href="/blog/rechargeable-fan-price-bangladesh-load-shedding-guide">rechargeable fans for load-shedding</a> if you are equipping a full kitchen.</p>
+<p>Buy from a trusted seller with real warranty support — not a random Facebook page with no return policy. At <a href="/category/air-fryer">Talukdar Shop</a>, you get 100% genuine air fryers, official service warranty, cash on delivery anywhere in Bangladesh. Orders inside Dhaka typically arrive in 24–48 hours. Also see our guides on <a href="/blog/rice-cooker-price-in-bangladesh-buying-guide">rice cooker prices</a> and <a href="/blog/rechargeable-fan-price-bangladesh-load-shedding-guide">rechargeable fans for load-shedding</a> if you are equipping a full kitchen.</p>
 
 <h2>Air Fryer Electricity Cost in Bangladesh (Real Math)</h2>
 <p>Many buyers worry about electricity bills. Let us do the real math with current residential rates (around ৳10–12 per kWh for typical household slabs):</p>
@@ -178,9 +178,9 @@ export const BLOG_POSTS_1: BlogPost[] = [
   {
     slug: 'rice-cooker-price-in-bangladesh-buying-guide',
     title: 'Rice Cooker Price in Bangladesh 2026: Complete Buying Guide',
-    metaTitle: 'Rice Cooker Price in Bangladesh 2026 | Talukdar Shop',
+    metaTitle: 'Rice Cooker Price in Bangladesh 2026',
     metaDescription:
-      'Rice cooker price in Bangladesh 2026: ৳1,800–6,000. Compare Vision, Hundai & LG models, capacity guide, types & features before you buy.',
+      'Rice cooker price in Bangladesh 2026: ৳1,800–6,000. Compare Vision, Hyundai & LG models, capacity guide, types & features before you buy.',
     category: 'Buying Guide',
     shopCategory: 'rice-cooker',
     date: '2026-10-13',
@@ -189,23 +189,23 @@ export const BLOG_POSTS_1: BlogPost[] = [
       'https://res.cloudinary.com/w1qo6mno/image/upload/talukdar-shop/blog/rice-cooker-price-in-bangladesh-buying-guide.jpg',
     heroAlt: 'Rice cooker price in Bangladesh 2026 — buying guide with top models',
     excerpt:
-      'Rice cooker price in Bangladesh ranges ৳1,800–6,000. Our 2026 buying guide compares Vision, Hundai & LG models with capacity and feature tips.',
+      'Rice cooker price in Bangladesh ranges ৳1,800–6,000. Our 2026 buying guide compares Vision, Hyundai & LG models with capacity and feature tips.',
     content: `<h2>Quick Answer: Rice Cooker Price in Bangladesh 2026</h2>
-<p><strong>Rice cooker price in Bangladesh in 2026 ranges from ৳1,800 for a basic 1.8-litre model to ৳6,000 for a large 2.8-litre double-pot model.</strong> For most families, a <strong>1.8L rice cooker at ৳2,200–3,500</strong> from <strong>Vision, Hundai or LG</strong> is the sweet spot — it serves 4–6 people, includes keep-warm function, and lasts years with basic care. Double-pot models (stainless steel + non-stick) cost ৳4,000–6,000 and suit joint families. Browse the full <a href="/category/rice-cooker">rice cooker collection at Talukdar Shop</a> with cash on delivery nationwide.</p>
-<blockquote><p><strong>Bottom line:</strong> A 1.8L Vision or Hundai rice cooker at ৳2,200–3,500 covers 90% of Bangladeshi households. Go bigger only for 7+ members or commercial use.</p></blockquote>
+<p><strong>Rice cooker price in Bangladesh in 2026 ranges from ৳1,800 for a basic 1.8-litre model to ৳6,000 for a large 2.8-litre double-pot model.</strong> For most families, a <strong>1.8L rice cooker at ৳2,200–3,500</strong> from <strong>Vision, Hyundai or LG</strong> is the sweet spot — it serves 4–6 people, includes keep-warm function, and lasts years with basic care. Double-pot models (stainless steel + non-stick) cost ৳4,000–6,000 and suit joint families. Browse the full <a href="/category/rice-cooker">rice cooker collection at Talukdar Shop</a> with cash on delivery nationwide.</p>
+<blockquote><p><strong>Bottom line:</strong> A 1.8L Vision or Hyundai rice cooker at ৳2,200–3,500 covers 90% of Bangladeshi households. Go bigger only for 7+ members or commercial use.</p></blockquote>
 
 <h2>Rice Cooker Price in Bangladesh 2026 — Full Price List</h2>
 <table>
 <thead><tr><th>Type / Capacity</th><th>Typical Brands</th><th>Key Features</th><th>Price (BDT)</th></tr></thead>
 <tbody>
 <tr><td>1.0L Mini</td><td>Local brands</td><td>Basic cook + warm, single pot</td><td>৳1,800–2,200</td></tr>
-<tr><td>1.8L Standard</td><td>Vision, Hundai, LG</td><td>Keep-warm, non-stick pot, steamer tray</td><td>৳2,200–3,500</td></tr>
-<tr><td>2.2L Family</td><td>Vision, Hundai</td><td>Larger pot, keep-warm, accessories</td><td>৳3,200–4,500</td></tr>
-<tr><td>2.8L Double Pot</td><td>Hundai, Vision</td><td>Steel + non-stick pots, glass lid</td><td>৳4,000–6,000</td></tr>
+<tr><td>1.8L Standard</td><td>Vision, Hyundai, LG</td><td>Keep-warm, non-stick pot, steamer tray</td><td>৳2,200–3,500</td></tr>
+<tr><td>2.2L Family</td><td>Vision, Hyundai</td><td>Larger pot, keep-warm, accessories</td><td>৳3,200–4,500</td></tr>
+<tr><td>2.8L Double Pot</td><td>Hyundai, Vision</td><td>Steel + non-stick pots, glass lid</td><td>৳4,000–6,000</td></tr>
 <tr><td>3.0L+ Commercial</td><td>Various</td><td>Heavy-duty, high wattage</td><td>৳5,500–8,000</td></tr>
 </tbody>
 </table>
-<p>Prices are typical October 2026 market rates. Branded models (Vision, Hundai, LG) cost slightly more than unbranded ones but include proper thermostats, safer wiring and service warranty — worth every taka.</p>
+<p>Prices are typical October 2026 market rates. Branded models (Vision, Hyundai, LG) cost slightly more than unbranded ones but include proper thermostats, safer wiring and service warranty — worth every taka.</p>
 
 <h2>Types of Rice Cookers Available in Bangladesh</h2>
 <h3>1. Standard Electric Rice Cooker (Most Popular)</h3>
@@ -232,8 +232,8 @@ export const BLOG_POSTS_1: BlogPost[] = [
 <h2>Top Rice Cooker Brands in Bangladesh 2026</h2>
 <h3>Vision — The Household Name</h3>
 <p>Vision is the first brand most Bangladeshis think of for rice cookers, and for good reason: decades of presence, spare parts availability everywhere, and consistent thermostat quality. Their 1.8L models (৳2,400–3,200) are the default recommendation for small families. Vision's keep-warm function actually keeps rice fresh for hours without drying it out — a detail cheaper brands get wrong.</p>
-<h3>Hundai — Best Double-Pot Options</h3>
-<p>Hundai's strength is the double-pot lineup. Their 2.8L double-pot cooker (৳4,500–5,800) with stainless steel + non-stick pots and glass lid is excellent for joint families who cook large quantities daily. Multiple colour options are a nice touch for modern kitchens.</p>
+<h3>Hyundai — Best Double-Pot Options</h3>
+<p>Hyundai's strength is the double-pot lineup. Their 2.8L double-pot cooker (৳4,500–5,800) with stainless steel + non-stick pots and glass lid is excellent for joint families who cook large quantities daily. Multiple colour options are a nice touch for modern kitchens.</p>
 <h3>LG (Korian) — Reliable Everyday Pick</h3>
 <p>LG's rice cookers focus on the essentials done well: even heating, durable non-stick coating, and a keep-warm mode that does not scorch the bottom layer. The 1.8L models at ৳2,200–3,000 compete directly with Vision on value.</p>
 <p>Compare all three in our <a href="/category/rice-cooker">rice cooker price in Bangladesh</a> collection, or look at <a href="/category/pressure-cooker">pressure cookers</a> if you want faster cooking for dal, beef and khichuri.</p>
@@ -280,7 +280,7 @@ export const BLOG_POSTS_1: BlogPost[] = [
 </ul>
 
 <h2>Where to Buy a Rice Cooker in Bangladesh</h2>
-<p>Stick to genuine branded models with warranty. At <a href="/category/rice-cooker">Talukdar Shop</a>, every rice cooker is quality-checked, covered by service warranty, and available with cash on delivery, bKash, Nagad or Rocket payment. Dhaka delivery in 24–48 hours; nationwide in 2–4 days.</p>
+<p>Stick to genuine branded models with warranty. At <a href="/category/rice-cooker">Talukdar Shop</a>, every rice cooker is quality-checked, covered by service warranty, and available with cash on delivery. Dhaka delivery in 24–48 hours; nationwide in 2–4 days.</p>
 
 <h2>5 Easy Rice Cooker Recipes for Bangladeshi Families</h2>
 <h3>1. Perfect Khichuri (25 minutes)</h3>
@@ -313,16 +313,16 @@ export const BLOG_POSTS_1: BlogPost[] = [
 </ul>
 
 <h2>When Should You Replace Your Rice Cooker?</h2>
-<p>Replace it when you notice: rice consistently burning on one side (failing thermostat), the keep-warm light not working, non-stick coating flaking into food, or the outer body warping. A quality Vision or Hundai cooker typically serves 5–8 years; if yours is past that and acting up, a new 1.8L model at ৳2,500 is cheaper than repeated repairs.</p>
+<p>Replace it when you notice: rice consistently burning on one side (failing thermostat), the keep-warm light not working, non-stick coating flaking into food, or the outer body warping. A quality Vision or Hyundai cooker typically serves 5–8 years; if yours is past that and acting up, a new 1.8L model at ৳2,500 is cheaper than repeated repairs.</p>
 
 <h2>Quick Buying Checklist</h2>
-<p>Before you pay, run through this 30-second checklist: capacity matches family size? Keep-warm confirmed? Glass lid included? Steamer tray in the box? Measuring cup and spatula included? Cord at least 1 metre? 1-year service warranty in writing? If all seven are yes, buy with confidence. If the seller hesitates on warranty terms, walk away — genuine Vision, Hundai and LG sellers always provide it.</p>
+<p>Before you pay, run through this 30-second checklist: capacity matches family size? Keep-warm confirmed? Glass lid included? Steamer tray in the box? Measuring cup and spatula included? Cord at least 1 metre? 1-year service warranty in writing? If all seven are yes, buy with confidence. If the seller hesitates on warranty terms, walk away — genuine Vision, Hyundai and LG sellers always provide it.</p>
 
 <h2>Frequently Asked Questions</h2>
 <h3>What is the rice cooker price in Bangladesh in 2026?</h3>
-<p>Rice cooker price in Bangladesh ranges from ৳1,800 (1.0L basic) to ৳6,000 (2.8L double-pot). A quality 1.8L Vision, Hundai or LG model costs ৳2,200–3,500.</p>
+<p>Rice cooker price in Bangladesh ranges from ৳1,800 (1.0L basic) to ৳6,000 (2.8L double-pot). A quality 1.8L Vision, Hyundai or LG model costs ৳2,200–3,500.</p>
 <h3>Which brand rice cooker is best in Bangladesh?</h3>
-<p>Vision, Hundai and LG are the most trusted rice cooker brands in Bangladesh, offering reliable thermostats, durable pots and proper service warranty.</p>
+<p>Vision, Hyundai and LG are the most trusted rice cooker brands in Bangladesh, offering reliable thermostats, durable pots and proper service warranty.</p>
 <h3>What size rice cooker for a family of 4?</h3>
 <p>A 1.8-litre rice cooker is perfect for a family of 4, cooking 4–5 cups of uncooked rice (8–10 cups cooked) per batch.</p>
 <h3>How much water for rice in a rice cooker?</h3>
@@ -334,11 +334,11 @@ export const BLOG_POSTS_1: BlogPost[] = [
     faqs: [
       {
         q: 'What is the rice cooker price in Bangladesh in 2026?',
-        a: 'Rice cooker price in Bangladesh ranges from ৳1,800 (1.0L basic) to ৳6,000 (2.8L double-pot). A quality 1.8L Vision, Hundai or LG model costs ৳2,200–3,500.',
+        a: 'Rice cooker price in Bangladesh ranges from ৳1,800 (1.0L basic) to ৳6,000 (2.8L double-pot). A quality 1.8L Vision, Hyundai or LG model costs ৳2,200–3,500.',
       },
       {
         q: 'Which brand rice cooker is best in Bangladesh?',
-        a: 'Vision, Hundai and LG are the most trusted rice cooker brands in Bangladesh with reliable thermostats and service warranty.',
+        a: 'Vision, Hyundai and LG are the most trusted rice cooker brands in Bangladesh with reliable thermostats and service warranty.',
       },
       {
         q: 'What size rice cooker for a family of 4?',
@@ -358,12 +358,12 @@ export const BLOG_POSTS_1: BlogPost[] = [
       },
     ],
     externalLink: { title: 'Rice cooker', url: 'https://en.wikipedia.org/wiki/Rice_cooker' },
-    tags: ['rice cooker', 'rice cooker price in Bangladesh', 'buying guide', 'Vision', 'Hundai', 'LG'],
+    tags: ['rice cooker', 'rice cooker price in Bangladesh', 'buying guide', 'Vision', 'Hyundai', 'LG'],
   },
   {
     slug: 'rechargeable-fan-price-bangladesh-load-shedding-guide',
     title: 'Rechargeable Fan Price in Bangladesh 2026: Beat Load-Shedding in Style',
-    metaTitle: 'Rechargeable Fan Price in Bangladesh 2026 | Talukdar Shop',
+    metaTitle: 'Rechargeable Fan Price in Bangladesh 2026',
     metaDescription:
       'Rechargeable fan price in Bangladesh 2026: ৳2,500–6,000. Compare Defender & Click battery backup, AC/DC explained + load-shedding survival tips.',
     category: 'Buying Guide',
@@ -467,7 +467,7 @@ export const BLOG_POSTS_1: BlogPost[] = [
 </ul>
 
 <h2>Where to Buy a Rechargeable Fan in Bangladesh</h2>
-<p>Buy genuine Defender or Click models with warranty — fake batteries are a real problem in the grey market and can even be a fire risk. At <a href="/category/dc-fan">Talukdar Shop</a>, every fan is genuine, quality-checked, and covered by service warranty, with cash on delivery, bKash, Nagad and Rocket payment. Dhaka delivery in 24–48 hours.</p>
+<p>Buy genuine Defender or Click models with warranty — fake batteries are a real problem in the grey market and can even be a fire risk. At <a href="/category/dc-fan">Talukdar Shop</a>, every fan is genuine, quality-checked, and covered by service warranty, with cash on delivery. Dhaka delivery in 24–48 hours.</p>
 
 <h2>Best Rechargeable Fan for Every Use Case</h2>
 <table>
