@@ -3,7 +3,7 @@ import type { TestimonialReview } from '@/lib/db';
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <div className="flex gap-0.5" aria-label={`${rating} out of 5 stars`}>
+    <div className="flex gap-0.5" aria-label={`${Math.round(rating * 10) / 10} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}

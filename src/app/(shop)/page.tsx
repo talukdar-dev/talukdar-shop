@@ -161,7 +161,7 @@ export default async function HomePage() {
           ))}
         </ul>
         <p className="text-[12.5px] text-ink">
-          Learn more about{' '}
+          {'Learn more about '}
           <a
             href="https://en.wikipedia.org/wiki/Home_appliance"
             target="_blank"
@@ -169,8 +169,8 @@ export default async function HomePage() {
             className="text-link hover:underline"
           >
             home appliances
-          </a>{' '}
-          on Wikipedia.
+          </a>
+          {' on Wikipedia.'}
         </p>
       </section>
 

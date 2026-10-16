@@ -179,8 +179,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
               Looking for the best {category.name.toLowerCase()} price in Bangladesh? Talukdar
               Shop offers 100% genuine {category.name.toLowerCase()} with official warranty at
               unbeatable prices. Order online for fast delivery inside Dhaka and anywhere in
-              Bangladesh, with cash on delivery, mobile banking and 0% EMI up to 12 months on
-              major bank cards. Compare models, check live stock status and grab the best deals
+              Bangladesh, with cash on delivery on all orders. Compare models, check live stock status and grab the best deals
               on {category.name.toLowerCase()} only at Talukdar Shop — your trusted tech
               destination.
             </p>

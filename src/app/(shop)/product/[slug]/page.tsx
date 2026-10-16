@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: Props) {
         : undefined,
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: product.rating,
+      ratingValue: Math.round(product.rating * 10) / 10,
       reviewCount: product.reviews_count,
     },
     review: reviews.slice(0, 10).map((r) => ({

@@ -103,6 +103,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMounted(true);
   }, []);
+  // Refresh stale cart prices against the live catalog (prices can change
+  // after an item was added). Runs once on mount.
+  useEffect(() => {
+    const ids = lines.map((l) => l.product?.id).filter((x): x is string => !!x);
+    if (ids.length === 0) return;
+    fetch('/api/cart/prices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        const prices = (d?.prices ?? {}) as Record<
+          string,
+          {
+            price: number;
+            old_price: number | null;
+            stock_qty: number;
+            is_active: boolean;
+            is_flash_deal: boolean;
+            flash_price: number | null;
+          }
+        >;
+        setLines((prev) =>
+          prev.map((l) => {
+            const p = prices[l.product.id];
+            if (!p) return l;
+            return {
+              ...l,
+              product: {
+                ...l.product,
+                price: p.price,
+                old_price: p.old_price,
+                stock_qty: p.stock_qty,
+                is_flash_deal: p.is_flash_deal,
+                flash_price: p.flash_price,
+              },
+            };
+          }),
+        );
+      })
+      .catch(() => {
+        /* keep stored prices on failure */
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     write('ts_cart', lines);
   }, [lines]);

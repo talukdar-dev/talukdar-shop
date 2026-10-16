@@ -6,7 +6,7 @@ import type { Review } from '@/lib/types';
 
 function Stars({ n }: { n: number }) {
   return (
-    <span className="inline-flex items-center gap-0.5 text-promo" aria-label={`${n} out of 5 stars`}>
+    <span className="inline-flex items-center gap-0.5 text-promo" aria-label={`${Math.round(n * 10) / 10} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((i) =>
         i <= Math.round(n) ? (
           <IconStar key={i} className="w-3.5 h-3.5" />

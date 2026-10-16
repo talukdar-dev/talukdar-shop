@@ -114,7 +114,7 @@ export default function SeoLinks({ categorySlug, variant = 'product' }: Props) {
       )}
       {wiki && (
         <p className="text-[12.5px] text-ink">
-          Learn more about{' '}{wiki.title.toLowerCase()}{' '}on{' '}
+          {`Learn more about ${wiki.title.toLowerCase()} on `}
           <a
             href={wiki.url}
             target="_blank"
