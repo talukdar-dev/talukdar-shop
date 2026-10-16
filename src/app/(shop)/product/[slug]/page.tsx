@@ -20,6 +20,7 @@ interface Props {
 }
 
 /** Timed-revalidation data loader: params are read outside the cached scope. */
+/* Cache bust: redeploy refreshes stale product meta after direct DB edits. */
 async function loadProductData(slug: string) {
   'use cache';
   cacheLife('days');
