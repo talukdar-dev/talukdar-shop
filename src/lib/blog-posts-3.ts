@@ -5,7 +5,7 @@ export const BLOG_POSTS_3: BlogPost[] = [
   {
     slug: 'best-multi-cooker-roti-maker-bangladesh-2026',
     title: 'Best Multi Cooker & Roti Maker in Bangladesh 2026: One Appliance, Many Dishes',
-    metaTitle: 'Best Multi Cooker & Roti Maker in Bangladesh 2026 | Talukdar Shop',
+    metaTitle: 'Best Multi Cooker & Roti Maker in Bangladesh 2026',
     metaDescription:
       'Multi cooker price in Bangladesh 2026: compare the best multi cookers & roti makers, ceramic coating, wattage and what you can cook. Buying guide by Talukdar Shop.',
     category: 'Buying Guide',
@@ -129,7 +129,7 @@ export const BLOG_POSTS_3: BlogPost[] = [
 <li><strong>Washing while hot:</strong> Let the plate cool for 10–15 minutes before wiping — thermal shock warps plates and cracks coatings.</li>
 </ol>
 <h2>Where to Buy a Multi Cooker in Bangladesh</h2>
-<p>Look for genuine products with warranty from a reputable seller. At <a href="/category/multi-cooker">Talukdar Shop</a> you get quality-checked multi cookers and roti makers at honest prices, with cash on delivery across Bangladesh, bKash/Nagad/Rocket payment options and fast delivery inside Dhaka. For background on how these appliances work, see the <a href="https://en.wikipedia.org/wiki/Multicooker" target="_blank" rel="noopener noreferrer">multicooker article on Wikipedia</a>.</p>`,
+<p>Look for genuine products with warranty from a reputable seller. At <a href="/category/multi-cooker">Talukdar Shop</a> you get quality-checked multi cookers and roti makers at honest prices, with cash on delivery across Bangladesh and fast delivery inside Dhaka. For background on how these appliances work, see the <a href="https://en.wikipedia.org/wiki/Multicooker" target="_blank" rel="noopener noreferrer">multicooker article on Wikipedia</a>.</p>`,
     faqs: [
       {
         q: 'What is the price of a multi cooker in Bangladesh in 2026?',
@@ -162,7 +162,7 @@ export const BLOG_POSTS_3: BlogPost[] = [
   {
     slug: 'electric-iron-price-bangladesh-steam-vs-dry',
     title: 'Electric Iron Price in Bangladesh 2026: Steam vs Dry Iron — Which to Buy?',
-    metaTitle: 'Electric Iron Price in Bangladesh 2026: Steam vs Dry | Talukdar Shop',
+    metaTitle: 'Electric Iron Price in Bangladesh 2026: Steam vs Dry',
     metaDescription:
       'Electric iron price in Bangladesh 2026 (৳1,200–৳4,500). Steam vs dry iron compared: soleplate types, wattage guide and buying tips from Talukdar Shop.',
     category: 'Comparison',
@@ -287,7 +287,7 @@ export const BLOG_POSTS_3: BlogPost[] = [
 <tr><td>Local markets</td><td>Instant purchase, bargaining possible</td><td>High counterfeit risk, weak warranty</td></tr>
 </tbody>
 </table>
-<p>Counterfeit irons are one of the most common fakes in Bangladeshi markets — boxes that claim 2000W but contain a 800W element, or "ceramic" soleplates that are just painted aluminium. Buy from a seller who puts the warranty in writing. At <a href="/category/iron">Talukdar Shop</a> every iron is sourced from authorised channels and covered by proper after-sales support, with bKash, Nagad, Rocket and cash-on-delivery payment options.</p>
+<p>Counterfeit irons are one of the most common fakes in Bangladeshi markets — boxes that claim 2000W but contain a 800W element, or "ceramic" soleplates that are just painted aluminium. Buy from a seller who puts the warranty in writing. At <a href="/category/iron">Talukdar Shop</a> every iron is sourced from authorised channels and covered by proper after-sales support, with cash-on-delivery.</p>
 <h2>Iron vs Garment Steamer: A Quick Note</h2>
 <p>Handheld garment steamers have become trendy, but for Bangladeshi wardrobes the classic iron still wins for most people. Steamers are great for freshening hanging clothes and delicate items, but they cannot press a crisp crease into a panjabi or flatten a stubborn collar the way a hot soleplate can. If you already own an iron, a steamer is a nice-to-have — not a replacement. For background on how pressing technology evolved, see the <a href="https://en.wikipedia.org/wiki/Clothes_iron" target="_blank" rel="noopener noreferrer">clothes iron article on Wikipedia</a>.</p>
 <h2>Final Verdict: Our Recommendation</h2>
